@@ -6,10 +6,8 @@ from organism import Organism
 from view import View
 from world import World
 
-random.seed(37.56)
-
-ROWS, COLS = 72, 72
-GRID_SIZE = 12
+ROWS, COLS = 40, 40
+GRID_SIZE = 20
 WIDTH, HEIGHT = ROWS*GRID_SIZE, COLS*GRID_SIZE
 
 RED = (255, 0, 0)
@@ -21,7 +19,6 @@ pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 running = True
-setup = True
 dt = 0
 
 def create_genome(creature_type) -> Genome:
@@ -56,15 +53,15 @@ def process_cells(world):
                 continue
             visited.add(organism)
             if organism:
-                valr = random.randint(0, 24)
-                valc = random.randint(0, 24)
-                if valr > 12:
+                valr = random.randint(0, 12)
+                valc = random.randint(0, 12)
+                if valr > 6:
                     next_row = row + 1
                 elif valr > 0:
                     next_row = row - 1
                 else:
                     next_row = row
-                if valc > 12:
+                if valc > 6:
                     next_col = col + 1
                 elif valc > 0:
                     next_col = col - 1

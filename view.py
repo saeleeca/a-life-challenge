@@ -24,8 +24,19 @@ class View:
 
     def _draw_organism(self, organism, row, col):
         color = organism.get_color()
+
+        # Draw as a square
         rect = self._convert_cell_to_rect(row, col)
         pygame.draw.rect(self._screen, color, rect)
 
+        # # Draw as a circle
+        # center_row = row * self._grid_size + self._grid_size//2
+        # center_col = col * self._grid_size + self._grid_size//2
+        # center = (center_col, center_row)
+        # radius = self._grid_size // 2
+        # pygame.draw.circle(self._screen, color, center, radius)
+
+
     def _convert_cell_to_rect(self, row, col):
-        return row * self._grid_size, col * self._grid_size, self._grid_size, self._grid_size
+        return (col * self._grid_size, row * self._grid_size,
+                self._grid_size, self._grid_size)
