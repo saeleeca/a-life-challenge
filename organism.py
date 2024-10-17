@@ -7,6 +7,8 @@ class Organism:
 
     def move(self, row: int, col: int, world) -> None:
         """Updates the Organisms row and col"""
+        if row == self._row and col == self._col:
+            return
         world.move(self._row, self._col, row, col)
         self._energy -= 1
         self._row = row
@@ -14,6 +16,9 @@ class Organism:
 
     def get_genome(self):
         return self._genome
+
+    def get_color(self):
+        return self._genome.get_color()
 
     def get_energy(self) -> int:
         return self._energy

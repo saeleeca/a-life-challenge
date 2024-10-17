@@ -10,6 +10,8 @@ class World:
 
     def move(self, rowA: int, colA: int, rowB: int, colB: int) -> None:
         """Moves the organism from a to b"""
+        if rowA == rowB and colA == colB:
+            return
         self._world[rowB][colB] = self._world[rowA][colA]
         self._world[rowA][colA] = None
 
@@ -19,7 +21,7 @@ class World:
 
     def is_cell_empty(self, row, col) -> bool:
         """Returns if the world contains an object at row, col"""
-        return self._world[row][col] is not None
+        return self._world[row][col] is None
 
     def get_cell(self, row, col):
         """Returns the object in the world at row, col"""

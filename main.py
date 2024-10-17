@@ -1,130 +1,106 @@
 import random
-
 import pygame
+
+from genome import CreatureType, Genome
+from organism import Organism
+from view import View
+from world import World
+
+random.seed(37.56)
+
+ROWS, COLS = 72, 72
+GRID_SIZE = 12
+WIDTH, HEIGHT = ROWS*GRID_SIZE, COLS*GRID_SIZE
+
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
 
 # pygame setup screen, clock, and relevant values.
 pygame.init()
-screen = pygame.display.set_mode((720, 720))
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 running = True
 setup = True
 dt = 0
 
-# screen width and height values to be used in organism arrays
-screen_width_1div10 = int(screen.get_width() / 10)
-screen_height_1div10 = int(screen.get_height() / 10)
+def create_genome(creature_type) -> Genome:
+    if creature_type == CreatureType.PASSIVE:
+        return Genome(GREEN, creature_type, 20, False)
+    if creature_type == CreatureType.CARNIVORE:
+        return Genome(RED, creature_type, 10, True)
 
-# mutable array that holds 0 for no passive organism and 1 for passive organism. Used in determining if an
-# organism dies/lives/reproduces.
-passive_og_array= [[0 for i in range(screen_width_1div10)] for j in range(screen_height_1div10)]
-
-def setup_life():
-    """Function to set up the Game of Life simulation. Currently, adds passive organisms to a screen"""
-    #initialize starting array for passive organism. This will be filled with the coordinates of the passive organism
-    passive_coord_array = []
-
-    # Get width and height for current screen size
-    x_pos = screen.get_width()
-    y_pos = screen.get_height()
-
-    # fill the screen with a color to wipe away anything from last frame
-    screen.fill("white")
-
-    # initialize the starting squares. Set up a random number of organisms to be populated. Organisms are currently
-    # 10x10 squares, so step the coordinates by 10 so there are no organism overlaps. Add organisms to both the
-    # coordinate array and array that indicates if square is filled.
-    count = 0
-    random_number = random.randrange(1000, 4000)
-    while count < random_number:
-        new_x = random.randrange(0, x_pos, 10)
-        new_y = random.randrange(0, y_pos, 10)
-        if [new_x, new_y] not in passive_coord_array:
-            passive_coord_array.append([new_x, new_y])
-            passive_og_array[int(new_x / 10)][int(new_y / 10)] = 1
-            pygame.draw.rect(screen, "red", (new_x, new_y, 10, 10))
-            count += 1
-
-    # flip() the display to put your work on screen
-    pygame.display.flip()
-    return screen, passive_coord_array
+    return Genome(BLUE, creature_type, 10, True)
 
 
-def check_neighbors(i,j):
-    """Function to check if a cell i and j is occupied. The returned count is used in determining if an organism
-    lives/dies/reproduces."""
-    count = 0
-    if i < screen_width_1div10 - 1 and passive_og_array[i + 1][j] == 1:
-        count += 1
-    if i > 0 and passive_og_array[i - 1][j] == 1:
-        count += 1
-    if j < screen_height_1div10 - 1 and passive_og_array[i][j + 1] == 1:
-        count += 1
-    if j > 0 and passive_og_array[i][j - 1] == 1:
-        count += 1
-    return count
+def setup_life(world):
+    for row in range(ROWS):
+        for col in range(COLS):
+            val = random.randint(0, 100)
+            # 0-2 passive, 3-4 herbivore, 5-6 carnivore,
+            if val < 3:
+                world.add_organism(Organism(create_genome(CreatureType.PASSIVE), row, col), row, col)
+            elif val < 5:
+                world.add_organism(Organism(create_genome(CreatureType.HERBIVORE), row, col), row, col)
+            elif val < 7:
+                world.add_organism(Organism(create_genome(CreatureType.CARNIVORE), row, col), row, col)
 
-def cell_death_life():
-    """Function to check if a cell i and j should live/die/reproduce."""
-    temp_passive_og_array = [[0 for i in range(screen_width_1div10)] for j in range(screen_height_1div10)]
-    for i in range(screen_width_1div10):
-        for j in range(screen_height_1div10):
-            # check current living cell for death
-            if passive_og_array[i][j] == 1:
-                count_live = check_neighbors(i,j)
-                # Any live cell with fewer than two live neighbours dies, as if by underpopulation
-                if count_live < 2:
-                    temp_passive_og_array[i][j] = 0
-                # Any live cell with more than three live neighbours dies, as if by overpopulation
-                elif count_live > 3:
-                    temp_passive_og_array[i][j] = 0
-                # Any live cell with two or three live neighbours lives on to the next generation
+def process_cells(world):
+    # moves organisms into next cell if empty
+    # only to demonstrate ui and test
+    visited = set()
+    for row in range(ROWS):
+        for col in range(COLS):
+            organism = world.get_cell(row, col)
+            if organism in visited:
+                continue
+            visited.add(organism)
+            if organism:
+                valr = random.randint(0, 24)
+                valc = random.randint(0, 24)
+                if valr > 12:
+                    next_row = row + 1
+                elif valr > 0:
+                    next_row = row - 1
                 else:
-                    temp_passive_og_array[i][j] = 1
-            # check empty cell for reproduction
-            else:
-                count_live = check_neighbors(i, j)
-                # Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction
-                if count_live == 3:
-                    temp_passive_og_array[i][j] = 1
-                # Or remains empty
+                    next_row = row
+                if valc > 12:
+                    next_col = col + 1
+                elif valc > 0:
+                    next_col = col - 1
                 else:
-                    temp_passive_og_array[i][j] = 0
+                    next_col = col
 
-    return temp_passive_og_array
+                if row == next_row and col == next_col:
+                    return
+                # go out of bounds and remove
+                if (next_row >= ROWS or next_col >= COLS or
+                    next_row <= -1 or next_col <= -1):
+                    world.kill_organism(row, col)
 
-def cell_draw():
-    """Function to draw a cell on the screen."""
-    # fill the screen with a color to wipe away anything from last frame
-    screen.fill("white")
-    for i in range(screen_width_1div10):
-        for j in range(screen_height_1div10):
-            if passive_og_array[i][j] == 1:
-                pygame.draw.rect(screen, "red", (i*10, j*10, 10, 10))
-    # flip() the display to put your work on screen
-    pygame.display.flip()
-    return screen
+                elif world.is_cell_empty(next_row, next_col):
+
+                    organism.move(next_row, next_col, world)
 
 
+world = World(ROWS, COLS)
+view = View(WIDTH, HEIGHT, ROWS, COLS, world, screen, GRID_SIZE)
+
+setup_life(world)
+view.render_grid()
 
 while running:
-
-    # run setup first before executing the game of life rules
-    if setup:
-        screen, organism_array = setup_life()
-        setup = False
-
-    # poll for events
-    # pygame.QUIT event means the user clicked X to close your window
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+            break
 
-    # Call the functions for the passive organism and draw the new organisms on the screen
-    passive_og_array = cell_death_life()
-    cell_draw()
+    if running:
+        process_cells(world)
+        view.render_grid()
 
     # limits FPS to 1
     # dt is delta time in seconds since last frame, used for framerate-independent physics.
-    dt = clock.tick(1)
+    dt = clock.tick(20)
 
 pygame.quit()
