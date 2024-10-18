@@ -1,9 +1,10 @@
 class Organism:
-    def __init__(self, genome, row: int, col: int):
+    def __init__(self, genome, row: int, col: int, world):
         self._genome = genome
         self._energy: int = self._genome.get_max_energy()
         self._row: int = row
         self._col: int = col
+        self._world = world
 
     def move(self, row: int, col: int, world) -> None:
         """Updates the Organisms row and col"""
@@ -38,6 +39,6 @@ class Organism:
         """Reproduces and returns the offspring"""
         return self.__class__(self._genome.reproduce(), row, col)
 
-    def choose_action(self, world):
+    def choose_action(self):
         """Depends on type of Organism"""
         pass

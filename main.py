@@ -5,6 +5,7 @@ from genome import CreatureType, Genome
 from organism import Organism
 from view import View
 from world import World
+from passive_organism import PassiveOrganism
 
 ROWS, COLS = 40, 40
 GRID_SIZE = 20
@@ -33,14 +34,14 @@ def create_genome(creature_type) -> Genome:
 def setup_life(world):
     for row in range(ROWS):
         for col in range(COLS):
-            val = random.randint(0, 100)
+            val = random.randint(0, 10)
             # 0-2 passive, 3-4 herbivore, 5-6 carnivore,
             if val < 3:
-                world.add_organism(Organism(create_genome(CreatureType.PASSIVE), row, col), row, col)
+                world.add_organism(PassiveOrganism(create_genome(CreatureType.PASSIVE), row, col, world), row, col)
             elif val < 5:
-                world.add_organism(Organism(create_genome(CreatureType.HERBIVORE), row, col), row, col)
+                world.add_organism(Organism(create_genome(CreatureType.HERBIVORE), row, col, world), row, col)
             elif val < 7:
-                world.add_organism(Organism(create_genome(CreatureType.CARNIVORE), row, col), row, col)
+                world.add_organism(Organism(create_genome(CreatureType.CARNIVORE), row, col, world), row, col)
 
 def process_cells(world):
     # moves organisms into next cell if empty
@@ -52,6 +53,8 @@ def process_cells(world):
             if organism in visited:
                 continue
             visited.add(organism)
+            if isinstance(organism, PassiveOrganism):
+                organism.choose_action()
             if organism:
                 valr = random.randint(0, 12)
                 valc = random.randint(0, 12)
