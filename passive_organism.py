@@ -1,11 +1,11 @@
 from organism import Organism
 
 class PassiveOrganism(Organism):
-    def move(self, row: int, col: int, world) -> None:
+    def move(self, row: int, col: int) -> None:
         """Passive organisms do not move. Overwrites parent organism."""
         pass
 
-    def eat(self, food: 'Organism', world) -> None:
+    def eat(self, food: 'Organism') -> None:
         """Passive organisms do not eat. Overwrites parent organism."""
         pass
 
@@ -51,7 +51,7 @@ class PassiveOrganism(Organism):
         """Reproduces and returns the offspring if there are exactly 3 neighbors."""
         count = self.passive_check_neighbors()
         if count == 3:
-            return self.__class__(self._genome.reproduce(), row, col)
+            return self.__class__(self._genome.reproduce(), row, col, self._world)
         pass
 
     def choose_action(self):
@@ -67,8 +67,3 @@ class PassiveOrganism(Organism):
             # Any live cell with two or three live neighbours lives on to the next generation
         else:
             pass
-
-
-
-
-

@@ -50,37 +50,35 @@ def process_cells(world):
     for row in range(ROWS):
         for col in range(COLS):
             organism = world.get_cell(row, col)
-            if organism in visited:
-                continue
-            visited.add(organism)
-            if isinstance(organism, PassiveOrganism):
-                organism.choose_action()
-            if organism:
-                valr = random.randint(0, 12)
-                valc = random.randint(0, 12)
-                if valr > 6:
-                    next_row = row + 1
-                elif valr > 0:
-                    next_row = row - 1
+            if organism and organism not in visited:
+                visited.add(organism)
+                if isinstance(organism, PassiveOrganism):
+                    organism.choose_action()
                 else:
-                    next_row = row
-                if valc > 6:
-                    next_col = col + 1
-                elif valc > 0:
-                    next_col = col - 1
-                else:
-                    next_col = col
+                    valr = random.randint(0, 12)
+                    valc = random.randint(0, 12)
+                    if valr > 6:
+                        next_row = row + 1
+                    elif valr > 0:
+                        next_row = row - 1
+                    else:
+                        next_row = row
+                    if valc > 6:
+                        next_col = col + 1
+                    elif valc > 0:
+                        next_col = col - 1
+                    else:
+                        next_col = col
 
-                if row == next_row and col == next_col:
-                    return
-                # go out of bounds and remove
-                if (next_row >= ROWS or next_col >= COLS or
-                    next_row <= -1 or next_col <= -1):
-                    world.kill_organism(row, col)
+                    if row == next_row and col == next_col:
+                        continue
+                    # go out of bounds and remove
+                    if (next_row >= ROWS or next_col >= COLS or
+                        next_row <= -1 or next_col <= -1):
+                        world.kill_organism(row, col)
 
-                elif world.is_cell_empty(next_row, next_col):
-
-                    organism.move(next_row, next_col, world)
+                    elif world.is_cell_empty(next_row, next_col):
+                        organism.move(next_row, next_col)
 
 
 world = World(ROWS, COLS)

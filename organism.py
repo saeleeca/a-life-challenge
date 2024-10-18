@@ -6,11 +6,11 @@ class Organism:
         self._col: int = col
         self._world = world
 
-    def move(self, row: int, col: int, world) -> None:
+    def move(self, row: int, col: int) -> None:
         """Updates the Organisms row and col"""
         if row == self._row and col == self._col:
             return
-        world.move(self._row, self._col, row, col)
+        self._world.move(self._row, self._col, row, col)
         self._energy -= 1
         self._row = row
         self._col = col
@@ -28,16 +28,16 @@ class Organism:
         """Returns a tuple with the location (row, col)"""
         return self._row, self._col
 
-    def eat(self, food: 'Organism', world) -> None:
+    def eat(self, food: 'Organism') -> None:
         """Consumes the food"""
         # This might work for herbivore/carnivore but not passive
         row, col = food.get_location()
         self._energy += food.get_energy()
-        world.kill_organism(row, col)
+        self._world.kill_organism(row, col)
 
     def reproduce(self, row: int, col: int) -> 'Organism':
         """Reproduces and returns the offspring"""
-        return self.__class__(self._genome.reproduce(), row, col)
+        return self.__class__(self._genome.reproduce(), row, col, self._world)
 
     def choose_action(self):
         """Depends on type of Organism"""
