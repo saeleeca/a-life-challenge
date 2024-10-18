@@ -78,7 +78,7 @@ def process_cells(world):
                         world.kill_organism(row, col)
 
                     elif world.is_cell_empty(next_row, next_col):
-                        organism.move(next_row, next_col, world)
+                        organism.move(next_row, next_col)
 
 
 world = World(ROWS, COLS)
