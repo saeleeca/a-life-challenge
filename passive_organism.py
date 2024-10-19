@@ -44,7 +44,6 @@ class PassiveOrganism(Organism):
         if (self._row - 1 in range(ROWS) and self._col + 1 in range(COLS) and
                 isinstance(self._world.get_cell(self._row - 1 , self._col + 1), PassiveOrganism)):
             count += 1
-        print(count)
         return count
 
     def reproduce(self, row: int, col: int) -> 'Organism':
