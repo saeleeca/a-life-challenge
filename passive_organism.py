@@ -51,9 +51,11 @@ class PassiveOrganism(Organism):
         return self.__class__(self._genome.reproduce(), row, col, self._world)
 
     def check_reproduction(self):
+        """Checks 8 neighboring cells around original organism for empty cells. If an empty cell is found
+        reproduction conditions are checked and if valid, reproduce is called."""
         from main import ROWS
         from main import COLS
-        # upper left check if empty. If empty then check neighbors and reproduce?
+        # upper left
         if self._row + 1 in range(ROWS) and self._col - 1 in range(COLS) and self._world.is_cell_empty(self._row + 1, self._col - 1):
             count = self.passive_check_neighbors(self._row + 1, self._col - 1)
             if count == 3:
