@@ -19,7 +19,11 @@ BLUE = (0, 0, 255)
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
-running = True
+PLAY, PAUSE = 0, 1
+state = PLAY
+# pause_text = pygame.font.SysFont('Consolas', 4).render('Paused', True, pygame.color.Color('Black'))
+font = pygame.font.Font(pygame.font.get_default_font(), 30)
+text_surface = font.render("Paused - P to Pause - R to Resume - Q to Quit", True, "black")
 dt = 0
 
 def create_genome(creature_type) -> Genome:
@@ -87,15 +91,24 @@ view = View(WIDTH, HEIGHT, ROWS, COLS, world, screen, GRID_SIZE)
 setup_life(world)
 view.render_grid()
 
-while running:
+while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False
             break
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_p:
+                state = PAUSE
+            if event.key == pygame.K_r:
+                state = PLAY
+            if event.key == pygame.K_q:
+                pygame.quit()
 
-    if running:
+    if state == PLAY:
         process_cells(world)
         view.render_grid()
+    elif state == PAUSE:
+        screen.blit(text_surface, (0, 0))
+        pygame.display.update()
 
     # limits FPS to 1
     # dt is delta time in seconds since last frame, used for framerate-independent physics.
