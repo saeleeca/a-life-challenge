@@ -21,7 +21,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 PLAY, PAUSE = 0, 1
 state = PLAY
-# pause_text = pygame.font.SysFont('Consolas', 4).render('Paused', True, pygame.color.Color('Black'))
+running = True
 font = pygame.font.Font(pygame.font.get_default_font(), 30)
 text_surface = font.render("Paused - P to Pause - R to Resume - Q to Quit", True, "black")
 dt = 0
@@ -91,9 +91,10 @@ view = View(WIDTH, HEIGHT, ROWS, COLS, world, screen, GRID_SIZE)
 setup_life(world)
 view.render_grid()
 
-while True:
+while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            running = False
             break
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_p:
