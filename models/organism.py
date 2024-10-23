@@ -5,13 +5,18 @@ class Organism:
         self._row: int = row
         self._col: int = col
         self._world = world
+        # Custom / Organism-Specific Properties
+        self._move_energy_expenditure = 1   # Energy spend moving
+        self._food_energy = 1               # Energy given when eaten
+        self._base_energy_expenditure = 1   # Baseline energy expended per turn
+        self._food_type = None              # Food class if a consumer   
 
     def move(self, row: int, col: int) -> None:
         """Updates the Organisms row and col"""
         if row == self._row and col == self._col:
             return
         self._world.move(self._row, self._col, row, col)
-        self._energy -= 1
+        self._energy -= self._move_energy_expenditure
         self._row = row
         self._col = col
 
@@ -27,6 +32,9 @@ class Organism:
     def get_location(self) -> (int, int):
         """Returns a tuple with the location (row, col)"""
         return self._row, self._col
+    
+    def get_food_energy(self) -> int:
+        return self._food_energy
 
     def eat(self, food: 'Organism') -> None:
         """Consumes the food"""
