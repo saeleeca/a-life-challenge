@@ -20,9 +20,9 @@ class HerbivoreOrganism(Organism):
         if food_found:
             # Step 2: Eat the food if found            
             self.eat(self._world.get_cell(food_row, food_col)) 
-        else:
-            # Step 3: Move randomly if no food found
-            self.random_move()            
+        
+        # Step 3: Move randomly if no food found
+        self.random_move()            
         
         # Step 4: Calculate baseline energy loss. Die if out of energy.
         self._energy -= self._base_energy_expenditure
