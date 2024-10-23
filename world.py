@@ -1,3 +1,5 @@
+import random
+
 class World:
     def __init__(self, rows: int, cols: int):
         self._energy_rate: int = 10  # how much can be absorbed per cycle
@@ -31,13 +33,16 @@ class World:
         """Returns the 2d world array"""
         return self._world
 
-    def get_empty_neighbor(self, row: int, col: int) -> (bool, int, int):
+    def get_empty_neighbor(self, row: int, col: int, is_random: bool) -> (bool, int, int):
         """
-        Returns the first empty neighbor cell if there is one
+        Returns either the first or a random empty neighbor cell if there is one
         bool- for if there is an empty neighbor, int for row, int for col
         """
         neighbors = [(-1, -1), (-1, 0), (-1, 1), (0, -1),
                      (0, 1), (1, -1), (1, 0), (1, 1)]
+
+        if(is_random):
+            random.shuffle(neighbors)
 
         for r, c in neighbors:
             check_row, check_col = r + row, c + col
@@ -48,3 +53,20 @@ class World:
             if not self._world[check_row][check_col]:
                 return True, check_row, check_col
         return False, 0, 0
+
+    def get_adjacent_food(self, row: int, col: int, food_type) -> (bool, int, int):
+            """Checks adjacent cells for the specified food type."""
+            neighbors = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # Up, Down, Left, Right
+
+            for dr, dc in neighbors:
+                check_row, check_col = row + dr, col + dc
+
+                # Check if within bounds and if cell contains the specified food type
+                if (0 <= check_row < len(self._world) and 
+                    0 <= check_col < len(self._world[0])):
+
+                    cell = self.get_cell(check_row, check_col)
+                    if isinstance(cell, food_type):
+                        return True, check_row, check_col
+
+            return False, 0, 0

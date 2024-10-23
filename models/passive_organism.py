@@ -1,4 +1,4 @@
-from organism import Organism
+from models import Organism
 
 class PassiveOrganism(Organism):
     def move(self, row: int, col: int) -> None:
