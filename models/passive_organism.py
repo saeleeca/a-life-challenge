@@ -53,12 +53,6 @@ class PassiveOrganism(Organism):
             count += 1
         return count
 
-    def reproduce(self, row: int, col: int) -> 'Organism':
-        """Reproduces and returns the offspring if there are exactly 3 neighbors."""
-        child_organism = self.__class__(self._genome.reproduce(), row, col, self._world)        
-        self._world.add_organism(child_organism, row, col)
-        return child_organism
-
     def check_reproduction(self):
         """Checks 8 neighboring cells around original organism for empty cells. If an empty cell is found
         reproduction conditions are checked and if valid, reproduce is called."""

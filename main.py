@@ -36,12 +36,12 @@ def setup_life(world):
     for row in range(ROWS):
         for col in range(COLS):
             val = random.randint(0, 20)
-            # 0-2 passive, 3-4 herbivore, 5 carnivore
-            if val  < 5:
+            # 0-5 passive, 5-7 herbivore, 8 carnivore
+            if val < 6:
                 world.add_organism(PassiveOrganism(create_genome(CreatureType.PASSIVE), row, col, world), row, col)
             elif val < 8:
                 world.add_organism(HerbivoreOrganism(create_genome(CreatureType.HERBIVORE), row, col, world), row, col)
-            elif val == 9:
+            elif val == 8:
                  world.add_organism(CarnivoreOrganism(create_genome(CreatureType.CARNIVORE), row, col, world), row, col)
 
 def process_cells(world):
