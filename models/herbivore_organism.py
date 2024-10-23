@@ -4,8 +4,8 @@ class HerbivoreOrganism(Organism):
     def __init__(self, genome, row, col, world):
         super().__init__(genome, row, col, world)
         # Set custom values for the Herbivore. 
-        self._move_energy_expenditure = 2
-        self._food_energy = 5
+        self._move_energy_expenditure = 1
+        self._food_energy = 10
         self._base_energy_expenditure = 1
         self._food_type = PassiveOrganism  
         

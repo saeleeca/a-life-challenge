@@ -5,8 +5,8 @@ from models import CreatureType, Genome, Organism, PassiveOrganism, HerbivoreOrg
 from view import View
 from world import World
 
-ROWS, COLS = 40, 40
-GRID_SIZE = 20
+ROWS, COLS = 50, 50
+GRID_SIZE = 10
 WIDTH, HEIGHT = ROWS*GRID_SIZE, COLS*GRID_SIZE
 
 RED = (255, 0, 0)
@@ -28,22 +28,21 @@ def create_genome(creature_type) -> Genome:
     if creature_type == CreatureType.PASSIVE:
         return Genome(GREEN, creature_type, 20, False)
     if creature_type == CreatureType.CARNIVORE:
-        return Genome(RED, creature_type, 50, True)
-
+        return Genome(RED, creature_type, 100, True)
     return Genome(BLUE, creature_type, 50, True)
 
 
 def setup_life(world):
     for row in range(ROWS):
         for col in range(COLS):
-            val = random.randint(0, 10)
+            val = random.randint(0, 20)
             # 0-2 passive, 3-4 herbivore, 5 carnivore
-            if val < 3:
+            if val  < 5:
                 world.add_organism(PassiveOrganism(create_genome(CreatureType.PASSIVE), row, col, world), row, col)
-            elif val < 5:
+            elif val < 8:
                 world.add_organism(HerbivoreOrganism(create_genome(CreatureType.HERBIVORE), row, col, world), row, col)
-            elif val < 6:
-                world.add_organism(CarnivoreOrganism(create_genome(CreatureType.CARNIVORE), row, col, world), row, col)
+            elif val == 9:
+                 world.add_organism(CarnivoreOrganism(create_genome(CreatureType.CARNIVORE), row, col, world), row, col)
 
 def process_cells(world):
     # moves organisms into next cell if empty
@@ -56,31 +55,31 @@ def process_cells(world):
                 visited.add(organism)
                 if isinstance(organism, (PassiveOrganism, HerbivoreOrganism, CarnivoreOrganism)):
                     organism.choose_action()
-                else:
-                    valr = random.randint(0, 12)
-                    valc = random.randint(0, 12)
-                    if valr > 6:
-                        next_row = row + 1
-                    elif valr > 0:
-                        next_row = row - 1
-                    else:
-                        next_row = row
-                    if valc > 6:
-                        next_col = col + 1
-                    elif valc > 0:
-                        next_col = col - 1
-                    else:
-                        next_col = col
+                # else:
+                #     valr = random.randint(0, 12)
+                #     valc = random.randint(0, 12)
+                #     if valr > 6:
+                #         next_row = row + 1
+                #     elif valr > 0:
+                #         next_row = row - 1
+                #     else:
+                #         next_row = row
+                #     if valc > 6:
+                #         next_col = col + 1
+                #     elif valc > 0:
+                #         next_col = col - 1
+                #     else:
+                #         next_col = col
 
-                    if row == next_row and col == next_col:
-                        continue
-                    # go out of bounds and remove
-                    if (next_row >= ROWS or next_col >= COLS or
-                        next_row <= -1 or next_col <= -1):
-                        world.kill_organism(row, col)
+                #     if row == next_row and col == next_col:
+                #         continue
+                #     # go out of bounds and remove
+                #     if (next_row >= ROWS or next_col >= COLS or
+                #         next_row <= -1 or next_col <= -1):
+                #         world.kill_organism(row, col)
 
-                    elif world.is_cell_empty(next_row, next_col):
-                        organism.move(next_row, next_col)
+                #     elif world.is_cell_empty(next_row, next_col):
+                #         organism.move(next_row, next_col)
 
 
 world = World(ROWS, COLS)

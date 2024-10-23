@@ -3,8 +3,8 @@ from models import Organism, HerbivoreOrganism
 class CarnivoreOrganism(Organism):
     def __init__(self, genome, row, col, world):
         super().__init__(genome, row, col, world)
-        # Set custom values for the Herbivore. 
-        self._move_energy_expenditure = 1
+        # Set custom values for the Carnivore. 
+        self._move_energy_expenditure = 2
         self._food_energy = 8
         self._base_energy_expenditure = 2
         self._food_type = HerbivoreOrganism  
