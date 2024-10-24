@@ -1,6 +1,13 @@
 from models import Organism
 
 class PassiveOrganism(Organism):
+    def __init__(self, genome, row, col, world):
+        super().__init__(genome, row, col, world)
+        # Set custom values for the Passive.
+        self._food_energy = 5
+        
+
+
     def move(self, row: int, col: int) -> None:
         """Passive organisms do not move. Overwrites parent organism."""
         pass
@@ -45,14 +52,6 @@ class PassiveOrganism(Organism):
                 isinstance(self._world.get_cell(row - 1 , col + 1), PassiveOrganism)):
             count += 1
         return count
-
-    def reproduce(self, row: int, col: int) -> 'Organism':
-        """Reproduces and returns the offspring if there are exactly 3 neighbors."""
-        child_organism = self.__class__(self._genome.reproduce(), row, col, self._world)
-        empty_found, empty_row, empty_col = self._world.get_empty_neighbor(self._row, self._col, True)
-        if (empty_found):
-            self._world.add_organism(child_organism, empty_row, empty_col)
-        return child_organism
 
     def check_reproduction(self):
         """Checks 8 neighboring cells around original organism for empty cells. If an empty cell is found
@@ -105,11 +104,9 @@ class PassiveOrganism(Organism):
         """Organism will die if it has less than 2 or greater than 3 neighbors."""
         count = self.passive_check_neighbors(self._row, self._col)
 
-        # Any live cell with fewer than two live neighbours dies, as if by underpopulation
-        if count < 2:
+        # Any live cell with fewer than two  or greater than 3 live neighbours dies, as if by underpopulation
+        if (count < 2 or count > 3):
             self._world.kill_organism(self._row, self._col)
-            # Any live cell with more than three live neighbours dies, as if by overpopulation
-        elif count > 3:
-            self._world.kill_organism(self._row, self._col)
-            # Any live cell with two or three live neighbours lives on to the next generation
-        self.check_reproduction()
+        # Any live cell with two or three live neighbours lives on to the next generation
+        else:
+            self.check_reproduction()

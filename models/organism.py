@@ -10,6 +10,7 @@ class Organism:
         self._food_energy = 1               # Energy given when eaten
         self._base_energy_expenditure = 1   # Baseline energy expended per turn
         self._food_type = None              # Food class if a consumer   
+        self._reproduction_ratio = 1.0      # how much energy surplus energy needed to reproduce
 
     def move(self, row: int, col: int) -> None:
         """Updates the Organisms row and col"""
@@ -44,8 +45,10 @@ class Organism:
         self._world.kill_organism(row, col)
 
     def reproduce(self, row: int, col: int) -> 'Organism':
-        """Reproduces and returns the offspring"""
-        return self.__class__(self._genome.reproduce(), row, col, self._world)
+        """Reproduces and returns the offspring if there are exactly 3 neighbors."""
+        child_organism = self.__class__(self._genome.reproduce(), row, col, self._world)        
+        self._world.add_organism(child_organism, row, col)
+        return child_organism
 
     def choose_action(self):
         """Depends on type of Organism"""
