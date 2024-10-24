@@ -1,9 +1,9 @@
 import pygame.draw
 from view.constants import *
+from view.playbackUI import PlaybackUI
+
 
 class View:
-
-
     def __init__(self, width: int, height: int, rows: int, cols: int, world,
                  grid_size: float):
         self.world_width: int = width
@@ -21,10 +21,12 @@ class View:
         self._screen.fill(WINDOW_BG)
         self._render_title()
 
+        self._playback_ui = PlaybackUI(self._screen)
+
 
     def render_grid(self):
         # Create world border
-        pygame.draw.rect(self._screen, BORDER_COLOR,
+        pygame.draw.rect(self._screen, WORLD_BORDER_COLOR,
                          (WORLD_X - BORDER_WIDTH,
                           WORLD_Y - BORDER_WIDTH,
                           self._grid_size * self._cols + BORDER_WIDTH * 2,
@@ -65,8 +67,21 @@ class View:
         self._screen.blit(surface, rect)
 
     def _render_title(self):
-        x_center = 300
+        x_center = WORLD_X / 2
         y_center = 60
         font = pygame.font.SysFont(TITLE_FONT_NAME, TITLE_FONT_SIZE)
         self._render_text(GAME_TITLE, font, TITLE_TEXT,
                           x_center, y_center)
+
+    def handle_click(self):
+        playback_action = self._playback_ui.handle_click_event()
+        if playback_action:
+            return playback_action
+        return None
+
+    def handle_mouse_move(self):
+        if self._playback_ui.handle_hover_event():
+            return
+
+    def update_playback_state(self, playbackState):
+        self._playback_ui.update_playback_state(playbackState)

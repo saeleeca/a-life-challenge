@@ -1,21 +1,48 @@
+# SIZES
+# CHANGING SIZES CAN BREAK THE UI (MIGHT NEED TO CHANGE OTHER SIZES/POSITIONS)
 WINDOW_WIDTH = 1200
 WINDOW_HEIGHT = 800
+WORLD_WIDTH = WORLD_HEIGHT = 600
+BUTTON_WIDTH = 75
+BUTTON_HEIGHT = 35
+BUTTON_GAP = 40
+BORDER_WIDTH = 6
 
-WORLD_WIDTH = WORLD_HEIGHT = 500
-
-WORLD_X = 650
+#LOCATIONS
+WORLD_X = 560
 WORLD_Y = 80
 
-WORLD_BG = "grey"  # light grey
-WINDOW_BG = (54, 57, 63)        # dark grey
-BUTTON_BG = (44, 47, 51)        # light grey
-BUTTON_HOVER_BG = (58, 61, 66)  # lighter grey
-BUTTON_TEXT = (114, 137, 218)   # blue
-TITLE_TEXT = (114, 137, 218)
+# COLORS
+# COLOR SCHEME
+RED_ACCENT = (230, 57, 70)
+OFF_WHITE = (241, 250, 238)
+DARK_BLUE = (29, 53, 87)
+MID_BLUE = (69,123, 157)
+LIGHT_BLUE = (168, 218, 220)
+DARK_GREY = (44, 47, 51)
+LIGHT_GREY = "grey"
 
-BORDER_WIDTH = 10
-BORDER_COLOR =  BUTTON_TEXT
+WORLD_BG = LIGHT_GREY
+WINDOW_BG = DARK_GREY
+BUTTON_BG = OFF_WHITE
+BUTTON_HOVER_BG = MID_BLUE
+TITLE_TEXT = RED_ACCENT
+BUTTON_BORDER_COLOR = OFF_WHITE
+WORLD_BORDER_COLOR = OFF_WHITE
 
+# TEXT
 GAME_TITLE = "A LIFE OSU"
-TITLE_FONT_SIZE = 80
+INSTRUCTIONS = "Paused - P to Pause - O to Resume - Q to Quit - R to Restart"
+
+TITLE_FONT_SIZE = 60
 TITLE_FONT_NAME = "Verdana"
+
+# ICONS
+PLAY_ICON = "./view/icons/play_arrow_blue.png"
+PLAY_ICON_HOVER = "./view/icons/play_arrow_off_white.png"
+PAUSE_ICON = "./view/icons/pause_blue.png"
+PAUSE_ICON_HOVER = "./view/icons/pause_off_white.png"
+STEP_ICON = "./view/icons/skip_next_blue.png"
+STEP_ICON_HOVER = "./view/icons/skip_next_off_white.png"
+RESTART_ICON = "./view/icons/restart_blue.png"
+RESTART_ICON_HOVER = "./view/icons/restart_off_white.png"
