@@ -1,27 +1,29 @@
 import random
 import pygame
 
-from models import CreatureType, Genome, Organism, PassiveOrganism, HerbivoreOrganism, CarnivoreOrganism
-from view import View
+from models import CreatureType, Genome, PassiveOrganism, HerbivoreOrganism, CarnivoreOrganism
+from view.view import View
 from world import World
 
-ROWS, COLS = 50, 50
-GRID_SIZE = 10
-WIDTH, HEIGHT = ROWS*GRID_SIZE, COLS*GRID_SIZE
+ROWS = COLS = 50
+# GRID_SIZE = 10
+# WIDTH, HEIGHT = ROWS*GRID_SIZE, COLS*GRID_SIZE
+WIDTH = HEIGHT = 500  # DO NOT CHANGE CAN BREAK UI
+GRID_SIZE = WIDTH / ROWS
 
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 
 # pygame setup screen, clock, and relevant values.
-pygame.init()
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-clock = pygame.time.Clock()
+# pygame.init()
+# screen = pygame.display.set_mode((WIDTH, HEIGHT))
+# clock = pygame.time.Clock()
 PLAY, PAUSE = 0, 1
 state = PLAY
 running = True
-font = pygame.font.Font(pygame.font.get_default_font(), 25)
-text_surface = font.render("Paused - P to Pause - O to Resume - Q to Quit - R to Restart", True, "black")
+# font = pygame.font.Font(pygame.font.get_default_font(), 25)
+# text_surface = font.render("Paused - P to Pause - O to Resume - Q to Quit - R to Restart", True, "black")
 dt = 0
 
 def create_genome(creature_type) -> Genome:
@@ -55,35 +57,11 @@ def process_cells(world):
                 visited.add(organism)
                 if isinstance(organism, (PassiveOrganism, HerbivoreOrganism, CarnivoreOrganism)):
                     organism.choose_action()
-                # else:
-                #     valr = random.randint(0, 12)
-                #     valc = random.randint(0, 12)
-                #     if valr > 6:
-                #         next_row = row + 1
-                #     elif valr > 0:
-                #         next_row = row - 1
-                #     else:
-                #         next_row = row
-                #     if valc > 6:
-                #         next_col = col + 1
-                #     elif valc > 0:
-                #         next_col = col - 1
-                #     else:
-                #         next_col = col
-
-                #     if row == next_row and col == next_col:
-                #         continue
-                #     # go out of bounds and remove
-                #     if (next_row >= ROWS or next_col >= COLS or
-                #         next_row <= -1 or next_col <= -1):
-                #         world.kill_organism(row, col)
-
-                #     elif world.is_cell_empty(next_row, next_col):
-                #         organism.move(next_row, next_col)
 
 
 world = World(ROWS, COLS)
-view = View(WIDTH, HEIGHT, ROWS, COLS, world, screen, GRID_SIZE)
+view = View(WIDTH, HEIGHT, ROWS, COLS, world, GRID_SIZE)
+clock = pygame.time.Clock()
 
 setup_life(world)
 view.render_grid()
@@ -108,7 +86,7 @@ while running:
         process_cells(world)
         view.render_grid()
     elif state == PAUSE:
-        screen.blit(text_surface, (0, 0))
+        # screen.blit(text_surface, (0, 0))
         pygame.display.update()
 
     # limits FPS to 1
