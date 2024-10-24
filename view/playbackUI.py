@@ -11,6 +11,11 @@ class PlaybackState(Enum):
     STEP = 3
     RESET = 4
 
+def render_text(text, font, color, x_center, y_center, screen):
+    surface = font.render(text, True, color)
+    rect = surface.get_rect(center=(x_center, y_center))
+    screen.blit(surface, rect)
+
 
 class PlaybackUI:
     def __init__(self, screen):
@@ -44,6 +49,7 @@ class PlaybackUI:
 
         for button in self._buttons:
             button.draw()
+        self._draw_instructions(screen)
 
     def _toggle_play_pause(self):
         # Game is paused, so switch to play
@@ -114,3 +120,12 @@ class PlaybackUI:
         elif playback_state == PlaybackState.STEP and not self._is_paused:
             self._play_button.reset()
             self._toggle_play_pause()
+
+    @staticmethod
+    def _draw_instructions(screen):
+        font = pygame.font.SysFont(TITLE_FONT_NAME, 20)
+        x_center = WORLD_X + (WINDOW_WIDTH - WORLD_WIDTH) / 2
+        y_center = WORLD_HEIGHT + WORLD_Y + 60 + BUTTON_HEIGHT
+        render_text(INSTRUCTIONS, font, INSTRUCTIONS_TEXT, x_center, y_center, screen)
+
+        pygame.display.update()

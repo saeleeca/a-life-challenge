@@ -61,17 +61,18 @@ class View:
                 row * self._grid_size + WORLD_Y,
                 self._grid_size, self._grid_size)
 
-    def _render_text(self, text, font, color, x_center, y_center):
+    @staticmethod
+    def render_text(text, font, color, x_center, y_center, screen):
         surface = font.render(text, True, color)
         rect = surface.get_rect(center=(x_center, y_center))
-        self._screen.blit(surface, rect)
+        screen.blit(surface, rect)
 
     def _render_title(self):
         x_center = WORLD_X / 2
         y_center = 60
         font = pygame.font.SysFont(TITLE_FONT_NAME, TITLE_FONT_SIZE)
-        self._render_text(GAME_TITLE, font, TITLE_TEXT,
-                          x_center, y_center)
+        self.render_text(GAME_TITLE, font, TITLE_TEXT,
+                    x_center, y_center, self._screen)
 
     def handle_click(self):
         playback_action = self._playback_ui.handle_click_event()
