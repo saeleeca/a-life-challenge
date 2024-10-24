@@ -1,4 +1,4 @@
-import pygame.draw
+import pygame
 from view.constants import *
 from view.playbackUI import PlaybackUI
 
@@ -23,8 +23,9 @@ class View:
 
         self._playback_ui = PlaybackUI(self._screen)
 
+        self._draw_world_border()
 
-    def render_grid(self):
+    def _draw_world_border(self):
         # Create world border
         pygame.draw.rect(self._screen, WORLD_BORDER_COLOR,
                          (WORLD_X - BORDER_WIDTH,
@@ -32,12 +33,12 @@ class View:
                           self._grid_size * self._cols + BORDER_WIDTH * 2,
                           self._grid_size * self._rows + BORDER_WIDTH * 2),
                          border_radius=5)
-        
+
+    def render_grid(self):
         # Draw the world background
         pygame.draw.rect(self._screen, WORLD_BG,
                          (WORLD_X, WORLD_Y,
                           WORLD_HEIGHT, WORLD_WIDTH))
-
 
 
         for row in range(self._rows):
@@ -45,8 +46,6 @@ class View:
                 organism = self._world.get_cell(row, col)
                 if organism:
                     self._draw_organism(organism, row, col)
-
-        pygame.display.flip()
 
     def _draw_organism(self, organism, row, col):
         color = organism.get_color()
