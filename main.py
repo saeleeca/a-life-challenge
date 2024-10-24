@@ -2,28 +2,22 @@ import random
 import pygame
 
 from models import CreatureType, Genome, PassiveOrganism, HerbivoreOrganism, CarnivoreOrganism
+from view.playbackUI import PlaybackState
 from view.view import View
+from view.constants import WORLD_WIDTH, WORLD_HEIGHT
 from world import World
 
-ROWS = COLS = 50
-# GRID_SIZE = 10
-# WIDTH, HEIGHT = ROWS*GRID_SIZE, COLS*GRID_SIZE
-WIDTH = HEIGHT = 500  # DO NOT CHANGE CAN BREAK UI
+ROWS = COLS = 60
+WIDTH, HEIGHT = WORLD_WIDTH, WORLD_HEIGHT  # CAN BREAK UI IF CHANGED
 GRID_SIZE = WIDTH / ROWS
 
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 
-# pygame setup screen, clock, and relevant values.
-# pygame.init()
-# screen = pygame.display.set_mode((WIDTH, HEIGHT))
-# clock = pygame.time.Clock()
-PLAY, PAUSE = 0, 1
-state = PLAY
+PLAY, PAUSE, STEP = 0, 1, 2
+state = PAUSE
 running = True
-# font = pygame.font.Font(pygame.font.get_default_font(), 25)
-# text_surface = font.render("Paused - P to Pause - O to Resume - Q to Quit - R to Restart", True, "black")
 dt = 0
 
 def create_genome(creature_type) -> Genome:
@@ -47,8 +41,6 @@ def setup_life(world):
                  world.add_organism(CarnivoreOrganism(create_genome(CreatureType.CARNIVORE), row, col, world), row, col)
 
 def process_cells(world):
-    # moves organisms into next cell if empty
-    # only to demonstrate ui and test
     visited = set()
     for row in range(ROWS):
         for col in range(COLS):
@@ -74,20 +66,39 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_p:
                 state = PAUSE
+                view.update_playback_state(PlaybackState.PAUSE)
             if event.key == pygame.K_o:
                 state = PLAY
+                view.update_playback_state(PlaybackState.PLAY)
             if event.key == pygame.K_r:
                 setup_life(world)
                 view.render_grid()
             if event.key == pygame.K_q:
                 pygame.quit()
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            click_type = view.handle_click()
+            if click_type == PlaybackState.PLAY:
+                state = PLAY
+            elif click_type == PlaybackState.PAUSE:
+                state = PAUSE
+            elif click_type == PlaybackState.RESET:
+                setup_life(world)
+                view.render_grid()
+            elif click_type == PlaybackState.STEP:
+                state = STEP
+                process_cells(world)
+                view.render_grid()
+        elif event.type == pygame.MOUSEMOTION:
+            view.handle_mouse_move()
+
 
     if state == PLAY:
         process_cells(world)
         view.render_grid()
     elif state == PAUSE:
         # screen.blit(text_surface, (0, 0))
-        pygame.display.update()
+        # pygame.display.update()
+        pass
 
     # limits FPS to 1
     # dt is delta time in seconds since last frame, used for framerate-independent physics.
