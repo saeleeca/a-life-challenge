@@ -4,14 +4,11 @@ from view.playbackUI import PlaybackUI
 
 
 class View:
-    def __init__(self, width: int, height: int, rows: int, cols: int, world,
-                 grid_size: float):
-        self.world_width: int = width
-        self.world_height: int = height
+    def __init__(self, rows: int, cols: int, world):
         self._rows: int = rows
         self._cols: int = cols
         self._world = world
-        self._grid_size: float = grid_size
+        self._grid_size: float = WORLD_WIDTH / rows
 
         pygame.init()
         self._screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))

@@ -4,12 +4,9 @@ import pygame
 from models import CreatureType, Genome, PassiveOrganism, HerbivoreOrganism, CarnivoreOrganism
 from view.playbackUI import PlaybackState
 from view.view import View
-from view.constants import WORLD_WIDTH, WORLD_HEIGHT
 from world import World
 
 ROWS = COLS = 60
-WIDTH, HEIGHT = WORLD_WIDTH, WORLD_HEIGHT  # CAN BREAK UI IF CHANGED
-GRID_SIZE = WIDTH / ROWS
 
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
@@ -47,16 +44,16 @@ def process_cells(world):
             organism = world.get_cell(row, col)
             if organism and organism not in visited:
                 visited.add(organism)
-                if isinstance(organism, (PassiveOrganism, HerbivoreOrganism, CarnivoreOrganism)):
-                    organism.choose_action()
+                organism.choose_action()
 
 
 world = World(ROWS, COLS)
-view = View(WIDTH, HEIGHT, ROWS, COLS, world, GRID_SIZE)
+view = View(ROWS, COLS, world)
 clock = pygame.time.Clock()
 
 setup_life(world)
 view.render_grid()
+pygame.display.flip()
 
 while running:
     for event in pygame.event.get():
@@ -67,13 +64,13 @@ while running:
             if event.key == pygame.K_p:
                 state = PAUSE
                 view.update_playback_state(PlaybackState.PAUSE)
-            if event.key == pygame.K_o:
+            elif event.key == pygame.K_o:
                 state = PLAY
                 view.update_playback_state(PlaybackState.PLAY)
-            if event.key == pygame.K_r:
+            elif event.key == pygame.K_r:
                 setup_life(world)
                 view.render_grid()
-            if event.key == pygame.K_q:
+            elif event.key == pygame.K_q:
                 pygame.quit()
         elif event.type == pygame.MOUSEBUTTONDOWN:
             click_type = view.handle_click()
@@ -91,7 +88,6 @@ while running:
         elif event.type == pygame.MOUSEMOTION:
             view.handle_mouse_move()
 
-
     if state == PLAY:
         process_cells(world)
         view.render_grid()
@@ -99,7 +95,7 @@ while running:
         # screen.blit(text_surface, (0, 0))
         # pygame.display.update()
         pass
-
+    pygame.display.flip()
     # limits FPS to 1
     # dt is delta time in seconds since last frame, used for framerate-independent physics.
     dt = clock.tick(20)

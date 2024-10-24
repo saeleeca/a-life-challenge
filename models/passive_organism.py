@@ -19,8 +19,10 @@ class PassiveOrganism(Organism):
     def passive_check_neighbors(self, row: int, col: int):
         """Function to check if a cell is occupied. The returned count is used in determining if an organism
             lives/dies/reproduces."""
-        from main import ROWS
-        from main import COLS
+        # from main import ROWS
+        # from main import COLS
+        ROWS = 60
+        COLS = 60
         count = 0
         # upper left
         if (row + 1 in range(ROWS) and col - 1 in range(COLS) and
@@ -56,8 +58,9 @@ class PassiveOrganism(Organism):
     def check_reproduction(self):
         """Checks 8 neighboring cells around original organism for empty cells. If an empty cell is found
         reproduction conditions are checked and if valid, reproduce is called."""
-        from main import ROWS
-        from main import COLS
+        # from main import ROWS
+        # from main import COLS
+        ROWS = COLS = 60
         # upper left
         if self._row + 1 in range(ROWS) and self._col - 1 in range(COLS) and self._world.is_cell_empty(self._row + 1, self._col - 1):
             count = self.passive_check_neighbors(self._row + 1, self._col - 1)
