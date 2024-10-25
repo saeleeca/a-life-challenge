@@ -58,46 +58,53 @@ class PassiveOrganism(Organism):
         reproduction conditions are checked and if valid, reproduce is called."""
         from main import ROWS
         from main import COLS
+        # Store coordinates of empty cells before reproducing
+        empty_cells = []
+        array_count = 0
         # upper left
         if self._row + 1 in range(ROWS) and self._col - 1 in range(COLS) and self._world.is_cell_empty(self._row + 1, self._col - 1):
             count = self.passive_check_neighbors(self._row + 1, self._col - 1)
             if count == 3:
-                self.reproduce(self._row + 1, self._col - 1)
+                empty_cells.append((self._row + 1, self._col - 1))
         # upper mid
         if self._row + 1 in range(ROWS) and self._world.is_cell_empty(self._row + 1, self._col):
             count = self.passive_check_neighbors(self._row + 1, self._col)
             if count == 3:
-                self.reproduce(self._row + 1, self._col)
+                empty_cells.append((self._row + 1, self._col))
         # upper right
         if self._row + 1 in range(ROWS) and self._col + 1 in range(COLS) and self._world.is_cell_empty(self._row + 1, self._col + 1):
             count = self.passive_check_neighbors(self._row + 1, self._col + 1)
             if count == 3:
-                self.reproduce(self._row + 1, self._col + 1)
+                empty_cells.append((self._row + 1, self._col + 1))
         # mid left
         if self._col - 1 in range(COLS) and self._world.is_cell_empty(self._row, self._col - 1):
             count = self.passive_check_neighbors(self._row, self._col - 1)
             if count == 3:
-                self.reproduce(self._row, self._col - 1)
+                empty_cells.append((self._row, self._col - 1))
         # mid right
         if self._col + 1 in range(COLS) and self._world.is_cell_empty(self._row, self._col + 1):
             count = self.passive_check_neighbors(self._row, self._col + 1)
             if count == 3:
-                self.reproduce(self._row, self._col + 1)
+                empty_cells.append((self._row, self._col + 1))
         # lower left
         if self._row - 1 in range(ROWS) and self._col - 1 in range(COLS) and self._world.is_cell_empty(self._row - 1, self._col - 1):
             count = self.passive_check_neighbors(self._row - 1, self._col - 1)
             if count == 3:
-                self.reproduce(self._row - 1, self._col - 1)
+                empty_cells.append((self._row - 1, self._col - 1))
         # lower mid
         if self._row - 1 in range(ROWS) and self._world.is_cell_empty(self._row - 1, self._col):
             count = self.passive_check_neighbors(self._row - 1, self._col)
             if count == 3:
-                self.reproduce(self._row - 1, self._col)
+                empty_cells.append((self._row - 1, self._col))
         # lower right
         if self._row - 1 in range(ROWS) and self._col + 1 in range(COLS) and self._world.is_cell_empty(self._row - 1, self._col + 1):
             count = self.passive_check_neighbors(self._row - 1, self._col + 1)
             if count == 3:
-                self.reproduce(self._row - 1, self._col + 1)
+                empty_cells.append((self._row - 1, self._col + 1))
+        # Reproduction occurs in found empty cells
+        while array_count < len(empty_cells):
+            self.reproduce(empty_cells[array_count][0],empty_cells[array_count][1])
+            array_count += 1
         return
 
     def choose_action(self):
