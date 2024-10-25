@@ -3,10 +3,9 @@ from models import Organism
 class PassiveOrganism(Organism):
     def __init__(self, genome, row, col, world):
         super().__init__(genome, row, col, world)
+
         # Set custom values for the Passive.
         self._food_energy = 5
-        
-
 
     def move(self, row: int, col: int) -> None:
         """Passive organisms do not move. Overwrites parent organism."""
@@ -17,37 +16,47 @@ class PassiveOrganism(Organism):
         pass
 
     def passive_check_neighbors(self, row: int, col: int):
-        """Function to check if a cell is occupied. The returned count is used in determining if an organism
-            lives/dies/reproduces."""
+        """Function to check if a cell is occupied. Takes the row and column coordinates and returns count.
+        The returned count is used in determining if an organism lives/dies/reproduces.
+        """
         from main import ROWS
         from main import COLS
         count = 0
-        # upper left
+
+        # Check each neighbor cell for passive organism
+        # Upper left
         if (row + 1 in range(ROWS) and col - 1 in range(COLS) and
                 isinstance(self._world.get_cell(row + 1 , col - 1), PassiveOrganism)):
             count += 1
-        # upper mid
+
+        # Upper mid
         if row + 1 in range(ROWS) and isinstance(self._world.get_cell(row + 1 , col), PassiveOrganism):
             count += 1
-        # upper right
+
+        # Upper right
         if (row + 1 in range(ROWS) and col + 1 in range(COLS) and
                 isinstance(self._world.get_cell(row + 1 , col + 1), PassiveOrganism)):
             count += 1
-        # mid left
+
+        # Mid left
         if col - 1 in range(COLS) and isinstance(self._world.get_cell(row, col - 1), PassiveOrganism):
             count += 1
-        # mid right
+
+        # Mid right
         if col + 1 in range(COLS) and isinstance(self._world.get_cell(row, col + 1), PassiveOrganism):
             count += 1
-        # lower left
+
+        # Lower left
         if (row - 1 in range(ROWS) and col - 1 in range(COLS) and
                 isinstance(self._world.get_cell(row - 1 , col - 1), PassiveOrganism)):
             count += 1
-        # lower mid
+
+        # Lower mid
         if (row - 1 in range(ROWS) and
                 isinstance(self._world.get_cell(row - 1 , col), PassiveOrganism)):
             count += 1
-        # lower right
+
+        # Lower right
         if (row - 1 in range(ROWS) and col + 1 in range(COLS) and
                 isinstance(self._world.get_cell(row - 1 , col + 1), PassiveOrganism)):
             count += 1
@@ -58,50 +67,66 @@ class PassiveOrganism(Organism):
         reproduction conditions are checked and if valid, reproduce is called."""
         from main import ROWS
         from main import COLS
+
         # Store coordinates of empty cells before reproducing
         empty_cells = []
         array_count = 0
-        # upper left
-        if self._row + 1 in range(ROWS) and self._col - 1 in range(COLS) and self._world.is_cell_empty(self._row + 1, self._col - 1):
+
+        # Check each neighbor cell for an empty cell. If empty, check if reproduction is allowed.
+        # If reproduction is allowed store the coordinates
+        # Upper left
+        if (self._row + 1 in range(ROWS) and self._col - 1 in range(COLS) and
+                self._world.is_cell_empty(self._row + 1, self._col - 1)):
             count = self.passive_check_neighbors(self._row + 1, self._col - 1)
             if count == 3:
                 empty_cells.append((self._row + 1, self._col - 1))
-        # upper mid
+
+        # Upper mid
         if self._row + 1 in range(ROWS) and self._world.is_cell_empty(self._row + 1, self._col):
             count = self.passive_check_neighbors(self._row + 1, self._col)
             if count == 3:
                 empty_cells.append((self._row + 1, self._col))
-        # upper right
-        if self._row + 1 in range(ROWS) and self._col + 1 in range(COLS) and self._world.is_cell_empty(self._row + 1, self._col + 1):
+
+        # Upper right
+        if (self._row + 1 in range(ROWS) and self._col + 1 in range(COLS) and
+                self._world.is_cell_empty(self._row + 1, self._col + 1)):
             count = self.passive_check_neighbors(self._row + 1, self._col + 1)
             if count == 3:
                 empty_cells.append((self._row + 1, self._col + 1))
-        # mid left
+
+        # Mid left
         if self._col - 1 in range(COLS) and self._world.is_cell_empty(self._row, self._col - 1):
             count = self.passive_check_neighbors(self._row, self._col - 1)
             if count == 3:
                 empty_cells.append((self._row, self._col - 1))
-        # mid right
+
+        # Mid right
         if self._col + 1 in range(COLS) and self._world.is_cell_empty(self._row, self._col + 1):
             count = self.passive_check_neighbors(self._row, self._col + 1)
             if count == 3:
                 empty_cells.append((self._row, self._col + 1))
-        # lower left
-        if self._row - 1 in range(ROWS) and self._col - 1 in range(COLS) and self._world.is_cell_empty(self._row - 1, self._col - 1):
+
+        # Lower left
+        if (self._row - 1 in range(ROWS) and self._col - 1 in range(COLS) and
+                self._world.is_cell_empty(self._row - 1, self._col - 1)):
             count = self.passive_check_neighbors(self._row - 1, self._col - 1)
             if count == 3:
                 empty_cells.append((self._row - 1, self._col - 1))
-        # lower mid
+
+        # Lower mid
         if self._row - 1 in range(ROWS) and self._world.is_cell_empty(self._row - 1, self._col):
             count = self.passive_check_neighbors(self._row - 1, self._col)
             if count == 3:
                 empty_cells.append((self._row - 1, self._col))
-        # lower right
-        if self._row - 1 in range(ROWS) and self._col + 1 in range(COLS) and self._world.is_cell_empty(self._row - 1, self._col + 1):
+
+        # Lower right
+        if (self._row - 1 in range(ROWS) and self._col + 1 in range(COLS) and
+                self._world.is_cell_empty(self._row - 1, self._col + 1)):
             count = self.passive_check_neighbors(self._row - 1, self._col + 1)
             if count == 3:
                 empty_cells.append((self._row - 1, self._col + 1))
-        # Reproduction occurs in found empty cells
+
+        # Reproduction occurs in found empty cells that can reproduce
         while array_count < len(empty_cells):
             self.reproduce(empty_cells[array_count][0],empty_cells[array_count][1])
             array_count += 1
@@ -109,11 +134,14 @@ class PassiveOrganism(Organism):
 
     def choose_action(self):
         """Organism will die if it has less than 2 or greater than 3 neighbors."""
+
+        # Count nearby passive neighbors to determine if death or reproduction can occur
         count = self.passive_check_neighbors(self._row, self._col)
 
-        # Any live cell with fewer than two  or greater than 3 live neighbours dies, as if by underpopulation
-        if (count < 2 or count > 3):
+        # Any live cell with fewer than two or greater than 3 live neighbours dies, as if by underpopulation
+        if count < 2 or count > 3:
             self._world.kill_organism(self._row, self._col)
+
         # Any live cell with two or three live neighbours lives on to the next generation
         else:
             self.check_reproduction()
