@@ -2,7 +2,7 @@ import random
 import pygame
 
 from models import CreatureType, Genome, PassiveOrganism, HerbivoreOrganism, CarnivoreOrganism
-from view.playbackUI import PlaybackState
+from view.constants import ButtonEvent
 from view.view import View
 from world import World
 
@@ -63,10 +63,10 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_p:
                 state = PAUSE
-                view.update_playback_state(PlaybackState.PAUSE)
+                view.update_playback_state(ButtonEvent.PAUSE)
             elif event.key == pygame.K_o:
                 state = PLAY
-                view.update_playback_state(PlaybackState.PLAY)
+                view.update_playback_state(ButtonEvent.PLAY)
             elif event.key == pygame.K_r:
                 setup_life(world)
                 view.render_grid()
@@ -74,14 +74,14 @@ while running:
                 pygame.quit()
         elif event.type == pygame.MOUSEBUTTONDOWN:
             click_type = view.handle_click()
-            if click_type == PlaybackState.PLAY:
+            if click_type == ButtonEvent.PLAY:
                 state = PLAY
-            elif click_type == PlaybackState.PAUSE:
+            elif click_type == ButtonEvent.PAUSE:
                 state = PAUSE
-            elif click_type == PlaybackState.RESET:
+            elif click_type == ButtonEvent.RESET:
                 setup_life(world)
                 view.render_grid()
-            elif click_type == PlaybackState.STEP:
+            elif click_type == ButtonEvent.STEP:
                 state = STEP
                 process_cells(world)
                 view.render_grid()

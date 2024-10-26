@@ -1,3 +1,5 @@
+from enum import Enum
+
 # SIZES
 # CHANGING SIZES CAN BREAK THE UI (MIGHT NEED TO CHANGE OTHER SIZES/POSITIONS)
 WINDOW_WIDTH = 1200
@@ -32,7 +34,7 @@ BUTTON_BORDER_COLOR = OFF_WHITE
 WORLD_BORDER_COLOR = OFF_WHITE
 
 # TEXT
-GAME_TITLE = "A LIFE OSU"
+GAME_TITLE = "A-LIFE OSU"
 INSTRUCTIONS = "P to Pause - O to Resume - Q to Quit - R to Restart"
 
 TITLE_FONT_SIZE = 60
@@ -47,3 +49,15 @@ STEP_ICON = "./view/icons/skip_next_blue.png"
 STEP_ICON_HOVER = "./view/icons/skip_next_off_white.png"
 RESTART_ICON = "./view/icons/restart_blue.png"
 RESTART_ICON_HOVER = "./view/icons/restart_off_white.png"
+SAVE_ICON = "./view/icons/save_blue.png"
+SAVE_ICON_HOVER = "./view/icons/save_off_white.png"
+LOAD_ICON = "./view/icons/open_blue.png"
+LOAD_ICON_HOVER = "./view/icons/open_off_white.png"
+
+class ButtonEvent(Enum):
+    PLAY = 1
+    PAUSE = 2
+    STEP = 3
+    RESET = 4
+    SAVE = 5
+    LOAD = 6

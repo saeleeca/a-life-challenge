@@ -1,4 +1,6 @@
 import pygame
+
+from view.buttonBarUI import ButtonBarUI
 from view.constants import *
 from view.playbackUI import PlaybackUI
 
@@ -19,6 +21,13 @@ class View:
         self._render_title()
 
         self._playback_ui = PlaybackUI(self._screen)
+
+        width = (BUTTON_WIDTH * 2) + BUTTON_GAP
+        file_x = WINDOW_WIDTH - width - 50
+        self._file_ui = ButtonBarUI(self._screen,
+                                    file_x, 15,
+                                    (SAVE_ICON, SAVE_ICON_HOVER, ButtonEvent.SAVE),
+                                    (LOAD_ICON, LOAD_ICON_HOVER, ButtonEvent.LOAD))
 
         self._draw_world_border()
 
@@ -64,20 +73,22 @@ class View:
         screen.blit(surface, rect)
 
     def _render_title(self):
-        x_center = WORLD_X / 2
+        x_center = WORLD_X / 2 + BUTTON_HEIGHT
         y_center = 60
         font = pygame.font.SysFont(TITLE_FONT_NAME, TITLE_FONT_SIZE)
         self.render_text(GAME_TITLE, font, TITLE_TEXT,
                     x_center, y_center, self._screen)
 
     def handle_click(self):
-        playback_action = self._playback_ui.handle_click_event()
+        playback_action = (self._playback_ui.handle_click_event() or
+                           self._file_ui.handle_click_event())
         if playback_action:
             return playback_action
         return None
 
     def handle_mouse_move(self):
-        if self._playback_ui.handle_hover_event():
+        if (self._playback_ui.handle_hover_event() or
+                self._file_ui.handle_hover_event()):
             return
 
     def update_playback_state(self, playbackState):
