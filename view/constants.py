@@ -14,6 +14,10 @@ BORDER_WIDTH = 6
 WORLD_X = 560
 WORLD_Y = 80
 
+STATS_X = 75
+STATS_Y = 150
+STATS_PADDING_Y = 20
+
 # COLORS
 # COLOR SCHEME
 RED_ACCENT = (230, 57, 70)
@@ -32,6 +36,7 @@ TITLE_TEXT = OFF_WHITE
 INSTRUCTIONS_TEXT = OFF_WHITE
 BUTTON_BORDER_COLOR = OFF_WHITE
 WORLD_BORDER_COLOR = OFF_WHITE
+STATS_COLOR = LIGHT_BLUE
 
 # TEXT
 GAME_TITLE = "A-LIFE OSU"
@@ -39,6 +44,8 @@ INSTRUCTIONS = "P to Pause - O to Resume - Q to Quit - R to Restart"
 
 TITLE_FONT_SIZE = 60
 TITLE_FONT_NAME = "Verdana"
+FONT_NAME = "Verdana"
+STATS_FONT_SIZE = 22
 
 # ICONS
 PLAY_ICON = "./view/icons/play_arrow_blue.png"
@@ -49,10 +56,15 @@ STEP_ICON = "./view/icons/skip_next_blue.png"
 STEP_ICON_HOVER = "./view/icons/skip_next_off_white.png"
 RESTART_ICON = "./view/icons/restart_blue.png"
 RESTART_ICON_HOVER = "./view/icons/restart_off_white.png"
+
 SAVE_ICON = "./view/icons/save_blue.png"
 SAVE_ICON_HOVER = "./view/icons/save_off_white.png"
 LOAD_ICON = "./view/icons/open_blue.png"
 LOAD_ICON_HOVER = "./view/icons/open_off_white.png"
+
+GENETICS_ICON = "./view/icons/genetics_blue.png"
+GENETICS_ICON_HOVER = "./view/icons/genetics_off_white.png"
+
 
 class ButtonEvent(Enum):
     PLAY = 1
@@ -61,3 +73,4 @@ class ButtonEvent(Enum):
     RESET = 4
     SAVE = 5
     LOAD = 6
+    GENETICS = 7

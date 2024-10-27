@@ -1,13 +1,9 @@
-from view.constants import *
-from view.buttonBarUI import ButtonBarUI
 import pygame.sprite
 
 from view.button import Button
-
-def render_text(text, font, color, x_center, y_center, screen):
-    surface = font.render(text, True, color)
-    rect = surface.get_rect(center=(x_center, y_center))
-    screen.blit(surface, rect)
+from view.buttonBarUI import ButtonBarUI
+from view.constants import *
+from view.text import render_text
 
 
 class PlaybackUI(ButtonBarUI):
@@ -25,8 +21,7 @@ class PlaybackUI(ButtonBarUI):
 
         self._play_button = self._buttons[0]
 
-        self._pause_button = Button(x, y, PAUSE_ICON,
-                                    PAUSE_ICON_HOVER,
+        self._pause_button = Button(x, y, PAUSE_ICON, PAUSE_ICON_HOVER,
                                     ButtonEvent.PAUSE, screen)
 
         self._step_button = self._buttons[1]
@@ -65,7 +60,7 @@ class PlaybackUI(ButtonBarUI):
                 click_type = button.handle_click()
                 # Toggle the play and pause icon if they were clicked
                 if (click_type == ButtonEvent.PLAY or
-                    click_type == ButtonEvent.PAUSE):
+                        click_type == ButtonEvent.PAUSE):
                     self._toggle_play_pause()
                 # Clicking on step when the game is playing, switches to pause
                 elif click_type == ButtonEvent.STEP and not self._is_paused:
@@ -91,6 +86,7 @@ class PlaybackUI(ButtonBarUI):
         font = pygame.font.SysFont(TITLE_FONT_NAME, 20)
         x_center = WORLD_X + (WINDOW_WIDTH - WORLD_WIDTH) / 2
         y_center = WORLD_HEIGHT + WORLD_Y + 60 + BUTTON_HEIGHT
-        render_text(INSTRUCTIONS, font, INSTRUCTIONS_TEXT, x_center, y_center, screen)
+        render_text(INSTRUCTIONS, font, INSTRUCTIONS_TEXT, x_center, y_center,
+                    screen)
 
         pygame.display.update()

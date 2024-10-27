@@ -3,6 +3,8 @@ import pygame
 from view.buttonBarUI import ButtonBarUI
 from view.constants import *
 from view.playbackUI import PlaybackUI
+from view.statsUI import StatsUI
+from view.text import render_text, render_stat_text
 
 
 class View:
@@ -30,6 +32,7 @@ class View:
                                     (LOAD_ICON, LOAD_ICON_HOVER, ButtonEvent.LOAD))
 
         self._draw_world_border()
+        self._stats_ui = StatsUI(self._screen)
 
     def _draw_world_border(self):
         # Create world border
@@ -53,6 +56,8 @@ class View:
                 if organism:
                     self._draw_organism(organism, row, col)
 
+        self._stats_ui.render_statistics()
+
     def _draw_organism(self, organism, row, col):
         color = organism.get_color()
 
@@ -66,30 +71,28 @@ class View:
                 row * self._grid_size + WORLD_Y,
                 self._grid_size, self._grid_size)
 
-    @staticmethod
-    def render_text(text, font, color, x_center, y_center, screen):
-        surface = font.render(text, True, color)
-        rect = surface.get_rect(center=(x_center, y_center))
-        screen.blit(surface, rect)
-
     def _render_title(self):
         x_center = WORLD_X / 2 + BUTTON_HEIGHT
         y_center = 60
         font = pygame.font.SysFont(TITLE_FONT_NAME, TITLE_FONT_SIZE)
-        self.render_text(GAME_TITLE, font, TITLE_TEXT,
+        render_text(GAME_TITLE, font, TITLE_TEXT,
                     x_center, y_center, self._screen)
 
     def handle_click(self):
         playback_action = (self._playback_ui.handle_click_event() or
-                           self._file_ui.handle_click_event())
+                           self._file_ui.handle_click_event() or
+                           self._stats_ui.handle_click_event())
         if playback_action:
             return playback_action
         return None
 
     def handle_mouse_move(self):
         if (self._playback_ui.handle_hover_event() or
-                self._file_ui.handle_hover_event()):
+                self._file_ui.handle_hover_event() or
+                self._stats_ui.handle_hover_event()):
             return
 
     def update_playback_state(self, playbackState):
         self._playback_ui.update_playback_state(playbackState)
+
+

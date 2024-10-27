@@ -1,9 +1,11 @@
 import pygame
+
 from view.constants import *
 
+
 class Button:
-    def __init__(self, x, y, icon_filename, hover_icon_filename, playbackType, screen):
-        super().__init__()
+    def __init__(self, x, y, icon_filename, hover_icon_filename, playbackType,
+                 screen):
         self._image = pygame.Surface((BUTTON_WIDTH, BUTTON_HEIGHT))
         self._image.fill(BUTTON_BG)
         self._rect = self._image.get_rect(topleft=(x, y))
@@ -14,14 +16,12 @@ class Button:
         self._hover_icon_filename = hover_icon_filename
         self._is_hover = False
 
-
     @staticmethod
     def _load_icon(filename):
         try:
             icon = pygame.image.load(filename)
-            icon = pygame.transform.scale(
-                icon,
-            (BUTTON_WIDTH // 1.3, BUTTON_HEIGHT // 1.3))
+            icon = pygame.transform.scale(icon,
+                (BUTTON_WIDTH // 1.3, BUTTON_HEIGHT // 1.3))
             return icon
         except pygame.error as e:
             print(f"Error loading icon: {filename}. Error: {e}")
@@ -32,7 +32,6 @@ class Button:
         except FileNotFoundError as e:
             print(f"FileNotFoundError loading icon: {filename}. Error: {e}")
             return None
-
 
     def detect_mouse_collision(self, mouse_position):
         return self._rect.collidepoint(mouse_position)
@@ -68,8 +67,7 @@ class Button:
     def draw(self):
         self._screen.blit(self._image, self._rect)
         if self._icon:
-            border_rect = self._rect.inflate(6,
-                                             6)
+            border_rect = self._rect.inflate(6, 6)
             pygame.draw.rect(self._screen, BUTTON_BORDER_COLOR, border_rect,
                              width=4, border_radius=4)
 
