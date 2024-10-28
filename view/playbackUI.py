@@ -7,8 +7,12 @@ from view.text import render_text
 
 
 class PlaybackUI(ButtonBarUI):
+    """
+    Creates a horizontal row of playback buttons (start/pause, step, restart)
+    with click/hover events and instructions
+    """
     def __init__(self, screen):
-        self._is_paused = True
+        self._is_paused: bool = True
         center_x = WORLD_X + (WINDOW_WIDTH - WORLD_X) / 2
         width = (BUTTON_WIDTH * 3) + (BUTTON_GAP * 2)
         x = center_x - width / 2
@@ -19,17 +23,18 @@ class PlaybackUI(ButtonBarUI):
                          (STEP_ICON, STEP_ICON_HOVER, ButtonEvent.STEP),
                          (RESTART_ICON, RESTART_ICON_HOVER, ButtonEvent.RESET))
 
-        self._play_button = self._buttons[0]
+        self._play_button: Button = self._buttons[0]
 
-        self._pause_button = Button(x, y, PAUSE_ICON, PAUSE_ICON_HOVER,
+        self._pause_button: Button = Button(x, y, PAUSE_ICON, PAUSE_ICON_HOVER,
                                     ButtonEvent.PAUSE, screen)
 
-        self._step_button = self._buttons[1]
-        self._restart_button = self._buttons[2]
+        self._step_button: Button = self._buttons[1]
+        self._restart_button: Button = self._buttons[2]
 
         self._draw_instructions(screen)
 
     def _toggle_play_pause(self):
+        """Switches from play to pause or pause to play"""
         # Game is paused, so switch to play
         if self._is_paused:
             # When game is in play mode, the pause icon is displayed
@@ -54,7 +59,11 @@ class PlaybackUI(ButtonBarUI):
 
         pygame.display.update()
 
-    def handle_click_event(self):
+    def handle_click_event(self) -> ButtonEvent | None:
+        """
+        Checks each button for click with custom logic to handle swapping
+        play/pause, and pausing when step is clicked
+        """
         for button in self._buttons:
             if button.detect_mouse_collision(pygame.mouse.get_pos()):
                 click_type = button.handle_click()
@@ -72,7 +81,11 @@ class PlaybackUI(ButtonBarUI):
                 return click_type
         return None
 
-    def update_playback_state(self, playback_state):
+    def update_playback_state(self, playback_state: ButtonEvent):
+        """
+        Updates the ui to play/pause depending on playback_state event.
+        Triggered from outside the class, like if keyboard commands are used
+        """
         if playback_state == ButtonEvent.PLAY and self._is_paused:
             self._toggle_play_pause()
         elif playback_state == ButtonEvent.PAUSE and not self._is_paused:
@@ -83,6 +96,7 @@ class PlaybackUI(ButtonBarUI):
 
     @staticmethod
     def _draw_instructions(screen):
+        """Draws the playback instructions"""
         font = pygame.font.SysFont(TITLE_FONT_NAME, 20)
         x_center = WORLD_X + (WINDOW_WIDTH - WORLD_WIDTH) / 2
         y_center = WORLD_HEIGHT + WORLD_Y + 60 + BUTTON_HEIGHT
