@@ -52,7 +52,7 @@ view = View(ROWS, COLS, world)
 clock = pygame.time.Clock()
 
 setup_life(world)
-view.render_grid()
+view.update()
 pygame.display.flip()
 
 while running:
@@ -87,10 +87,13 @@ while running:
                 view.render_grid()
         elif event.type == pygame.MOUSEMOTION:
             view.handle_mouse_move()
+        elif event.type == pygame.MOUSEBUTTONUP:
+            view.handle_mouse_up()
+
 
     if state == PLAY:
         process_cells(world)
-        view.render_grid()
+        view.update()
     elif state == PAUSE:
         # screen.blit(text_surface, (0, 0))
         # pygame.display.update()
