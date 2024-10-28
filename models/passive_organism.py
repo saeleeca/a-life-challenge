@@ -1,4 +1,5 @@
 from models import Organism
+from world import World
 
 class PassiveOrganism(Organism):
     def __init__(self, genome, row, col, world):
@@ -19,8 +20,7 @@ class PassiveOrganism(Organism):
         """Function to check if a cell is occupied. Takes the row and column coordinates and returns count.
         The returned count is used in determining if an organism lives/dies/reproduces.
         """
-        from main import ROWS
-        from main import COLS
+        ROWS, COLS = World.ROWS, World.COLS
         count = 0
 
         # Check each neighbor cell for passive organism
@@ -65,8 +65,7 @@ class PassiveOrganism(Organism):
     def check_reproduction(self):
         """Checks 8 neighboring cells around original organism for empty cells. If an empty cell is found
         reproduction conditions are checked and if valid, reproduce is called."""
-        from main import ROWS
-        from main import COLS
+        ROWS, COLS = World.ROWS, World.COLS
 
         # Store coordinates of empty cells before reproducing
         empty_cells = []

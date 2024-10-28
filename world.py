@@ -1,6 +1,7 @@
 import random
 
 class World:
+    ROWS, COLS = 50, 50
     def __init__(self, rows: int, cols: int):
         self._energy_rate: int = 10  # how much can be absorbed per cycle
         self._world: list[list[object]] = \

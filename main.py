@@ -5,7 +5,7 @@ from models import CreatureType, Genome, Organism, PassiveOrganism, HerbivoreOrg
 from view import View
 from world import World
 
-ROWS, COLS = 50, 50
+ROWS, COLS = World.ROWS, World.COLS
 GRID_SIZE = 10
 WIDTH, HEIGHT = ROWS*GRID_SIZE, COLS*GRID_SIZE
 
