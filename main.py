@@ -61,15 +61,18 @@ while running:
             running = False
             break
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_p:
+            if event.key == pygame.K_p and state == PLAY:
                 state = PAUSE
                 view.update_playback_state(ButtonEvent.PAUSE)
-            elif event.key == pygame.K_o:
+            elif event.key == pygame.K_p and state == PAUSE:
                 state = PLAY
                 view.update_playback_state(ButtonEvent.PLAY)
             elif event.key == pygame.K_r:
+                world = World(ROWS, COLS)
+                view = View(ROWS, COLS, world)
+
                 setup_life(world)
-                view.render_grid()
+                view.update()
             elif event.key == pygame.K_q:
                 pygame.quit()
         elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -79,12 +82,15 @@ while running:
             elif click_type == ButtonEvent.PAUSE:
                 state = PAUSE
             elif click_type == ButtonEvent.RESET:
+                world = World(ROWS, COLS)
+                view = View(ROWS, COLS, world)
+
                 setup_life(world)
-                view.render_grid()
+                view.update()
             elif click_type == ButtonEvent.STEP:
                 state = STEP
                 process_cells(world)
-                view.render_grid()
+                view.update()
         elif event.type == pygame.MOUSEMOTION:
             view.handle_mouse_move()
         elif event.type == pygame.MOUSEBUTTONUP:
