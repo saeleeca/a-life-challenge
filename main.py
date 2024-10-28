@@ -20,8 +20,8 @@ clock = pygame.time.Clock()
 PLAY, PAUSE = 0, 1
 state = PLAY
 running = True
-font = pygame.font.Font(pygame.font.get_default_font(), 25)
-text_surface = font.render("Paused - P to Pause - O to Resume - Q to Quit - R to Restart", True, "black")
+font = pygame.font.Font(pygame.font.get_default_font(), 18)
+text_surface = font.render("Paused - P to Pause/Resume - Q to Quit - R to Restart", True, "black")
 dt = 0
 
 def create_genome(creature_type) -> Genome:
@@ -94,14 +94,17 @@ while running:
             running = False
             break
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_p:
+            if event.key == pygame.K_p and state == PLAY:
                 state = PAUSE
-            if event.key == pygame.K_o:
+            elif event.key == pygame.K_p and state == PAUSE:
                 state = PLAY
-            if event.key == pygame.K_r:
+            elif event.key == pygame.K_r:
+                world = World(ROWS, COLS)
+                view = View(WIDTH, HEIGHT, ROWS, COLS, world, screen, GRID_SIZE)
+
                 setup_life(world)
                 view.render_grid()
-            if event.key == pygame.K_q:
+            elif event.key == pygame.K_q:
                 pygame.quit()
 
     if state == PLAY:
