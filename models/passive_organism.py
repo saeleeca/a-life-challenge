@@ -6,6 +6,7 @@ class PassiveOrganism(Organism):
         super().__init__(genome, row, col, world)
 
         # Set custom values for the Passive.
+        self._reproduction_energy_expenditure = 3
         self._food_energy = 5
 
     def move(self, row: int, col: int) -> None:
@@ -129,7 +130,7 @@ class PassiveOrganism(Organism):
         while array_count < len(empty_cells):
             self.reproduce(empty_cells[array_count][0],empty_cells[array_count][1])
             array_count += 1
-        return
+        return array_count
 
     def choose_action(self):
         """Organism will die if it has less than 2 or greater than 3 neighbors."""
@@ -141,6 +142,12 @@ class PassiveOrganism(Organism):
         if count < 2 or count > 3:
             self._world.kill_organism(self._row, self._col)
 
-        # Any live cell with two or three live neighbours lives on to the next generation
+        # Any live cell with two or three live neighbours lives on to the next generation.
+        # Passive organisms lose energy via reproduction and will die once at 0 or less energy.
         else:
-            self.check_reproduction()
+            energy_expended = self.check_reproduction()
+            energy_expended *= self._reproduction_energy_expenditure
+            self._energy -= energy_expended
+            if self._energy <= 0:
+                self._world.kill_organism(self._row, self._col)
+
