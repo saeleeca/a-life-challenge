@@ -99,8 +99,10 @@ while running:
             elif event.key == pygame.K_p and state == PAUSE:
                 state = PLAY
             elif event.key == pygame.K_r:
+                world = World(ROWS, COLS)
+                view = View(WIDTH, HEIGHT, ROWS, COLS, world, screen, GRID_SIZE)
+
                 setup_life(world)
-                process_cells(world)
                 view.render_grid()
             elif event.key == pygame.K_q:
                 pygame.quit()
