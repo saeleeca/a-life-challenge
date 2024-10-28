@@ -13,7 +13,7 @@ class PlaybackUI(ButtonBarUI):
     """
     def __init__(self, screen):
         self._is_paused: bool = True
-        center_x = WORLD_X + (WINDOW_WIDTH - WORLD_X) / 2
+        center_x = WORLD_X + WORLD_WIDTH / 2
         width = (BUTTON_WIDTH * 3) + (BUTTON_GAP * 2)
         x = center_x - width / 2
         y = WORLD_HEIGHT + WORLD_Y + 20
