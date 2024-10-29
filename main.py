@@ -60,7 +60,10 @@ def pause_game():
 def reset_game():
     global world
     global view
+    global state
+    state = PAUSE
     world = World(ROWS, COLS)
+    # Reinitializing the view, sets the playback buttons to paused
     view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game)
 
     setup_life(world)
