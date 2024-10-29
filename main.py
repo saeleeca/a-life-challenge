@@ -24,12 +24,12 @@ font = pygame.font.Font(pygame.font.get_default_font(), 18)
 text_surface = font.render("Paused - P to Pause/Resume - Q to Quit - R to Restart", True, "black")
 dt = 0
 
-def create_genome(creature_type) -> Genome:
+def create_genome(creature_type, world) -> Genome:
     if creature_type == CreatureType.PASSIVE:
-        return Genome(GREEN, creature_type, 20, False)
+        return Genome(GREEN, creature_type, world.get_world_max_passive_energy(), False)
     if creature_type == CreatureType.CARNIVORE:
-        return Genome(RED, creature_type, 100, True)
-    return Genome(BLUE, creature_type, 50, True)
+        return Genome(RED, creature_type, world.get_world_max_carnivore_energy(), True)
+    return Genome(BLUE, creature_type, world.get_world_max_herbivore_energy(), True)
 
 
 def setup_life(world):
@@ -38,11 +38,11 @@ def setup_life(world):
             val = random.randint(0, 20)
             # 0-5 passive, 5-7 herbivore, 8 carnivore
             if val < 6:
-                world.add_organism(PassiveOrganism(create_genome(CreatureType.PASSIVE), row, col, world), row, col)
-            elif val < 8:
-                world.add_organism(HerbivoreOrganism(create_genome(CreatureType.HERBIVORE), row, col, world), row, col)
+                world.add_organism(PassiveOrganism(create_genome(CreatureType.PASSIVE, world), row, col, world), row, col)
+            elif 6< val < 8:
+                world.add_organism(HerbivoreOrganism(create_genome(CreatureType.HERBIVORE, world), row, col, world), row, col)
             elif val == 8:
-                 world.add_organism(CarnivoreOrganism(create_genome(CreatureType.CARNIVORE), row, col, world), row, col)
+                 world.add_organism(CarnivoreOrganism(create_genome(CreatureType.CARNIVORE, world), row, col, world), row, col)
 
 def process_cells(world):
     # moves organisms into next cell if empty
