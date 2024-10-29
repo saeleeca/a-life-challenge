@@ -5,13 +5,13 @@ def set_world_type():
     val = random.randint(0, 20)
     if val < 8:
         wt = WorldType.NORMAL
-    if val < 12:
+    elif val < 12:
         wt = WorldType.HARSH
-    if val < 16:
+    elif val < 16:
         wt = WorldType.DESERT
     else:
         wt = WorldType.RAINFOREST
-    print(wt, wt.passive_percent, wt.herbivore_percent, wt.carnivore_percent)
+    #print(wt, wt.passive_percent, wt.herbivore_percent, wt.carnivore_percent)
     return wt, wt.passive_percent, wt.herbivore_percent, wt.carnivore_percent
 
 class WorldType(Enum):
