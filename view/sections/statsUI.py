@@ -1,17 +1,22 @@
 import pygame
 
-from view.button import Button
+from view.components.button import Button
 from view.constants import WINDOW_BG, STATS_X, STATS_Y, BUTTON_HEIGHT, \
     STATS_PADDING_Y, FONT_NAME, STATS_FONT_SIZE, STATS_COLOR, GENETICS_ICON, \
-    GENETICS_ICON_HOVER, ButtonEvent
+    GENETICS_ICON_HOVER
 from view.text import render_text_pair
+from view.sections.uiComponent import UiComponent
 
 
-class StatsUI:
-    """Displays the Statistics text as a vertical list"""
+class StatsUI(UiComponent):
+    """
+    Displays the Statistics text as a vertical list and a view genomes button
+    """
     def __init__(self, screen):
+        super().__init__()
         self._screen = screen
         self._view_genome_button: Button = self._render_view_genome()
+        self._buttons.append(self._view_genome_button)
         self._stats_height: int = 0
 
         self._render_view_genome()
@@ -25,7 +30,7 @@ class StatsUI:
         button_x = rect.right + 20
         self._screen.blit(surface, rect)
         button = Button(button_x, STATS_Y, GENETICS_ICON, GENETICS_ICON_HOVER,
-                        ButtonEvent.GENETICS, self._screen)
+                        self._screen)
         button.draw()
         return button
 
@@ -46,25 +51,3 @@ class StatsUI:
                                   self._screen) + STATS_PADDING_Y
 
         self._stats_height = STATS_Y + y    # save height for updating later
-
-    def handle_hover_event(self) -> bool:
-        """Handles hovering the view genomes button"""
-        if self._view_genome_button.detect_mouse_collision(
-                pygame.mouse.get_pos()):
-            self._view_genome_button.handle_hover()
-            self._view_genome_button.draw()
-            pygame.display.update()
-            return True
-        elif self._view_genome_button.get_hover_state():
-            self._view_genome_button.handle_end_hover()
-            self._view_genome_button.draw()
-            pygame.display.update()
-            return True
-        return False
-
-    def handle_click_event(self) -> ButtonEvent | None:
-        """Handles clicking the view genomes button"""
-        if self._view_genome_button.detect_mouse_collision(
-                pygame.mouse.get_pos()):
-            return self._view_genome_button.handle_click()
-        return None

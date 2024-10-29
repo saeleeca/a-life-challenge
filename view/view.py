@@ -1,16 +1,16 @@
 import pygame
 
-from view.buttonBarUI import ButtonBarUI
+from view.sections.buttonBarUI import ButtonBarUI
 from view.constants import *
-from view.playbackUI import PlaybackUI
-from view.settingsUI import SettingsUI
-from view.statsUI import StatsUI
+from view.sections.playbackUI import PlaybackUI
+from view.sections.settingsUI import SettingsUI
+from view.sections.statsUI import StatsUI
 from view.text import render_text
 
 
 class View:
     """Handles rendering the UI and the different UI components"""
-    def __init__(self, rows: int, cols: int, world):
+    def __init__(self, rows: int, cols: int, world, start_fn, pause_fn, reset_fn, step_fn):
         self._rows: int = rows
         self._cols: int = cols
         self._world = world
@@ -26,14 +26,16 @@ class View:
 
         # initialize/draw components
         # _playback_ui, _file_ui, _stats_ui, _settings_ui
-        self._playback_ui = PlaybackUI(self._screen)
+        self._playback_ui = PlaybackUI(self._screen, start_fn, pause_fn, reset_fn, step_fn)
         width = (BUTTON_WIDTH * 2) + BUTTON_GAP
         file_x = WINDOW_WIDTH - width - 50
         self._file_ui = ButtonBarUI(self._screen, file_x, 15,
-                        (SAVE_ICON, SAVE_ICON_HOVER, ButtonEvent.SAVE),
-                                (LOAD_ICON, LOAD_ICON_HOVER, ButtonEvent.LOAD))
+                        (SAVE_ICON, SAVE_ICON_HOVER, None),
+                                (LOAD_ICON, LOAD_ICON_HOVER, None))
         self._stats_ui = StatsUI(self._screen)
         self._settings_ui = SettingsUI(self._screen)
+        self._components = [ self._playback_ui, self._file_ui, self._stats_ui,
+                             self._settings_ui]
 
     def _draw_world_border(self):
         """Draws the border around the world"""
@@ -91,24 +93,15 @@ class View:
 
     def handle_click(self):
         """Handles click events for all the UI components"""
-        playback_action = (self._playback_ui.handle_click_event() or
-                           self._file_ui.handle_click_event() or
-                           self._stats_ui.handle_click_event())
-        if playback_action:
-            return playback_action
-        # settings ui has sliders that don't trigger change until moved
-        self._settings_ui.handle_click_event()
-        return None
+        for component in self._components:
+            if component.handle_click_event():
+                return
 
     def handle_mouse_move(self) -> (ButtonEvent | None, int):
         """Handles mouse move/hover events for all the UI components"""
-        # Handle hover events
-        if (self._playback_ui.handle_hover_event() or
-                self._file_ui.handle_hover_event() or
-                self._stats_ui.handle_hover_event()):
-            return None, -1
-        # Handle sliders which update on move
-        return self._settings_ui.handle_mouse_move()
+        for component in self._components:
+            if component.handle_hover_event():
+                return
 
     def handle_mouse_up(self):
         """Handles mouse up event for slider button components"""

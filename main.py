@@ -47,8 +47,35 @@ def process_cells(world):
                 organism.choose_action()
 
 
+def start_game():
+    global state
+    state = PLAY
+    view.update_playback_state(ButtonEvent.PLAY)
+
+def pause_game():
+    global state
+    state = PAUSE
+    view.update_playback_state(ButtonEvent.PAUSE)
+
+def reset_game():
+    global world
+    global view
+    world = World(ROWS, COLS)
+    view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game)
+
+    setup_life(world)
+    view.update()
+
+def step_game():
+    global state
+    state = PAUSE
+    view.update_playback_state(ButtonEvent.PAUSE)
+    process_cells(world)
+    view.update()
+
+
 world = World(ROWS, COLS)
-view = View(ROWS, COLS, world)
+view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game)
 clock = pygame.time.Clock()
 
 setup_life(world)
@@ -62,35 +89,15 @@ while running:
             break
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_p and state == PLAY:
-                state = PAUSE
-                view.update_playback_state(ButtonEvent.PAUSE)
+                pause_game()
             elif event.key == pygame.K_p and state == PAUSE:
-                state = PLAY
-                view.update_playback_state(ButtonEvent.PLAY)
+                start_game()
             elif event.key == pygame.K_r:
-                world = World(ROWS, COLS)
-                view = View(ROWS, COLS, world)
-
-                setup_life(world)
-                view.update()
+                reset_game()
             elif event.key == pygame.K_q:
                 pygame.quit()
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            click_type = view.handle_click()
-            if click_type == ButtonEvent.PLAY:
-                state = PLAY
-            elif click_type == ButtonEvent.PAUSE:
-                state = PAUSE
-            elif click_type == ButtonEvent.RESET:
-                world = World(ROWS, COLS)
-                view = View(ROWS, COLS, world)
-
-                setup_life(world)
-                view.update()
-            elif click_type == ButtonEvent.STEP:
-                state = STEP
-                process_cells(world)
-                view.update()
+            view.handle_click()
         elif event.type == pygame.MOUSEMOTION:
             view.handle_mouse_move()
         elif event.type == pygame.MOUSEBUTTONUP:
@@ -100,10 +107,7 @@ while running:
     if state == PLAY:
         process_cells(world)
         view.update()
-    elif state == PAUSE:
-        # screen.blit(text_surface, (0, 0))
-        # pygame.display.update()
-        pass
+
     pygame.display.flip()
     # limits FPS to 1
     # dt is delta time in seconds since last frame, used for framerate-independent physics.

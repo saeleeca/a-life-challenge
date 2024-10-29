@@ -3,7 +3,7 @@ import pygame
 from view.constants import STATS_FONT_SIZE, FONT_NAME, STATS_COLOR, STATS_X
 
 
-def render_text(text: str, font, color: (int, int, int), x: int, y: int,
+def render_text(text: str, font, color: (int, int, int), x: float, y: float,
                 screen, isCenter=True) -> int:
     """Helper function to draw text to the screen"""
     surface = font.render(text, True, color)

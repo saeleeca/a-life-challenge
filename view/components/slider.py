@@ -81,14 +81,13 @@ class Slider:
         top = self._y - SLIDER_RADIUS
         bottom = self._y + SLIDER_RADIUS
         pos_x, pos_y = pygame.mouse.get_pos()
-
         if (left <= pos_x <= right and
                 top <= pos_y <= bottom):
             self._is_sliding = True
             return True
         return False
 
-    def handle_mouse_move(self) -> (bool, int):
+    def handle_mouse_move(self) -> bool:
         """Updates the slider position and val if the user clicks and drags"""
         if self._is_sliding:
             self._remove_circle()    # remove old circle to prepare redraw
@@ -102,8 +101,8 @@ class Slider:
                 self._slider_position = pos_x
             self._val = self.get_val()  # convert the new position to the val
             self.draw() # redraw slider circle in new position and new val
-            return True, self._val
-        return False, -1
+            return True
+        return False
 
     def handle_mouse_up(self) -> bool:
         """Checks if the user releases click from the slider circle"""

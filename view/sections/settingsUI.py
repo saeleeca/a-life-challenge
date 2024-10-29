@@ -1,5 +1,5 @@
 from view.constants import WINDOW_HEIGHT, STATS_X, ButtonEvent
-from view.slider import Slider
+from view.components.slider import Slider
 
 
 class SettingsUI:
@@ -19,15 +19,11 @@ class SettingsUI:
         return (self._speed_slider.handle_click_event() or
                 self._skip_slider.handle_click_event())
 
-    def handle_mouse_move(self) -> (ButtonEvent | None, int):
+    def handle_hover_event(self) -> bool:
         """Checks each slider for mouse move update, stops if triggered"""
-        res, val = self._speed_slider.handle_mouse_move()
-        if res:
-            return ButtonEvent.SPEED, val
-        res, val = self._skip_slider.handle_mouse_move()
-        if res:
-            return ButtonEvent.SKIP, val
-        return None, -1
+        return (self._speed_slider.handle_mouse_move() or
+         self._skip_slider.handle_mouse_move())
+
 
     def handle_mouse_up(self):
         """Checks each slider for mouse up if updating, stops if triggered"""
