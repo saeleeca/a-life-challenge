@@ -1,5 +1,6 @@
 import random
 import pygame
+import pickle
 
 from models import CreatureType, Genome, Organism, PassiveOrganism, HerbivoreOrganism, CarnivoreOrganism
 from view import View
@@ -21,7 +22,8 @@ PLAY, PAUSE = 0, 1
 state = PLAY
 running = True
 font = pygame.font.Font(pygame.font.get_default_font(), 18)
-text_surface = font.render("Paused - P to Pause/Resume - Q to Quit - R to Restart", True, "black")
+pause_text_surface1 = font.render("Paused - P to Pause/Resume - Q to Quit - R to Restart", True, "black")
+pause_text_surface2 = font.render("S to save simulation - L to load simulation", True, "black")
 dt = 0
 
 def create_genome(creature_type) -> Genome:
@@ -88,30 +90,45 @@ view = View(WIDTH, HEIGHT, ROWS, COLS, world, screen, GRID_SIZE)
 setup_life(world)
 view.render_grid()
 
+# main game loop
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
             break
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_p and state == PLAY:
+            if event.key == pygame.K_p and state == PLAY:  # p to pause and unpause
                 state = PAUSE
             elif event.key == pygame.K_p and state == PAUSE:
                 state = PLAY
-            elif event.key == pygame.K_r:
+
+            elif event.key == pygame.K_r:  # r to restart the simulation
                 world = World(ROWS, COLS)
                 view = View(WIDTH, HEIGHT, ROWS, COLS, world, screen, GRID_SIZE)
-
                 setup_life(world)
                 view.render_grid()
-            elif event.key == pygame.K_q:
+
+            elif event.key == pygame.K_s:  # s to save
+                savegame = world
+                with open("save_game.pk1", "wb") as file:
+                    pickle.dump(savegame, file)
+
+            elif event.key == pygame.K_l:  # l to reload save
+                with open('save_game.pk1', 'rb') as file:
+                    savedWorld = pickle.load(file)
+                world = savedWorld
+                view = View(WIDTH, HEIGHT, ROWS, COLS, world, screen, GRID_SIZE)
+                view.render_grid()
+
+            elif event.key == pygame.K_q:  # q to quit
                 pygame.quit()
 
     if state == PLAY:
         process_cells(world)
         view.render_grid()
     elif state == PAUSE:
-        screen.blit(text_surface, (0, 0))
+        screen.blit(pause_text_surface1, (0, 0))
+        screen.blit(pause_text_surface2, (0, 20))
         pygame.display.update()
 
     # limits FPS to 1
