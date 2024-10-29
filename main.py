@@ -2,28 +2,20 @@ import random
 import pygame
 import pickle
 
-from models import CreatureType, Genome, Organism, PassiveOrganism, HerbivoreOrganism, CarnivoreOrganism
-from view import View
+from models import CreatureType, Genome, PassiveOrganism, HerbivoreOrganism, CarnivoreOrganism
+from view.constants import ButtonEvent
+from view.view import View
 from world import World
 
 ROWS, COLS = World.ROWS, World.COLS
-GRID_SIZE = 10
-WIDTH, HEIGHT = ROWS*GRID_SIZE, COLS*GRID_SIZE
 
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 
-# pygame setup screen, clock, and relevant values.
-pygame.init()
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-clock = pygame.time.Clock()
-PLAY, PAUSE = 0, 1
-state = PLAY
+PLAY, PAUSE, STEP = 0, 1, 2
+state = PAUSE
 running = True
-font = pygame.font.Font(pygame.font.get_default_font(), 18)
-pause_text_surface1 = font.render("Paused - P to Pause/Resume - Q to Quit - R to Restart", True, "black")
-pause_text_surface2 = font.render("S to save simulation - L to load simulation", True, "black")
 dt = 0
 
 def create_genome(creature_type, world) -> Genome:
@@ -47,48 +39,52 @@ def setup_life(world):
                  world.add_organism(CarnivoreOrganism(create_genome(CreatureType.CARNIVORE, world), row, col, world), row, col)
 
 def process_cells(world):
-    # moves organisms into next cell if empty
-    # only to demonstrate ui and test
     visited = set()
     for row in range(ROWS):
         for col in range(COLS):
             organism = world.get_cell(row, col)
             if organism and organism not in visited:
                 visited.add(organism)
-                if isinstance(organism, (PassiveOrganism, HerbivoreOrganism, CarnivoreOrganism)):
-                    organism.choose_action()
-                # else:
-                #     valr = random.randint(0, 12)
-                #     valc = random.randint(0, 12)
-                #     if valr > 6:
-                #         next_row = row + 1
-                #     elif valr > 0:
-                #         next_row = row - 1
-                #     else:
-                #         next_row = row
-                #     if valc > 6:
-                #         next_col = col + 1
-                #     elif valc > 0:
-                #         next_col = col - 1
-                #     else:
-                #         next_col = col
+                organism.choose_action()
 
-                #     if row == next_row and col == next_col:
-                #         continue
-                #     # go out of bounds and remove
-                #     if (next_row >= ROWS or next_col >= COLS or
-                #         next_row <= -1 or next_col <= -1):
-                #         world.kill_organism(row, col)
 
-                #     elif world.is_cell_empty(next_row, next_col):
-                #         organism.move(next_row, next_col)
+def start_game():
+    global state
+    state = PLAY
+    view.update_playback_state(ButtonEvent.PLAY)
+
+def pause_game():
+    global state
+    state = PAUSE
+    view.update_playback_state(ButtonEvent.PAUSE)
+
+def reset_game():
+    global world
+    global view
+    global state
+    state = PAUSE
+    world = World(ROWS, COLS)
+    # Reinitializing the view, sets the playback buttons to paused
+    view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game)
+
+    setup_life(world)
+    view.update()
+
+def step_game():
+    global state
+    state = PAUSE
+    view.update_playback_state(ButtonEvent.PAUSE)
+    process_cells(world)
+    view.update()
 
 
 world = World(ROWS, COLS)
-view = View(WIDTH, HEIGHT, ROWS, COLS, world, screen, GRID_SIZE)
+view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game)
+clock = pygame.time.Clock()
 
 setup_life(world)
-view.render_grid()
+view.update()
+pygame.display.flip()
 
 # main game loop
 while running:
@@ -97,14 +93,18 @@ while running:
             running = False
             break
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_p and state == PLAY:  # p to pause and unpause
-                state = PAUSE
+            if event.key == pygame.K_p and state == PLAY:
+                pause_game()
             elif event.key == pygame.K_p and state == PAUSE:
-                state = PLAY
+                start_game()
+            elif event.key == pygame.K_r:
+                reset_game()
+            elif event.key == pygame.K_q:
+                pygame.quit()
 
             elif event.key == pygame.K_r:  # r to restart the simulation
                 world = World(ROWS, COLS)
-                view = View(WIDTH, HEIGHT, ROWS, COLS, world, screen, GRID_SIZE)
+                view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game)
                 setup_life(world)
                 view.render_grid()
 
@@ -117,20 +117,24 @@ while running:
                 with open('save_game.pk1', 'rb') as file:
                     savedWorld = pickle.load(file)
                 world = savedWorld
-                view = View(WIDTH, HEIGHT, ROWS, COLS, world, screen, GRID_SIZE)
+                view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game)
                 view.render_grid()
 
             elif event.key == pygame.K_q:  # q to quit
                 pygame.quit()
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            view.handle_click()
+        elif event.type == pygame.MOUSEMOTION:
+            view.handle_mouse_move()
+        elif event.type == pygame.MOUSEBUTTONUP:
+            view.handle_mouse_up()
+
 
     if state == PLAY:
         process_cells(world)
-        view.render_grid()
-    elif state == PAUSE:
-        screen.blit(pause_text_surface1, (0, 0))
-        screen.blit(pause_text_surface2, (0, 20))
-        pygame.display.update()
+        view.update()
 
+    pygame.display.flip()
     # limits FPS to 1
     # dt is delta time in seconds since last frame, used for framerate-independent physics.
     dt = clock.tick(20)
