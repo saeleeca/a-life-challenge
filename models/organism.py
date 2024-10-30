@@ -1,3 +1,4 @@
+from services.mutation_service import MutationService
 class Organism:
     def __init__(self, genome, row: int, col: int, world):
         self._genome = genome
@@ -5,6 +6,7 @@ class Organism:
         self._row: int = row
         self._col: int = col
         self._world = world
+        self._mutation_service = MutationService()
         # Custom / Organism-Specific Properties
         self._move_energy_expenditure = 1   # Energy spend moving
         self._food_energy = 1               # Energy given when eaten
@@ -46,7 +48,8 @@ class Organism:
 
     def reproduce(self, row: int, col: int) -> 'Organism':
         """Reproduces and returns the offspring if there are exactly 3 neighbors."""
-        child_organism = self.__class__(self._genome.reproduce(), row, col, self._world)        
+        mutated_genome = self._mutation_service.mutate(self._genome)
+        child_organism = self.__class__(mutated_genome, row, col, self._world)        
         self._world.add_organism(child_organism, row, col)
         return child_organism
 
