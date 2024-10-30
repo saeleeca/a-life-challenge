@@ -32,4 +32,5 @@ class Environment:
         return self._color
 
     def get_energy_rate(self):
+        """Return the energy rate of the environment based on the modification."""
         return int(10 * self._energy_rate_mod)

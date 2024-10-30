@@ -1,5 +1,3 @@
-from salt.modules.napalm_network import environment
-
 from models import Organism
 from world import World
 
@@ -143,7 +141,10 @@ class PassiveOrganism(Organism):
 
 
     def choose_action(self):
-        """Organism will die if it has less than 2 or greater than 3 neighbors."""
+        """Organism will die if it has less than 2 or greater than 3 neighbors.
+        If organism lives it will try to reproduce, expending energy, and if it survives reproduction it will absorb
+        energy from its environment up to the maximum allowed.
+        """
 
         # Count nearby passive neighbors to determine if death or reproduction can occur
         count = self.passive_check_neighbors(self._row, self._col)
