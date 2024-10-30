@@ -1,3 +1,5 @@
+from salt.modules.napalm_network import environment
+
 from models import Organism
 from world import World
 
@@ -6,7 +8,7 @@ class PassiveOrganism(Organism):
         super().__init__(genome, row, col, world)
 
         # Set custom values for the Passive.
-        self._reproduction_energy_expenditure = 3
+        self._reproduction_energy_expenditure = 6
         self._food_energy = 5
 
     def move(self, row: int, col: int) -> None:
@@ -132,6 +134,14 @@ class PassiveOrganism(Organism):
             array_count += 1
         return array_count
 
+    def energy_absorption(self, world):
+        """Passive Organism generates energy based on the world/environmental energy rate up to its maximum capacity"""
+        energy_rate = World.get_energy_rate(world)
+        max_energy = World.get_world_max_passive_energy(world)
+        self._energy = min(self._energy + energy_rate, max_energy)
+        return
+
+
     def choose_action(self):
         """Organism will die if it has less than 2 or greater than 3 neighbors."""
 
@@ -144,10 +154,13 @@ class PassiveOrganism(Organism):
 
         # Any live cell with two or three live neighbours lives on to the next generation.
         # Passive organisms lose energy via reproduction and will die once at 0 or less energy.
+        # If passive organism did not die via reproduction, it will absorb energy based on world
         else:
             energy_expended = self.check_reproduction()
             energy_expended *= self._reproduction_energy_expenditure
             self._energy -= energy_expended
             if self._energy <= 0:
                 self._world.kill_organism(self._row, self._col)
+            else:
+                self.energy_absorption(self._world)
 
