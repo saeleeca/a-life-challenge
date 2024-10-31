@@ -50,7 +50,7 @@ class View:
         """Draws the world grid"""
         # Draw the world background
         pygame.draw.rect(self._screen, 
-                         self._world.get_background_environment_color(),,
+                         self._world.get_background_environment_color(),
                          (WORLD_X, WORLD_Y,
                           WORLD_HEIGHT, WORLD_WIDTH))
 
