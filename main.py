@@ -1,11 +1,16 @@
 import random
 import pygame
 import pickle
+import os
+import tkinter as tk
+from tkinter import filedialog
 
+import events
 from models import CreatureType, Genome, PassiveOrganism, HerbivoreOrganism, CarnivoreOrganism
 from view.constants import ButtonEvent
 from view.view import View
 from world import World
+from events import *
 
 ROWS, COLS = World.ROWS, World.COLS
 
@@ -77,6 +82,41 @@ def step_game():
     process_cells(world)
     view.update()
 
+def save_game(data_to_save):
+    # Open file dialog (using Tkinter)
+    root = tk.Tk()
+    root.withdraw()
+    file_path = filedialog.asksaveasfilename(
+        defaultextension=".pkl",
+        filetypes=[("Pickle Files", "*.pkl")]
+    )
+    root.destroy()
+
+    if file_path:
+        # Save data using pickle
+        with open(file_path, "wb") as file:
+            pickle.dump(data_to_save, file)
+        print("Data saved successfully!")
+
+def open_file_explorer():
+    root = tk.Tk()
+    root.withdraw()  # Hide the main window
+    file_path = filedialog.askopenfilename()
+    return file_path
+
+# currently bugged, game doesn't load properly unless in main game loop
+def load_game():
+    file_path = open_file_explorer()
+    if file_path:
+        # Do something with the selected file
+        print("Selected file:", file_path)
+
+    with open(file_path, 'rb') as file:
+        savedWorld = pickle.load(file)
+    world = savedWorld
+    view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game)
+    view.render_grid()
+
 
 world = World(ROWS, COLS)
 view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game)
@@ -110,15 +150,24 @@ while running:
 
             elif event.key == pygame.K_s:  # s to save
                 savegame = world
-                with open("save_game.pk1", "wb") as file:
-                    pickle.dump(savegame, file)
+                save_game(savegame)
 
             elif event.key == pygame.K_l:  # l to reload save
-                with open('save_game.pk1', 'rb') as file:
+                # load_game() currently bugged
+                file_path = open_file_explorer()
+                if file_path:
+                    # Do something with the selected file
+                    print("Selected file:", file_path)
+
+                with open(file_path, 'rb') as file:
                     savedWorld = pickle.load(file)
                 world = savedWorld
                 view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game)
                 view.render_grid()
+
+            elif event.key == pygame.K_m:  # summons a meteor to kill organisms in a 10x10 area
+                events.meteor(world)
+                view.update()
 
             elif event.key == pygame.K_q:  # q to quit
                 pygame.quit()
