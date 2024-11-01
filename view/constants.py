@@ -48,7 +48,7 @@ SLIDER_CIRCLE = MID_BLUE
 
 # TEXT
 GAME_TITLE = "A-LIFE OSU"
-INSTRUCTIONS = "P to Pause/Play - Q to Quit - R to Restart - S to Save - L to Load"
+INSTRUCTIONS = "P to Pause/Play - Q to Quit - R to Restart - S to Save - L to Load - M to Meteor"
 
 TITLE_FONT_SIZE = 60
 TITLE_FONT_NAME = "Verdana"
