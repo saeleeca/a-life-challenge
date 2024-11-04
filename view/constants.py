@@ -73,6 +73,9 @@ LOAD_ICON_HOVER = "./view/icons/open_off_white.png"
 GENETICS_ICON = "./view/icons/genetics_blue.png"
 GENETICS_ICON_HOVER = "./view/icons/genetics_off_white.png"
 
+METEOR_ICON = "./view/icons/star_blue.png"
+METEOR_ICON_HOVER = "./view/icons/star.png"
+
 
 class ButtonEvent(Enum):
     PLAY = 1

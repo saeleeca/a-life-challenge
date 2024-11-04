@@ -73,7 +73,7 @@ def reset_game():
     world = World(ROWS, COLS)
 
     # Reinitializing the view, sets the playback buttons to paused
-    view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game)
+    view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game, save_game, load_game)
     setup_life(world)
     view.update()
 
@@ -85,7 +85,7 @@ def step_game():
     process_cells(world)
     view.update()
 
-def save_game(data_to_save):
+def save_game():
     """ Opens file explorer to name and save current data to specified file """
     # Open file dialog to name data file
     root = tk.Tk()
@@ -97,9 +97,10 @@ def save_game(data_to_save):
     root.destroy()
 
     # Save data using pickle
+    global world
     if file_path:
         with open(file_path, "wb") as file:
-            pickle.dump(data_to_save, file)
+            pickle.dump(world, file)
         print("Data saved successfully!")
 
 def load_game():
@@ -113,17 +114,17 @@ def load_game():
     file_path = filedialog.askopenfilename()
     if file_path:
         print("Selected file loaded:", file_path)
-    with open(file_path, 'rb') as file:
-        savedWorld = pickle.load(file)
+        with open(file_path, 'rb') as file:
+            savedWorld = pickle.load(file)
 
-    # Overwrites current world and view object before updating view
-    world = savedWorld
-    view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game)
-    view.render_grid()
+            # Overwrites current world and view object before updating view
+            world = savedWorld
+            view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game, save_game, load_game)
+            view.render_grid()
 
 
 world = World(ROWS, COLS)
-view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game)
+view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game, save_game, load_game)
 clock = pygame.time.Clock()
 
 setup_life(world)
@@ -151,8 +152,7 @@ while running:
 
             # Press s to save, brings up file explorer to name file
             elif event.key == pygame.K_s:
-                world_state = world
-                save_game(world_state)
+                save_game()
 
             # Press l to reload save, opens file explorer to choose file
             elif event.key == pygame.K_l:
