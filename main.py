@@ -106,7 +106,7 @@ while running:
                 world = World(ROWS, COLS)
                 view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game)
                 setup_life(world)
-                view.render_grid()
+                view._render_grid()
 
             elif event.key == pygame.K_s:  # s to save
                 savegame = world
@@ -118,7 +118,7 @@ while running:
                     savedWorld = pickle.load(file)
                 world = savedWorld
                 view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game)
-                view.render_grid()
+                view._render_grid()
 
             elif event.key == pygame.K_q:  # q to quit
                 pygame.quit()

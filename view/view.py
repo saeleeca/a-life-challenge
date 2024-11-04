@@ -62,7 +62,7 @@ class View:
         for component in self._game_components:
             component.draw()
 
-        self.render_grid()
+        self._render_grid()
 
 
     def _draw_world_border(self):
@@ -74,7 +74,7 @@ class View:
                           self._grid_size * self._rows + BORDER_WIDTH * 2),
                          border_radius=5)
 
-    def render_grid(self):
+    def _render_grid(self):
         """Draws the world grid"""
         # Draw the world background
         pygame.draw.rect(self._screen, 
@@ -94,7 +94,7 @@ class View:
         Draws the components that need to be refreshed at each game iteration,
         the world grid and updated stats
         """
-        self.render_grid()
+        self._render_grid()
         self._stats_ui.render_statistics()
 
     def _draw_organism(self, organism, row: int, col: int):
