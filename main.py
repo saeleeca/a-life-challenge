@@ -10,7 +10,7 @@ from models import CreatureType, Genome, PassiveOrganism, HerbivoreOrganism, Car
 from view.constants import ButtonEvent
 from view.view import View
 from world import World
-from events import *
+from events import meteor
 
 ROWS, COLS = World.ROWS, World.COLS
 
@@ -106,13 +106,16 @@ def open_file_explorer():
 
 # currently bugged, game doesn't load properly unless in main game loop
 def load_game():
+    global world
+    global view
+
     file_path = open_file_explorer()
     if file_path:
-        # Do something with the selected file
-        print("Selected file:", file_path)
-
+        # Prints file to console
+        print("Selected file loaded:", file_path)
     with open(file_path, 'rb') as file:
         savedWorld = pickle.load(file)
+
     world = savedWorld
     view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game)
     view.render_grid()
@@ -129,48 +132,35 @@ pygame.display.flip()
 # main game loop
 while running:
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-            break
+
         if event.type == pygame.KEYDOWN:
+            # Press p to pause and unpause simulation
             if event.key == pygame.K_p and state == PLAY:
                 pause_game()
             elif event.key == pygame.K_p and state == PAUSE:
                 start_game()
+
+            # Press r to restart simulation
             elif event.key == pygame.K_r:
                 reset_game()
+
+            # Press q to quit simulation
             elif event.key == pygame.K_q:
                 pygame.quit()
 
-            elif event.key == pygame.K_r:  # r to restart the simulation
-                world = World(ROWS, COLS)
-                view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game)
-                setup_life(world)
-                view.render_grid()
+            # Press s to save, brings up file explorer to name file
+            elif event.key == pygame.K_s:
+                world_state = world
+                save_game(world_state)
 
-            elif event.key == pygame.K_s:  # s to save
-                savegame = world
-                save_game(savegame)
+            # Press l to reload save, opens file explorer to choose file
+            elif event.key == pygame.K_l:
+                load_game()
 
-            elif event.key == pygame.K_l:  # l to reload save
-                # load_game() currently bugged
-                file_path = open_file_explorer()
-                if file_path:
-                    # Do something with the selected file
-                    print("Selected file:", file_path)
+            # Press m to generate a meteor to kill organisms in a 10x10 area
+            elif event.key == pygame.K_m:
+                events.meteor(world, view)
 
-                with open(file_path, 'rb') as file:
-                    savedWorld = pickle.load(file)
-                world = savedWorld
-                view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game)
-                view.render_grid()
-
-            elif event.key == pygame.K_m:  # summons a meteor to kill organisms in a 10x10 area
-                events.meteor(world)
-                view.update()
-
-            elif event.key == pygame.K_q:  # q to quit
-                pygame.quit()
         elif event.type == pygame.MOUSEBUTTONDOWN:
             view.handle_click()
         elif event.type == pygame.MOUSEMOTION:
@@ -187,5 +177,3 @@ while running:
     # limits FPS to 1
     # dt is delta time in seconds since last frame, used for framerate-independent physics.
     dt = clock.tick(20)
-
-pygame.quit()
