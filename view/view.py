@@ -45,7 +45,7 @@ class View:
         self._settings_ui = SettingsUI(self._screen)
 
         self._view_genomes_ui = ViewGenomeUI(self._screen,
-                                             self._change_view_to_game)
+                                             self._change_view_to_game, world)
 
         self._game_components = [self._playback_ui, self._file_ui,
                                  self._stats_ui,

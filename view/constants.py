@@ -84,6 +84,11 @@ GENETICS_ICON_HOVER = "./view/icons/genetics_off_white.png"
 
 EXIT_ICON = "./view/icons/close_blue.png"
 EXIT_ICON_HOVER = "./view/icons/close_off_white.png"
+PREV_ICON = "./view/icons/arrow_back_blue.png"
+PREV_ICON_HOVER = "./view/icons/arrow_back_off_white.png"
+NEXT_ICON = "./view/icons/arrow_forward_blue.png"
+NEXT_ICON_HOVER = "./view/icons/arrow_forward_off_white.png"
+
 
 
 class ButtonEvent(Enum):
