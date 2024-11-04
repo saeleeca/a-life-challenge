@@ -125,7 +125,7 @@ class ViewGenomeUI(UiComponent):
         for key, value in genome_data[self._genome_num].items():
             y += render_text_pair(key, value, y, self._screen, VIEW_GENOMES_X + 50)
 
-        self._genome_data_height = y - (VIEW_GENOMES_Y + 100)
+        self._genome_data_height = y - (VIEW_GENOMES_Y + 200)
 
     def handle_click_event(self) -> bool:
         # button should not be hovered, next time it is viewed

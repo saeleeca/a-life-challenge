@@ -16,7 +16,6 @@ class View:
         self._cols: int = cols
         self._world = world
         self._grid_size: float = WORLD_WIDTH / rows
-        self._view_state = GAME
         self._pause_fn = pause_fn
         self._start_fn = start_fn
         self._reset_fn = reset_fn
@@ -145,12 +144,10 @@ class View:
 
     def _change_view_to_genomes(self):
         """Toggles the view state between GAME And VIEW_GENOMES"""
-        self._view_state = VIEW_GENOMES
         self._pause_fn()
         self._components = self._view_genomes_components
         self._view_genomes_ui.draw()
 
     def _change_view_to_game(self):
-        self._view_state = GAME
         self._components = self._game_components # happens in init game view
         self._draw_game_view()
