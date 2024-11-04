@@ -1,6 +1,9 @@
 from world import *
 
 def meteor(world, view):
+    """
+    Takes world and view objects, obliterating a random 10x10 space in the world and then updates view.
+    """
     # Randomly select a starting row and column within the 50x50 grid
     start_row = random.randint(0, 40)
     start_col = random.randint(0, 40)

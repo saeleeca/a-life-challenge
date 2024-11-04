@@ -10,7 +10,6 @@ from models import CreatureType, Genome, PassiveOrganism, HerbivoreOrganism, Car
 from view.constants import ButtonEvent
 from view.view import View
 from world import World
-from events import meteor
 
 ROWS, COLS = World.ROWS, World.COLS
 
@@ -54,28 +53,32 @@ def process_cells(world):
 
 
 def start_game():
+    """ Starts the current simulation if state is PAUSE"""
     global state
     state = PLAY
     view.update_playback_state(ButtonEvent.PLAY)
 
 def pause_game():
+    """ Pauses the current simulation if state is PLAY"""
     global state
     state = PAUSE
     view.update_playback_state(ButtonEvent.PAUSE)
 
 def reset_game():
+    """ Reinitializes new world and view object to reset simulation"""
     global world
     global view
     global state
     state = PAUSE
     world = World(ROWS, COLS)
+
     # Reinitializing the view, sets the playback buttons to paused
     view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game)
-
     setup_life(world)
     view.update()
 
 def step_game():
+    """ Pauses current simulation to step forward one frame of gameloop"""
     global state
     state = PAUSE
     view.update_playback_state(ButtonEvent.PAUSE)
@@ -83,7 +86,8 @@ def step_game():
     view.update()
 
 def save_game(data_to_save):
-    # Open file dialog (using Tkinter)
+    """ Opens file explorer to name and save current data to specified file """
+    # Open file dialog to name data file
     root = tk.Tk()
     root.withdraw()
     file_path = filedialog.asksaveasfilename(
@@ -92,30 +96,27 @@ def save_game(data_to_save):
     )
     root.destroy()
 
+    # Save data using pickle
     if file_path:
-        # Save data using pickle
         with open(file_path, "wb") as file:
             pickle.dump(data_to_save, file)
         print("Data saved successfully!")
 
-def open_file_explorer():
-    root = tk.Tk()
-    root.withdraw()  # Hide the main window
-    file_path = filedialog.askopenfilename()
-    return file_path
-
-# currently bugged, game doesn't load properly unless in main game loop
 def load_game():
+    """ Opens file explorer for user to load selected pickle file"""
     global world
     global view
 
-    file_path = open_file_explorer()
+    # Opens file explorer to select file
+    root = tk.Tk()
+    root.withdraw()  # Hide the main window
+    file_path = filedialog.askopenfilename()
     if file_path:
-        # Prints file to console
         print("Selected file loaded:", file_path)
     with open(file_path, 'rb') as file:
         savedWorld = pickle.load(file)
 
+    # Overwrites current world and view object before updating view
     world = savedWorld
     view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game)
     view.render_grid()
