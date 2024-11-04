@@ -17,3 +17,7 @@ class ButtonBarUI(UiComponent):
             self._buttons.append(button_obj)
             button_obj.draw()
             x += BUTTON_WIDTH + BUTTON_GAP
+
+    def draw(self):
+        for button in self._buttons:
+            button.draw()

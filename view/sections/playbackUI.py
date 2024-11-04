@@ -12,6 +12,7 @@ class PlaybackUI(ButtonBarUI):
     with click/hover events and instructions
     """
     def __init__(self, screen, start_fn, pause_fn, reset_fn, step_fn):
+        self._screen = screen
         self._is_paused: bool = True
         center_x = WORLD_X + WORLD_WIDTH / 2
         width = (BUTTON_WIDTH * 3) + (BUTTON_GAP * 2)
@@ -81,3 +82,8 @@ class PlaybackUI(ButtonBarUI):
                     screen)
 
         pygame.display.update()
+
+    def draw(self):
+        self._draw_instructions(self._screen)
+        for button in self._buttons:
+            button.draw()

@@ -5,9 +5,10 @@ from view.constants import *
 from view.sections.playbackUI import PlaybackUI
 from view.sections.settingsUI import SettingsUI
 from view.sections.statsUI import StatsUI
+from view.sections.viewGenomeUI import ViewGenomeUI
 from view.text import render_text
 
-
+GAME, VIEW_GENOMES = 0, 1
 class View:
     """Handles rendering the UI and the different UI components"""
     def __init__(self, rows: int, cols: int, world, start_fn, pause_fn, reset_fn, step_fn):
@@ -15,27 +16,54 @@ class View:
         self._cols: int = cols
         self._world = world
         self._grid_size: float = WORLD_WIDTH / rows
+        self._view_state = GAME
+        self._pause_fn = pause_fn
+        self._start_fn = start_fn
+        self._reset_fn = reset_fn
+        self._step_fn = step_fn
 
         # initialize window
         pygame.init()
         self._screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         pygame.display.set_caption(GAME_TITLE)
+
         self._screen.fill(WINDOW_BG)
         self._render_title()
         self._draw_world_border()
 
         # initialize/draw components
         # _playback_ui, _file_ui, _stats_ui, _settings_ui
-        self._playback_ui = PlaybackUI(self._screen, start_fn, pause_fn, reset_fn, step_fn)
+        self._playback_ui = PlaybackUI(self._screen, self._start_fn,
+                                       self._pause_fn,
+                                       self._reset_fn, self._step_fn)
         width = (BUTTON_WIDTH * 2) + BUTTON_GAP
         file_x = WINDOW_WIDTH - width - 50
         self._file_ui = ButtonBarUI(self._screen, file_x, 15,
-                        (SAVE_ICON, SAVE_ICON_HOVER, None),
-                                (LOAD_ICON, LOAD_ICON_HOVER, None))
-        self._stats_ui = StatsUI(self._screen)
+                                    (SAVE_ICON, SAVE_ICON_HOVER, None),
+                                    (LOAD_ICON, LOAD_ICON_HOVER, None))
+        self._stats_ui = StatsUI(self._screen, self._change_view_to_genomes)
         self._settings_ui = SettingsUI(self._screen)
-        self._components = [ self._playback_ui, self._file_ui, self._stats_ui,
-                             self._settings_ui]
+
+        self._view_genomes_ui = ViewGenomeUI(self._screen,
+                                             self._change_view_to_game)
+
+        self._game_components = [self._playback_ui, self._file_ui,
+                                 self._stats_ui,
+                                 self._settings_ui]
+        self._view_genomes_components = [self._view_genomes_ui]
+        self._components = self._game_components
+
+
+    def _draw_game_view(self):
+        self._screen.fill(WINDOW_BG)
+        self._render_title()
+        self._draw_world_border()
+
+        for component in self._game_components:
+            component.draw()
+
+        self.render_grid()
+
 
     def _draw_world_border(self):
         """Draws the border around the world"""
@@ -115,4 +143,14 @@ class View:
         """
         self._playback_ui.update_playback_state(playbackState)
 
+    def _change_view_to_genomes(self):
+        """Toggles the view state between GAME And VIEW_GENOMES"""
+        self._view_state = VIEW_GENOMES
+        self._pause_fn()
+        self._components = self._view_genomes_components
+        self._view_genomes_ui.draw()
 
+    def _change_view_to_game(self):
+        self._view_state = GAME
+        self._components = self._game_components # happens in init game view
+        self._draw_game_view()

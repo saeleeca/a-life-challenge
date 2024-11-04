@@ -29,3 +29,7 @@ class SettingsUI:
         """Checks each slider for mouse up if updating, stops if triggered"""
         (self._speed_slider.handle_mouse_up() or
                 self._skip_slider.handle_mouse_up())
+
+    def draw(self):
+        self._speed_slider.draw()
+        self._skip_slider.draw()

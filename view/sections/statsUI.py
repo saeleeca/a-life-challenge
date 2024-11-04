@@ -12,25 +12,28 @@ class StatsUI(UiComponent):
     """
     Displays the Statistics text as a vertical list and a view genomes button
     """
-    def __init__(self, screen):
+    def __init__(self, screen, view_genome_fn):
         super().__init__()
         self._screen = screen
-        self._view_genome_button: Button = self._render_view_genome()
+        self._view_genome_button: Button = (
+            self._render_view_genomes_btn(view_genome_fn))
         self._buttons.append(self._view_genome_button)
         self._stats_height: int = 0
 
-        self._render_view_genome()
-
-    def _render_view_genome(self):
-        """Displays the view genomes list item and button"""
+    def _render_view_genomes_text(self):
         # text portion
         font = pygame.font.SysFont(FONT_NAME, STATS_FONT_SIZE)
         surface = font.render("View Genomes:", True, STATS_COLOR)
         rect = surface.get_rect(topleft=(STATS_X, STATS_Y))
-        button_x = rect.right + 20
         self._screen.blit(surface, rect)
+        return rect
+
+    def _render_view_genomes_btn(self, view_genome_fn):
+        """Displays the view genomes list item and button"""
+        rect = self._render_view_genomes_text()
+        button_x = rect.right + 20
         button = Button(button_x, STATS_Y, GENETICS_ICON, GENETICS_ICON_HOVER,
-                        self._screen)
+                        self._screen, view_genome_fn)
         button.draw()
         return button
 
@@ -51,3 +54,13 @@ class StatsUI(UiComponent):
                                   self._screen) + STATS_PADDING_Y
 
         self._stats_height = STATS_Y + y    # save height for updating later
+
+    def draw(self):
+        self.render_statistics()
+        self._render_view_genomes_text()
+        self._view_genome_button.draw()
+
+    def handle_click_event(self) -> bool:
+        # button should not be hovered, next time it is viewed
+        self._view_genome_button.reset()
+        return super().handle_click_event()
