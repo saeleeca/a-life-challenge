@@ -40,12 +40,16 @@ def setup_life(world):
 
 def process_cells(world):
     visited = set()
+    day = world.get_day()
     for row in range(ROWS):
         for col in range(COLS):
             organism = world.get_cell(row, col)
-            if organism and organism not in visited:
+            if (organism and (organism not in visited) and
+                (day == 0 or day != organism.get_birthday())):
                 visited.add(organism)
                 organism.choose_action()
+
+    world.inc_day()
 
 
 def start_game():

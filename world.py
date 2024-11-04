@@ -25,6 +25,7 @@ class World:
         self._carnivore_energy_mod = Environment.get_carnivore_max_energy_mod(self._environment)
         self._energy_rate = Environment.get_energy_rate(self._environment) # how much can be absorbed per cycle
         self._environment_color = Environment.get_environment_color(self._environment)
+        self._day: int = 0
 
     def kill_organism(self, row: int, col: int) -> None:
         """Sets the row col to None"""
@@ -114,3 +115,9 @@ class World:
     def get_environment_type(self):
         """Gets the type of environment"""
         return self._environment_type
+
+    def inc_day(self):
+        self._day += 1
+
+    def get_day(self) -> int:
+        return self._day

@@ -13,6 +13,7 @@ class Organism:
         self._base_energy_expenditure = 1   # Baseline energy expended per turn
         self._food_type = None              # Food class if a consumer   
         self._reproduction_ratio = 1.0      # how much energy surplus energy needed to reproduce
+        self._birthday: int = self._world.get_day()
 
     def move(self, row: int, col: int) -> None:
         """Updates the Organisms row and col"""
@@ -56,3 +57,7 @@ class Organism:
     def choose_action(self):
         """Depends on type of Organism"""
         pass
+
+    def get_birthday(self) -> int:
+        """Returns the birthday"""
+        return self._birthday
