@@ -5,10 +5,10 @@ from view.constants import *
 from view.sections.playbackUI import PlaybackUI
 from view.sections.settingsUI import SettingsUI
 from view.sections.statsUI import StatsUI
-from view.sections.viewGenomeUI import ViewGenomeUI
+from view.sections.modalUI import ModalUI
 from view.text import render_text
 
-GAME, VIEW_GENOMES = 0, 1
+GAME, MODAL = 0, 1  # View modes
 class View:
     """Handles rendering the UI and the different UI components"""
     def __init__(self, rows: int, cols: int, world, start_fn, pause_fn, reset_fn, step_fn):
@@ -41,16 +41,16 @@ class View:
         self._file_ui = ButtonBarUI(self._screen, file_x, 15,
                                     (SAVE_ICON, SAVE_ICON_HOVER, None),
                                     (LOAD_ICON, LOAD_ICON_HOVER, None))
-        self._stats_ui = StatsUI(self._screen, self._change_view_to_genomes)
+        self._stats_ui = StatsUI(self._screen, self._change_view_to_modal)
         self._settings_ui = SettingsUI(self._screen)
 
-        self._view_genomes_ui = ViewGenomeUI(self._screen,
-                                             self._change_view_to_game, world)
+        self._view_modal_ui = ModalUI(self._screen,
+                                      self._change_view_to_game, world)
 
         self._game_components = [self._playback_ui, self._file_ui,
                                  self._stats_ui,
                                  self._settings_ui]
-        self._view_genomes_components = [self._view_genomes_ui]
+        self._view_modal_components = [self._view_modal_ui]
         self._components = self._game_components
 
 
@@ -123,7 +123,7 @@ class View:
     def _handle_grid_click(self):
         """
         Checks if a user clicks on an organism in the grid.
-        If an organism is clicked, switches to view genome view.
+        If an organism is clicked, switches to view species view.
         """
         x, y = pygame.mouse.get_pos()
         if (x >= WORLD_X and x <= WORLD_X + WORLD_WIDTH and y >= WORLD_Y and
@@ -134,9 +134,9 @@ class View:
             if organism:
                 self._viewing_modal = True
                 self._pause_fn()
-                self._components = self._view_genomes_components
+                self._components = self._view_modal_components
 
-                self._view_genomes_ui.draw_organism_view(organism)
+                self._view_modal_ui.draw_organism_view(organism)
 
     def handle_click(self):
         """Handles click events for all the UI components"""
@@ -163,12 +163,12 @@ class View:
         """
         self._playback_ui.update_playback_state(playbackState)
 
-    def _change_view_to_genomes(self):
-        """Toggles the view state between GAME And VIEW_GENOMES"""
+    def _change_view_to_modal(self):
+        """Toggles the view state between GAME And MODAL"""
         self._viewing_modal = True
         self._pause_fn()
-        self._components = self._view_genomes_components
-        self._view_genomes_ui.draw()
+        self._components = self._view_modal_components
+        self._view_modal_ui.draw()
 
     def _change_view_to_game(self):
         # set to True when user clicked an organism

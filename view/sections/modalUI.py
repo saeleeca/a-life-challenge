@@ -4,8 +4,8 @@ from view.components.button import Button
 from view.constants import WINDOW_BG, WINDOW_HEIGHT, WINDOW_WIDTH, \
     VIEW_GENOMES_X, VIEW_GENOMES_Y, VIEW_GENOMES_HEIGHT, VIEW_GENOMES_WIDTH, \
     LIGHT_GREY_2, BUTTON_WIDTH, EXIT_ICON_HOVER, \
-    EXIT_ICON, TITLE_FONT_NAME, BUTTON_HEIGHT, VIEW_GENOMES_TITLE, \
-    VIEW_GENOMES_FONT_SIZE, TITLE_TEXT, PREV_ICON, PREV_ICON_HOVER, NEXT_ICON, \
+    EXIT_ICON, TITLE_FONT_NAME, BUTTON_HEIGHT, VIEW_SPECIES_TITLE, \
+    VIEW_SPECIES_FONT_SIZE, TITLE_TEXT, PREV_ICON, PREV_ICON_HOVER, NEXT_ICON, \
     NEXT_ICON_HOVER, BUTTON_GAP, STATS_COLOR, FONT_NAME, STATS_FONT_SIZE, \
     VIEW_ORGANISM_TITLE
 from view.sections.buttonBarUI import ButtonBarUI
@@ -13,8 +13,8 @@ from view.sections.uiComponent import UiComponent
 from view.text import render_text, render_text_pair
 
 
-class ViewGenomeUI(UiComponent):
-    """Displays a new view in the Pygame window for view genomes"""
+class ModalUI(UiComponent):
+    """Displays a modal view for view genomes/species and organisms"""
     def __init__(self, screen, exit_fn, world):
         super().__init__()
         self._screen = screen
@@ -86,10 +86,10 @@ class ViewGenomeUI(UiComponent):
     def _draw_title(self, isGenomeView=True):
         x_center = WINDOW_WIDTH / 2
         y_center = VIEW_GENOMES_Y + BUTTON_HEIGHT
-        font = pygame.font.SysFont(TITLE_FONT_NAME, VIEW_GENOMES_FONT_SIZE)
+        font = pygame.font.SysFont(TITLE_FONT_NAME, VIEW_SPECIES_FONT_SIZE)
         if isGenomeView:
-            render_text(VIEW_GENOMES_TITLE, font, TITLE_TEXT,
-                    x_center, y_center, self._screen)
+            render_text(VIEW_SPECIES_TITLE, font, TITLE_TEXT,
+                        x_center, y_center, self._screen)
         else:
             render_text(VIEW_ORGANISM_TITLE, font, TITLE_TEXT,
                         x_center, y_center, self._screen)

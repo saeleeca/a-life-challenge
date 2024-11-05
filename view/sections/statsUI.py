@@ -10,30 +10,30 @@ from view.sections.uiComponent import UiComponent
 
 class StatsUI(UiComponent):
     """
-    Displays the Statistics text as a vertical list and a view genomes button
+    Displays the Statistics text as a vertical list and a view species button
     """
-    def __init__(self, screen, view_genome_fn):
+    def __init__(self, screen, view_species_fn):
         super().__init__()
         self._screen = screen
-        self._view_genome_button: Button = (
-            self._render_view_genomes_btn(view_genome_fn))
-        self._buttons.append(self._view_genome_button)
+        self._view_species_button: Button = (
+            self._render_view_species_btn(view_species_fn))
+        self._buttons.append(self._view_species_button)
         self._stats_height: int = 0
 
-    def _render_view_genomes_text(self):
+    def _render_view_species_text(self):
         # text portion
         font = pygame.font.SysFont(FONT_NAME, STATS_FONT_SIZE)
-        surface = font.render("View Genomes:", True, STATS_COLOR)
+        surface = font.render("View Species:", True, STATS_COLOR)
         rect = surface.get_rect(topleft=(STATS_X, STATS_Y))
         self._screen.blit(surface, rect)
         return rect
 
-    def _render_view_genomes_btn(self, view_genome_fn):
-        """Displays the view genomes list item and button"""
-        rect = self._render_view_genomes_text()
+    def _render_view_species_btn(self, view_species_fn):
+        """Displays the view species list item and button"""
+        rect = self._render_view_species_text()
         button_x = rect.right + 20
         button = Button(button_x, STATS_Y, GENETICS_ICON, GENETICS_ICON_HOVER,
-                        self._screen, view_genome_fn)
+                        self._screen, view_species_fn)
         button.draw()
         return button
 
@@ -57,10 +57,10 @@ class StatsUI(UiComponent):
 
     def draw(self):
         self.render_statistics()
-        self._render_view_genomes_text()
-        self._view_genome_button.draw()
+        self._render_view_species_text()
+        self._view_species_button.draw()
 
     def handle_click_event(self) -> bool:
         # button should not be hovered, next time it is viewed
-        self._view_genome_button.reset()
+        self._view_species_button.reset()
         return super().handle_click_event()
