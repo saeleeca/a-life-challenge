@@ -32,7 +32,7 @@ class View:
         self._file_ui = ButtonBarUI(self._screen, file_x, 15,
                         (SAVE_ICON, SAVE_ICON_HOVER, None),
                                 (LOAD_ICON, LOAD_ICON_HOVER, None))
-        self._stats_ui = StatsUI(self._screen)
+        self._stats_ui = StatsUI(self._screen, world)
         self._settings_ui = SettingsUI(self._screen)
         self._components = [ self._playback_ui, self._file_ui, self._stats_ui,
                              self._settings_ui]
