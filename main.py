@@ -69,8 +69,7 @@ def reset_game():
     state = PAUSE
     world = World(ROWS, COLS)
     # Reinitializing the view, sets the playback buttons to paused
-    view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game)
-
+    view.reinit(world)
     setup_life(world)
     view.update()
 

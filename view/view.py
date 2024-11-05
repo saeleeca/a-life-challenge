@@ -151,3 +151,8 @@ class View:
     def _change_view_to_game(self):
         self._components = self._game_components # happens in init game view
         self._draw_game_view()
+
+    def reinit(self, world):
+        self._world = world
+        self.update_playback_state(ButtonEvent.PAUSE)
+        self.update()
