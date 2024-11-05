@@ -48,7 +48,7 @@ SLIDER_CIRCLE = MID_BLUE
 
 # TEXT
 GAME_TITLE = "A-LIFE OSU"
-INSTRUCTIONS = "P to Pause/Play - Q to Quit - R to Restart - S to Save - L to Load"
+INSTRUCTIONS = "P to Pause/Play - Q to Quit - R to Restart - S to Save - L to Load - M to Meteor"
 
 TITLE_FONT_SIZE = 60
 TITLE_FONT_NAME = "Verdana"
@@ -72,6 +72,9 @@ LOAD_ICON_HOVER = "./view/icons/open_off_white.png"
 
 GENETICS_ICON = "./view/icons/genetics_blue.png"
 GENETICS_ICON_HOVER = "./view/icons/genetics_off_white.png"
+
+METEOR_ICON = "./view/icons/star_blue.png"
+METEOR_ICON_HOVER = "./view/icons/star.png"
 
 
 class ButtonEvent(Enum):
