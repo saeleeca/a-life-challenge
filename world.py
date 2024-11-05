@@ -15,9 +15,9 @@ def set_world_type():
 
 class World:
     ROWS, COLS = 50, 50
-    def __init__(self, rows: int, cols: int):
+    def __init__(self):
         self._world: list[list[object]] = \
-            [[None for _ in range(cols)] for _ in range(rows)]
+            [[None for _ in range(self.COLS)] for _ in range(self.ROWS)]
         self._environment: Environment = set_world_type()
         self._environment_type = Environment.get_environment_type(self._environment)
         self._passive_energy_mod = Environment.get_passive_max_energy_mod(self._environment)
@@ -121,3 +121,7 @@ class World:
 
     def get_day(self) -> int:
         return self._day
+
+    def reset(self):
+        """Resets the world"""
+        self.__init__()

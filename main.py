@@ -66,10 +66,11 @@ def reset_game():
     global world
     global view
     global state
+    # Always start at Pause state
     state = PAUSE
-    world = World(ROWS, COLS)
-    # Reinitializing the view, sets the playback buttons to paused
-    view.reinit(world)
+    view.update_playback_state(ButtonEvent.PAUSE)
+
+    world.reset()
     setup_life(world)
     view.update()
 
@@ -81,7 +82,7 @@ def step_game():
     view.update()
 
 
-world = World(ROWS, COLS)
+world = World()
 view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game)
 clock = pygame.time.Clock()
 
@@ -104,13 +105,6 @@ while running:
                 reset_game()
             elif event.key == pygame.K_q:
                 pygame.quit()
-
-            elif event.key == pygame.K_r:  # r to restart the simulation
-                world = World(ROWS, COLS)
-                view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game)
-                setup_life(world)
-                view._render_grid()
-
             elif event.key == pygame.K_s:  # s to save
                 savegame = world
                 with open("save_game.pk1", "wb") as file:
