@@ -20,6 +20,7 @@ class View:
         self._start_fn = start_fn
         self._reset_fn = reset_fn
         self._step_fn = step_fn
+        self._viewing_modal = False  # used to stop checking clicks when user is viewing an organism
 
         # initialize window
         pygame.init()
@@ -119,8 +120,28 @@ class View:
         render_text(GAME_TITLE, font, TITLE_TEXT,
                     x_center, y_center, self._screen)
 
+    def _handle_grid_click(self):
+        """
+        Checks if a user clicks on an organism in the grid.
+        If an organism is clicked, switches to view genome view.
+        """
+        x, y = pygame.mouse.get_pos()
+        if (x >= WORLD_X and x <= WORLD_X + WORLD_WIDTH and y >= WORLD_Y and
+            y <= WORLD_Y + WORLD_HEIGHT):
+            row = int((y - WORLD_Y) / self._grid_size)
+            col = int((x - WORLD_X) / self._grid_size)
+            organism = self._world.get_cell(row, col)
+            if organism:
+                self._viewing_modal = True
+                self._pause_fn()
+                self._components = self._view_genomes_components
+
+                self._view_genomes_ui.draw_organism_view(organism)
+
     def handle_click(self):
         """Handles click events for all the UI components"""
+        if not self._viewing_modal and self._handle_grid_click():
+            return
         for component in self._components:
             if component.handle_click_event():
                 return
@@ -144,11 +165,15 @@ class View:
 
     def _change_view_to_genomes(self):
         """Toggles the view state between GAME And VIEW_GENOMES"""
+        self._viewing_modal = True
         self._pause_fn()
         self._components = self._view_genomes_components
         self._view_genomes_ui.draw()
 
     def _change_view_to_game(self):
+        # set to True when user clicked an organism
+        # can remove this if world grid gets refactored to a separate class
+        self._viewing_modal = False
         self._components = self._game_components # happens in init game view
         self._draw_game_view()
 
