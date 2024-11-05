@@ -120,7 +120,7 @@ class View:
         render_text(GAME_TITLE, font, TITLE_TEXT,
                     x_center, y_center, self._screen)
 
-    def _handle_grid_click(self):
+    def _handle_grid_click(self) -> bool:
         """
         Checks if a user clicks on an organism in the grid.
         If an organism is clicked, switches to view species view.
@@ -137,6 +137,8 @@ class View:
                 self._components = self._view_modal_components
 
                 self._view_modal_ui.draw_organism_view(organism)
+                return True
+            return False
 
     def handle_click(self):
         """Handles click events for all the UI components"""
