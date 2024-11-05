@@ -2,8 +2,6 @@ import random
 import pygame
 import pickle
 import os
-import tkinter as tk
-from tkinter import filedialog
 
 import events
 from models import CreatureType, Genome, PassiveOrganism, HerbivoreOrganism, CarnivoreOrganism
@@ -86,41 +84,31 @@ def step_game():
     view.update()
 
 def save_game():
-    """ Opens file explorer to name and save current data to specified file """
-    # Open file dialog to name data file
-    root = tk.Tk()
-    root.withdraw()
-    file_path = filedialog.asksaveasfilename(
-        defaultextension=".pkl",
-        filetypes=[("Pickle Files", "*.pkl")]
-    )
-    root.destroy()
+    """ Saves current data to specified file """
 
     # Save data using pickle
     global world
-    if file_path:
-        with open(file_path, "wb") as file:
-            pickle.dump(world, file)
-        print("Data saved successfully!")
+    #if file_path:
+    with open("world_save", "wb") as file:
+        pickle.dump(world, file)
+    print("Data saved successfully!")
 
 def load_game():
-    """ Opens file explorer for user to load selected pickle file"""
+    """ Loads a previously saved pickle file"""
     global world
     global view
 
-    # Opens file explorer to select file
-    root = tk.Tk()
-    root.withdraw()  # Hide the main window
-    file_path = filedialog.askopenfilename()
-    if file_path:
-        print("Selected file loaded:", file_path)
-        with open(file_path, 'rb') as file:
+    # Attempts to open file called "world_save"
+    try:
+        with open("world_save", 'rb') as file:
             savedWorld = pickle.load(file)
 
             # Overwrites current world and view object before updating view
             world = savedWorld
             view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game, save_game, load_game)
             view.render_grid()
+    except:
+        print("File not found! Try saving first.")
 
 
 world = World(ROWS, COLS)
