@@ -33,7 +33,7 @@ class View:
                         (SAVE_ICON, SAVE_ICON_HOVER, save_fn),
                                 (LOAD_ICON, LOAD_ICON_HOVER, load_fn),
                                 (METEOR_ICON, METEOR_ICON_HOVER, None))
-        self._stats_ui = StatsUI(self._screen)
+        self._stats_ui = StatsUI(self._screen, world)
         self._settings_ui = SettingsUI(self._screen)
         self._components = [ self._playback_ui, self._file_ui, self._stats_ui,
                              self._settings_ui]
