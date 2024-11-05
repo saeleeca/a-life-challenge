@@ -84,7 +84,7 @@ class ViewGenomeUI(UiComponent):
         # use hardcoded data for now
         # genome_data = self._world.get_genome_data()
         genome_data = [
-            {"Color": "Red",
+            {"Color": (255, 0, 0),
              "Creature Type": "Carnivore",
              "Max Energy": 500,
              "Can Move": "True",
@@ -94,7 +94,7 @@ class ViewGenomeUI(UiComponent):
              "Day Created": 0,
              "Days Active": 360
              },
-            {"Color": "Blue",
+            {"Color": (0, 0, 255),
              "Creature Type": "Herbivore",
              "Max Energy": 500,
              "Can Move": "True",
@@ -104,7 +104,7 @@ class ViewGenomeUI(UiComponent):
              "Day Created": 0,
              "Days Active": 360
              },
-            {"Color": "Green",
+            {"Color": (0, 255, 0),
              "Creature Type": "Passive",
              "Max Energy": 500,
              "Can Move": "False",
@@ -123,9 +123,21 @@ class ViewGenomeUI(UiComponent):
 
         # draw new data
         for key, value in genome_data[self._genome_num].items():
-            y += render_text_pair(key, value, y, self._screen, VIEW_GENOMES_X + 50)
+            if key == "Color":
+                continue
+            y += render_text_pair(key, value, y, self._screen, VIEW_GENOMES_X + 100)
 
         self._genome_data_height = y - (VIEW_GENOMES_Y + 200)
+
+        self._draw_genome_organism(genome_data[self._genome_num])
+
+    def _draw_genome_organism(self, data):
+        color = data["Color"]
+        organism_width = 200
+        rect = (VIEW_GENOMES_X + (VIEW_GENOMES_WIDTH / 2) + (organism_width / 2),
+                VIEW_GENOMES_Y + 200,
+                organism_width, organism_width)
+        pygame.draw.rect(self._screen, color, rect)
 
     def handle_click_event(self) -> bool:
         # button should not be hovered, next time it is viewed
