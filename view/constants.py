@@ -55,7 +55,7 @@ SLIDER_CIRCLE = MID_BLUE
 
 # TEXT
 GAME_TITLE = "A-LIFE OSU"
-INSTRUCTIONS = "P to Pause/Play - Q to Quit - R to Restart - S to Save - L to Load"
+INSTRUCTIONS = "P to Pause/Play - Q to Quit - R to Restart - S to Save - L to Load - M to Meteor"
 VIEW_SPECIES_TITLE = "VIEW SPECIES"
 VIEW_ORGANISM_TITLE = "VIEW ORGANISM"
 
@@ -90,6 +90,9 @@ PREV_ICON_HOVER = "./view/icons/arrow_back_off_white.png"
 NEXT_ICON = "./view/icons/arrow_forward_blue.png"
 NEXT_ICON_HOVER = "./view/icons/arrow_forward_off_white.png"
 
+
+METEOR_ICON = "./view/icons/star_blue.png"
+METEOR_ICON_HOVER = "./view/icons/star.png"
 
 
 class ButtonEvent(Enum):

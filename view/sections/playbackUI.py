@@ -76,7 +76,7 @@ class PlaybackUI(ButtonBarUI):
     def _draw_instructions(screen):
         """Draws the playback instructions"""
         font = pygame.font.SysFont(TITLE_FONT_NAME, 20)
-        x_center = WORLD_X + WORLD_WIDTH / 2
+        x_center = WORLD_X + WORLD_WIDTH / 3
         y_center = WORLD_HEIGHT + WORLD_Y + 60 + BUTTON_HEIGHT
         render_text(INSTRUCTIONS, font, INSTRUCTIONS_TEXT, x_center, y_center,
                     screen)

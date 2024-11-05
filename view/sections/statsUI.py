@@ -6,19 +6,25 @@ from view.constants import WINDOW_BG, STATS_X, STATS_Y, BUTTON_HEIGHT, \
     GENETICS_ICON_HOVER
 from view.text import render_text_pair
 from view.sections.uiComponent import UiComponent
+from world import World
 
 
 class StatsUI(UiComponent):
     """
     Displays the Statistics text as a vertical list and a view species button
     """
-    def __init__(self, screen, view_species_fn):
+    def __init__(self, screen, view_species_fn, world):
         super().__init__()
         self._screen = screen
         self._view_species_button: Button = (
             self._render_view_species_btn(view_species_fn))
         self._buttons.append(self._view_species_button)
         self._stats_height: int = 0
+        self._world: World = world
+        self._render_view_genome()
+
+    def _render_view_genome(self):
+        """Displays the view genomes list item and button"""
 
     def _render_view_species_text(self):
         # text portion
@@ -42,7 +48,7 @@ class StatsUI(UiComponent):
         # dummy values (will come from world when completed)
         statistics = {"Days": 100, "Population": 500, "Deaths": 1500,
             "No. of Species": 14, "Number of mutations": 7,
-            "Total Offspring": 1497, "Generations (max)": 36, }
+            "Total Offspring": 1497, "Generations (max)": 36, "World Type": self._world.get_environment_type()}
         y = STATS_Y + BUTTON_HEIGHT + STATS_PADDING_Y
         original_y = y
         # Remove old stats from ui

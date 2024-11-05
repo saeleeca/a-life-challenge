@@ -2,6 +2,7 @@ import random
 import pygame
 import pickle
 
+import events
 from models import CreatureType, Genome, PassiveOrganism, HerbivoreOrganism, CarnivoreOrganism
 from view.constants import ButtonEvent
 from view.view import View
@@ -53,16 +54,19 @@ def process_cells(world):
 
 
 def start_game():
+    """ Starts the current simulation if state is PAUSE"""
     global state
     state = PLAY
     view.update_playback_state(ButtonEvent.PLAY)
 
 def pause_game():
+    """ Pauses the current simulation if state is PLAY"""
     global state
     state = PAUSE
     view.update_playback_state(ButtonEvent.PAUSE)
 
 def reset_game():
+    """ Reinitializes new world and view object to reset simulation"""
     global world
     global view
     global state
@@ -75,15 +79,43 @@ def reset_game():
     view.update()
 
 def step_game():
+    """ Pauses current simulation to step forward one frame of gameloop"""
     global state
     state = PAUSE
     view.update_playback_state(ButtonEvent.PAUSE)
     process_cells(world)
     view.update()
 
+def save_game():
+    """ Saves current data to specified file """
+    global world
+
+    # Save data using pickle
+    with open("world_save.pkl", "wb") as file:
+        pickle.dump(world, file)
+    print("Data saved successfully!")
+
+def load_game():
+    """ Loads a previously saved pickle file"""
+    global world
+    global view
+
+    # Attempts to open file called "world_save"
+    try:
+        with open("world_save.pkl", 'rb') as file:
+            savedWorld = pickle.load(file)
+
+            # Overwrites current world and view object before updating view
+            world = savedWorld
+            view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game, save_game, load_game)
+            view.update()
+    except:
+        print("File not found! Try saving first.")
+
 
 world = World()
-view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game)
+view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game,
+            save_game, load_game)
 clock = pygame.time.Clock()
 
 setup_life(world)
@@ -96,29 +128,34 @@ while running:
         if event.type == pygame.QUIT:
             running = False
             break
+
         if event.type == pygame.KEYDOWN:
+            # Press p to pause and unpause simulation
             if event.key == pygame.K_p and state == PLAY:
                 pause_game()
             elif event.key == pygame.K_p and state == PAUSE:
                 start_game()
+
+            # Press r to restart simulation
             elif event.key == pygame.K_r:
                 reset_game()
+
+            # Press q to quit simulation
             elif event.key == pygame.K_q:
                 pygame.quit()
-            elif event.key == pygame.K_s:  # s to save
-                savegame = world
-                with open("save_game.pk1", "wb") as file:
-                    pickle.dump(savegame, file)
 
-            elif event.key == pygame.K_l:  # l to reload save
-                with open('save_game.pk1', 'rb') as file:
-                    savedWorld = pickle.load(file)
-                world = savedWorld
-                view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game)
-                view._render_grid()
+            # Press s to save, brings up file explorer to name file
+            elif event.key == pygame.K_s:
+                save_game()
 
-            elif event.key == pygame.K_q:  # q to quit
-                pygame.quit()
+            # Press l to reload save, opens file explorer to choose file
+            elif event.key == pygame.K_l:
+                load_game()
+
+            # Press m to generate a meteor to kill organisms in a 10x10 area
+            elif event.key == pygame.K_m:
+                events.meteor(world, view)
+
         elif event.type == pygame.MOUSEBUTTONDOWN:
             view.handle_click()
         elif event.type == pygame.MOUSEMOTION:

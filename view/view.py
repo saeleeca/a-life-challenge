@@ -11,7 +11,7 @@ from view.text import render_text
 GAME, MODAL = 0, 1  # View modes
 class View:
     """Handles rendering the UI and the different UI components"""
-    def __init__(self, rows: int, cols: int, world, start_fn, pause_fn, reset_fn, step_fn):
+    def __init__(self, rows: int, cols: int, world, start_fn, pause_fn, reset_fn, step_fn, save_fn, load_fn):
         self._rows: int = rows
         self._cols: int = cols
         self._world = world
@@ -37,11 +37,12 @@ class View:
                                        self._pause_fn,
                                        self._reset_fn, self._step_fn)
         width = (BUTTON_WIDTH * 2) + BUTTON_GAP
-        file_x = WINDOW_WIDTH - width - 50
+        file_x = WINDOW_WIDTH - width - 150
         self._file_ui = ButtonBarUI(self._screen, file_x, 15,
-                                    (SAVE_ICON, SAVE_ICON_HOVER, None),
-                                    (LOAD_ICON, LOAD_ICON_HOVER, None))
-        self._stats_ui = StatsUI(self._screen, self._change_view_to_modal)
+                        (SAVE_ICON, SAVE_ICON_HOVER, save_fn),
+                                (LOAD_ICON, LOAD_ICON_HOVER, load_fn),
+                                (METEOR_ICON, METEOR_ICON_HOVER, None))
+        self._stats_ui = StatsUI(self._screen, self._change_view_to_modal, world)
         self._settings_ui = SettingsUI(self._screen)
 
         self._view_modal_ui = ModalUI(self._screen,
