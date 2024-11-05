@@ -85,11 +85,10 @@ def step_game():
 
 def save_game():
     """ Saves current data to specified file """
+    global world
 
     # Save data using pickle
-    global world
-    #if file_path:
-    with open("world_save", "wb") as file:
+    with open("world_save.pkl", "wb") as file:
         pickle.dump(world, file)
     print("Data saved successfully!")
 
@@ -100,7 +99,7 @@ def load_game():
 
     # Attempts to open file called "world_save"
     try:
-        with open("world_save", 'rb') as file:
+        with open("world_save.pkl", 'rb') as file:
             savedWorld = pickle.load(file)
 
             # Overwrites current world and view object before updating view
