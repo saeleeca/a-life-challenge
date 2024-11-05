@@ -10,7 +10,7 @@ from view.text import render_text
 
 class View:
     """Handles rendering the UI and the different UI components"""
-    def __init__(self, rows: int, cols: int, world, start_fn, pause_fn, reset_fn, step_fn):
+    def __init__(self, rows: int, cols: int, world, start_fn, pause_fn, reset_fn, step_fn, save_fn, load_fn):
         self._rows: int = rows
         self._cols: int = cols
         self._world = world
@@ -28,10 +28,11 @@ class View:
         # _playback_ui, _file_ui, _stats_ui, _settings_ui
         self._playback_ui = PlaybackUI(self._screen, start_fn, pause_fn, reset_fn, step_fn)
         width = (BUTTON_WIDTH * 2) + BUTTON_GAP
-        file_x = WINDOW_WIDTH - width - 50
+        file_x = WINDOW_WIDTH - width - 150
         self._file_ui = ButtonBarUI(self._screen, file_x, 15,
-                        (SAVE_ICON, SAVE_ICON_HOVER, None),
-                                (LOAD_ICON, LOAD_ICON_HOVER, None))
+                        (SAVE_ICON, SAVE_ICON_HOVER, save_fn),
+                                (LOAD_ICON, LOAD_ICON_HOVER, load_fn),
+                                (METEOR_ICON, METEOR_ICON_HOVER, None))
         self._stats_ui = StatsUI(self._screen)
         self._settings_ui = SettingsUI(self._screen)
         self._components = [ self._playback_ui, self._file_ui, self._stats_ui,
