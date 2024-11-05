@@ -116,4 +116,7 @@ class View:
         """
         self._playback_ui.update_playback_state(playbackState)
 
+    def get_screen(self):
+        """Getter method to return screen"""
+        return self._screen
 
