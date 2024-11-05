@@ -44,16 +44,16 @@ class StatsUI(UiComponent):
             "No. of Species": 14, "Number of mutations": 7,
             "Total Offspring": 1497, "Generations (max)": 36, }
         y = STATS_Y + BUTTON_HEIGHT + STATS_PADDING_Y
-
+        original_y = y
         # Remove old stats from ui
         pygame.draw.rect(self._screen, WINDOW_BG,
-                         (STATS_X, y, 450, self._stats_height - y))
+                         (STATS_X, y, 450, self._stats_height))
         # Draw new stats
         for title, value in statistics.items():
             y += render_text_pair(title, value, y,
                                   self._screen) + STATS_PADDING_Y
 
-        self._stats_height = STATS_Y + y    # save height for updating later
+        self._stats_height = y -  original_y   # save height for updating later
 
     def draw(self):
         self.render_statistics()
