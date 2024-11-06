@@ -179,3 +179,7 @@ class View:
         self._viewing_modal = False
         self._components = self._game_components # happens in init game view
         self._draw_game_view()
+
+    def get_screen(self):
+        """Getter method to return screen"""
+        return self._screen

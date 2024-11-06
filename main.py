@@ -155,6 +155,8 @@ while running:
             # Press m to generate a meteor to kill organisms in a 10x10 area
             elif event.key == pygame.K_m:
                 events.meteor(world, view)
+                view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game, save_game, load_game)
+                view.update()
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             view.handle_click()
