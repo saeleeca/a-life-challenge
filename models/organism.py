@@ -6,7 +6,7 @@ class Organism:
         self._row: int = row
         self._col: int = col
         self._world = world
-        self._mutation_service = MutationService()
+        self._mutation_service = MutationService()      # Singleton Instance
         # Custom / Organism-Specific Properties
         self._move_energy_expenditure = 1   # Energy spend moving
         self._food_energy = 1               # Energy given when eaten

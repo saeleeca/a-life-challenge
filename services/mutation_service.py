@@ -2,6 +2,16 @@ import random
 from models import Genome, CreatureType
 
 class MutationService:  
+    # Set Up Singleton Implementation
+    _instance = None
+    def __new__(cls, *args, **kwargs):
+        """
+        Override the __new__ method to implement the singleton pattern.
+        """
+        if not cls._instance:
+            cls._instance = super(MutationService, cls).__new__(cls)
+        return cls._instance
+    
     def __init__(self):
         self.mutation_strategies = {
             'color': self._mutate_color,
@@ -13,7 +23,7 @@ class MutationService:
         self.mutation_rates = {
             'color': 0.1,
             'max_energy': 0.1,
-            'can_move': 0.005,
+            'can_move': 0.001,
             'creature_type': 0.005 
         }
 
@@ -40,7 +50,7 @@ class MutationService:
         color = list(genome.get_color())
         for i in range(3):
             if random.random() < 0.33: 
-                color[i] = min(255, max(0, color[i] + random.randint(-25, 25)))
+                color[i] = min(255, max(0, color[i] + random.randint(-35, 35)))
         genome._color = tuple(color)
 
     def _mutate_max_energy(self, genome: Genome):
