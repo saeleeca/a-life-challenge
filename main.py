@@ -1,7 +1,6 @@
 import random
 import pygame
 import pickle
-import os
 
 import events
 from models import CreatureType, Genome, PassiveOrganism, HerbivoreOrganism, CarnivoreOrganism
@@ -42,12 +41,16 @@ def setup_life(world):
 
 def process_cells(world):
     visited = set()
+    day = world.get_day()
     for row in range(ROWS):
         for col in range(COLS):
             organism = world.get_cell(row, col)
-            if organism and organism not in visited:
+            if (organism and (organism not in visited) and
+                (day == 0 or day != organism.get_birthday())):
                 visited.add(organism)
                 organism.choose_action()
+
+    world.inc_day()
 
 
 def start_game():
@@ -67,11 +70,11 @@ def reset_game():
     global world
     global view
     global state
+    # Always start at Pause state
     state = PAUSE
-    world = World(ROWS, COLS)
+    view.update_playback_state(ButtonEvent.PAUSE)
 
-    # Reinitializing the view, sets the playback buttons to paused
-    view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game, save_game, load_game)
+    world.reset()
     setup_life(world)
     view.update()
 
@@ -105,13 +108,14 @@ def load_game():
             # Overwrites current world and view object before updating view
             world = savedWorld
             view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game, save_game, load_game)
-            view.render_grid()
+            view.update()
     except:
         print("File not found! Try saving first.")
 
 
-world = World(ROWS, COLS)
-view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game, save_game, load_game)
+world = World()
+view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game,
+            save_game, load_game)
 clock = pygame.time.Clock()
 
 setup_life(world)
@@ -170,3 +174,5 @@ while running:
     # limits FPS to 1
     # dt is delta time in seconds since last frame, used for framerate-independent physics.
     dt = clock.tick(20)
+
+pygame.quit()

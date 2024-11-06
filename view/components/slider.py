@@ -14,13 +14,16 @@ class Slider:
     def __init__(self, x: float, y: float, screen,
                  min_val: int, max_val: int, default_val: int,
                  title: str):
-        # draw the title, use the width place slider track
+        # draw the title to get width, use the width place slider track
         font = pygame.font.SysFont(FONT_NAME, STATS_FONT_SIZE)
-        title_width = render_text(title, font, STATS_COLOR, x, y - 10, screen,
+        self._title_width = render_text(title, font, WINDOW_BG, x, y - 10, screen,
                                   False)
-        self._x: float = x + title_width + 15
+        self._title_x = x
+        self._title_y = y - 10
+        self._x: float = x + self._title_width + 15
         self._y: float = y
         self._screen = screen
+        self._title = title
 
         # start using default val.
         # need to get relative position using min,max,width and x
@@ -36,6 +39,14 @@ class Slider:
 
     def draw(self):
         """Draws the slider track, circle, and value"""
+        # erase old title
+        pygame.draw.rect(self._screen, WINDOW_BG, (self._title_x, self._title_y,
+                                                   self._title_width, 30))
+        # draw the title
+        font = pygame.font.SysFont(FONT_NAME, STATS_FONT_SIZE)
+        render_text(self._title, font, STATS_COLOR, self._title_x,
+                    self._title_y, self._screen,False)
+
         # slider track
         slider_rect = (self._x, self._y, SLIDER_WIDTH, SLIDER_HEIGHT)
         pygame.draw.rect(self._screen, SLIDER_TRACK, slider_rect,
