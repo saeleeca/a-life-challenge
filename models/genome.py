@@ -7,7 +7,7 @@ class CreatureType(Enum):
 
 class Genome:
     def __init__(self, color: (int, int, int), creature_type: CreatureType,
-                 max_energy: int, can_move: bool):
+        max_energy: int, can_move: bool):
         self._color: (int, int, int) = color
         self._creature_type: CreatureType = creature_type
         self._max_energy: int = max_energy

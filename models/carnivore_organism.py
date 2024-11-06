@@ -8,24 +8,31 @@ class CarnivoreOrganism(Organism):
         self._food_energy = 8
         self._base_energy_expenditure = 2
         self._food_type = HerbivoreOrganism  
-        self._reproduction_ratio = 1.2
+        self._reproduction_ratio = 1.4
         
+    def choose_action(self):
+        if self._world.herbivore_count < self._low_food_threshold:
+            # Conserve energy and avoid moving when herbivores are too few
+            self._energy -= self._base_energy_expenditure // 2
+        else:
+            super().choose_action()  # Regular behavior if enough food is available
 
     def choose_action(self):
-        """Preditor checks adjacent cells for passive organisms, eats if found, 
+        """Carnivore checks adjacent cells for passive organisms, eats if found, 
         moves if no food, and dies if out of energy."""
         
         # Step 1: Check adjacent cells for food
         food_found, food_row, food_col = self._world.get_adjacent_food(self._row, self._col, self._food_type)
 
-        if food_found:
-            # Step 2: Eat the food if found            
+        # Step 2: Eat the food if found
+        if food_found:                    
             self.eat(self._world.get_cell(food_row, food_col)) 
-        else:
-            # Step 3: Move randomly if no food found and can move
-            if self._genome.get_can_move():
-                self.random_move()            
         
+        # Step 3: Move randomly if no food found and can move and has enough energy
+        else:
+            if self._genome.get_can_move():
+                self.random_move() 
+
         # Step 4: Calculate baseline energy loss. Die if out of energy.
         self._energy -= self._base_energy_expenditure
         if self._energy <= 0:
