@@ -32,3 +32,6 @@ class UiComponent:
                 pygame.display.update()
 
         return False
+    def draw(self):
+        """Each child class will implement a draw method"""
+        pass

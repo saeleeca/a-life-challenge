@@ -14,10 +14,9 @@ def render_text(text: str, font, color: (int, int, int), x: float, y: float,
     screen.blit(surface, rect)
     return rect.width
 
-def render_text_pair(title: str, value: int, y: float, screen) -> int:
+def render_text_pair(title: str, value: int, y: float, screen, x=STATS_X) -> int:
     """Helper function to draw a title value pair to the screen"""
     font = pygame.font.SysFont(FONT_NAME, STATS_FONT_SIZE)
-    x = STATS_X
     surface = font.render(f"{title}: {value}", True, STATS_COLOR)
     rect = surface.get_rect(topleft=(x, y))
     screen.blit(surface, rect)

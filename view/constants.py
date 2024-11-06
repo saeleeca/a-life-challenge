@@ -10,6 +10,9 @@ BUTTON_HEIGHT = 35
 BUTTON_GAP = 40
 BORDER_WIDTH = 6
 
+VIEW_GENOMES_WIDTH = 800
+VIEW_GENOMES_HEIGHT = 600
+
 SLIDER_HEIGHT = 10
 SLIDER_WIDTH = 200
 SLIDER_RADIUS = 10
@@ -22,6 +25,9 @@ STATS_X = 75
 STATS_Y = 150
 STATS_PADDING_Y = 20
 
+VIEW_GENOMES_X = 200
+VIEW_GENOMES_Y = 100
+
 # COLORS
 # COLOR SCHEME
 RED_ACCENT = (230, 57, 70)
@@ -31,6 +37,7 @@ MID_BLUE = (69,123, 157)
 LIGHT_BLUE = (168, 218, 220)
 DARK_GREY = (44, 47, 51)
 LIGHT_GREY = "grey"
+LIGHT_GREY_2 = (144, 147, 151)
 
 WORLD_BG = LIGHT_GREY
 WINDOW_BG = DARK_GREY
@@ -49,11 +56,14 @@ SLIDER_CIRCLE = MID_BLUE
 # TEXT
 GAME_TITLE = "A-LIFE OSU"
 INSTRUCTIONS = "P to Pause/Play - Q to Quit - R to Restart - S to Save - L to Load - M to Meteor"
+VIEW_SPECIES_TITLE = "VIEW SPECIES"
+VIEW_ORGANISM_TITLE = "VIEW ORGANISM"
 
 TITLE_FONT_SIZE = 60
 TITLE_FONT_NAME = "Verdana"
 FONT_NAME = "Verdana"
 STATS_FONT_SIZE = 22
+VIEW_SPECIES_FONT_SIZE = 40
 
 # ICONS
 PLAY_ICON = "./view/icons/play_arrow_blue.png"
@@ -72,6 +82,14 @@ LOAD_ICON_HOVER = "./view/icons/open_off_white.png"
 
 GENETICS_ICON = "./view/icons/genetics_blue.png"
 GENETICS_ICON_HOVER = "./view/icons/genetics_off_white.png"
+
+EXIT_ICON = "./view/icons/close_blue.png"
+EXIT_ICON_HOVER = "./view/icons/close_off_white.png"
+PREV_ICON = "./view/icons/arrow_back_blue.png"
+PREV_ICON_HOVER = "./view/icons/arrow_back_off_white.png"
+NEXT_ICON = "./view/icons/arrow_forward_blue.png"
+NEXT_ICON_HOVER = "./view/icons/arrow_forward_off_white.png"
+
 
 METEOR_ICON = "./view/icons/star_blue.png"
 METEOR_ICON_HOVER = "./view/icons/star.png"
