@@ -1,6 +1,6 @@
 import random
-from environments import Environment, NormalEnvironment, HarshEnvironment, DesertEnvironment, RainforestEnvironment
-from models.species import Species
+from environments import NormalEnvironment, HarshEnvironment, DesertEnvironment, RainforestEnvironment
+from models import Species
 
 
 def set_world_type():

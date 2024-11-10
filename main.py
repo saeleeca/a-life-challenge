@@ -3,8 +3,8 @@ import pygame
 import pickle
 
 import events
-from models import CreatureType, Genome, PassiveOrganism, HerbivoreOrganism, CarnivoreOrganism
-from models.species import Species
+from models import (CreatureType, Genome, PassiveOrganism, HerbivoreOrganism,
+                    CarnivoreOrganism, Species)
 from view.constants import ButtonEvent
 from view.view import View
 from world import World
