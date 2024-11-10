@@ -125,3 +125,39 @@ class World:
     def reset(self):
         """Resets the world"""
         self.__init__()
+
+    def get_species_data(self) -> list:
+        """Returns a list with the species data to be rendered in the UI"""
+        # Hardcoded for now. Will use self._species once implemented
+        return [
+            {"Genome": {"Color": (255, 0, 0),
+             "Creature Type": "Carnivore",
+             "Max Energy": 500,
+             "Can Move": "True"},
+             "Status": "Active",
+             "Population": 100,
+             "Max Population": 390,
+             "Day Created": 0,
+             "Days Active": 360
+             },
+            {"Genome": {"Color": (0, 0, 255),
+             "Creature Type": "Herbivore",
+             "Max Energy": 500,
+             "Can Move": "True"},
+             "Status": "Active",
+             "Population": 400,
+             "Max Population": 600,
+             "Day Created": 0,
+             "Days Active": 360
+             },
+            {"Genome": {"Color": (0, 255, 0),
+             "Creature Type": "Passive",
+             "Max Energy": 500,
+             "Can Move": "False"},
+             "Status": "Active",
+             "Population": 800,
+             "Max Population": 1000,
+             "Day Created": 0,
+             "Days Active": 360
+             }
+        ]

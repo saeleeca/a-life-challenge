@@ -34,6 +34,10 @@ class ModalUI(UiComponent):
         self._genome_data_height: int = 0
 
     def draw_organism_view(self, organism):
+        """
+        Draws the Organism View modal:
+        Same as Species View, but with a different title, and only the Exit btn
+        """
         self._draw_background()
         self._draw_title(False)
         self._draw_modal_data(False, organism)
@@ -42,6 +46,10 @@ class ModalUI(UiComponent):
 
 
     def draw(self):
+        """
+        Draws the Species View modal:
+        Has a title, Prev, Next and Exit buttons
+        """
         self._species_idx = 0
         self._draw_background()
         self._draw_title(True)
@@ -79,57 +87,19 @@ class ModalUI(UiComponent):
                       VIEW_GENOMES_WIDTH, VIEW_GENOMES_HEIGHT)
         pygame.draw.rect(self._screen, WINDOW_BG, modal_rect)
 
-    def _draw_title(self, isGenomeView=True):
+    def _draw_title(self, is_species_view=True):
         x_center = WINDOW_WIDTH / 2
         y_center = VIEW_GENOMES_Y + BUTTON_HEIGHT
         font = pygame.font.SysFont(TITLE_FONT_NAME, VIEW_SPECIES_FONT_SIZE)
-        if isGenomeView:
+        if is_species_view:
             render_text(VIEW_SPECIES_TITLE, font, TITLE_TEXT,
                         x_center, y_center, self._screen)
         else:
             render_text(VIEW_ORGANISM_TITLE, font, TITLE_TEXT,
                         x_center, y_center, self._screen)
 
-    def _draw_modal_data(self, isSpeciesView=True, organism=None):
-        # use hardcoded data for now
-        # genome_data = self._world.get_genome_data()
-        species_data = [
-            {"Genome": {"Color": (255, 0, 0),
-             "Creature Type": "Carnivore",
-             "Max Energy": 500,
-             "Can Move": "True"},
-             "Status": "Active",
-             "Population": 100,
-             "Max Population": 390,
-             "Day Created": 0,
-             "Days Active": 360
-             },
-            {"Genome": {"Color": (0, 0, 255),
-             "Creature Type": "Herbivore",
-             "Max Energy": 500,
-             "Can Move": "True"},
-             "Status": "Active",
-             "Population": 400,
-             "Max Population": 600,
-             "Day Created": 0,
-             "Days Active": 360
-             },
-            {"Genome": {"Color": (0, 255, 0),
-             "Creature Type": "Passive",
-             "Max Energy": 500,
-             "Can Move": "False"},
-             "Status": "Active",
-             "Population": 800,
-             "Max Population": 1000,
-             "Day Created": 0,
-             "Days Active": 360
-             }
-        ]
-
-
+    def _draw_modal_data(self, is_species_view=True, organism=None):
         y = VIEW_GENOMES_Y + 200
-
-
         original_y = y
 
         # remove old data
@@ -137,8 +107,8 @@ class ModalUI(UiComponent):
                      (VIEW_GENOMES_X, y, VIEW_GENOMES_WIDTH,
                       self._genome_data_height))
 
-        data = organism.get_data() if not isSpeciesView \
-            else species_data[self._species_idx]
+        data = organism.get_data() if not is_species_view \
+            else self._world.get_species_data()[self._species_idx]
 
         # Drawing Organism/Species data in top part of the modal
         for key, value in data.items():
