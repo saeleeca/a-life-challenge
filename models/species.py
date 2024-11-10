@@ -1,4 +1,9 @@
+from models import CreatureType
+from services.naming_service import OrganismNameGenerator
+
+
 class Species:
+    _naming_service = OrganismNameGenerator()
     def __init__(self, genome: 'Genome', day: int, world):
         self._base_genome = genome
         self._name = self.generate_name()
@@ -9,20 +14,28 @@ class Species:
             self._population = 0
         else:
             self._population = 1
-        self._max_population = 0
+        self._max_population = self._population
         self._day_created = day
         self._day_extinct = None
         self._world = world
 
     def generate_name(self) -> str:
-        return "Species Name"
+        creature_type = self._base_genome.get_creature_type()
+        if creature_type == CreatureType.CARNIVORE:
+            return self._naming_service.generate_carnivore_name()
+        elif creature_type == CreatureType.PASSIVE:
+            return self._naming_service.generate_passive_name()
+        else:
+            return self._naming_service.generate_herbivore_name()
 
     def is_same_species(self, genome: 'Genome') -> bool:
         if self._world.get_day() == 0:
             return True
-        return self._base_genome.get_similarity(genome) > 0
+        return self._base_genome.get_difference(genome) < .30 # 30% difference
 
     def inc_population(self):
+        if not self._is_active:
+            self._is_active = True
         self._population += 1
         self._max_population = max(self._max_population, self._population)
 

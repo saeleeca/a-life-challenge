@@ -49,10 +49,22 @@ class World:
         parent_species = organism.get_species()
         genome = organism.get_genome()
         if self._day != 0 and not parent_species.is_same_species(genome):
+            # Different species from parent, but first check other
+            # species before creating a new one
+            for species in self._species:
+                if species == parent_species:
+                    continue
+                # Found another species that it belongs to so add it there
+                if species.is_same_species(genome):
+                    organism.set_species(species)
+                    species.inc_population()
+                    return
+            # Doesn't belong to any existing species, so create a new one
             new_species = Species(genome, self._day, self)
             self._species.append(new_species)
             organism.set_species(new_species)
         else:
+            # Not a new species, so just update population
             parent_species.inc_population()
 
     def is_cell_empty(self, row: int, col: int) -> bool:
