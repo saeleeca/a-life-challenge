@@ -37,6 +37,7 @@ class MutationService:
             creature_type=genome.get_creature_type(),
             max_energy=genome.get_max_energy(),
             can_move=genome.get_can_move(),
+            reproduction_rate=genome.get_reproduction_rate()
         )
 
         for attribute, mutation_strategy in self.mutation_strategies.items():

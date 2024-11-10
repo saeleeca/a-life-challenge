@@ -21,10 +21,10 @@ dt = 0
 
 def create_genome(creature_type, world) -> Genome:
     if creature_type == CreatureType.PASSIVE:
-        return Genome(GREEN, creature_type, world.get_world_max_passive_energy(), False)
+        return Genome(GREEN, creature_type, world.get_world_max_passive_energy(), False, world.get_passive_reproduction_rate())
     if creature_type == CreatureType.CARNIVORE:
-        return Genome(RED, creature_type, world.get_world_max_carnivore_energy(), True)
-    return Genome(BLUE, creature_type, world.get_world_max_herbivore_energy(), True)
+        return Genome(RED, creature_type, world.get_world_max_carnivore_energy(), True, world.get_carnivore_reproduction_rate())
+    return Genome(BLUE, creature_type, world.get_world_max_herbivore_energy(), True, world.get_herbivore_reproduction_rate())
 
 
 def setup_life(world):

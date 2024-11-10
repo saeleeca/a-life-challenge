@@ -1,5 +1,6 @@
 from models import Organism
 from world import World
+import random
 
 class PassiveOrganism(Organism):
     def __init__(self, genome, row, col, world):
@@ -126,19 +127,26 @@ class PassiveOrganism(Organism):
             if count == 3:
                 empty_cells.append((self._row - 1, self._col + 1))
 
-        # Reproduction occurs in found empty cells that can reproduce
-        while array_count < len(empty_cells):
-            self.reproduce(empty_cells[array_count][0],empty_cells[array_count][1])
-            array_count += 1
+        # Reproduction occurs in found empty cells that can reproduce depending on reproduction rate
+        # Check reproduction rate
+        if random.random() < self._world.get_passive_reproduction_rate():
+            while array_count < len(empty_cells):
+                self.reproduce(empty_cells[array_count][0],empty_cells[array_count][1])
+                array_count += 1
         return array_count
 
-    def energy_absorption(self, world):
+    def energy_absorption(self):
         """Passive Organism generates energy based on the world/environmental energy rate up to its maximum capacity"""
-        energy_rate = World.get_energy_rate(world)
-        max_energy = World.get_world_max_passive_energy(world)
+        energy_rate = self._world.get_energy_rate()
+        max_energy = self._world.get_world_max_passive_energy()
         self._energy = min(self._energy + energy_rate, max_energy)
         return
 
+    def energy_reduction(self):
+        """Passive Organism stored energy declines intermittently. Currently based on hardcoded rate"""
+        if random.random() < 0.5:
+            self._energy -= 1.0
+        return
 
     def choose_action(self):
         """Organism will die if it has less than 2 or greater than 3 neighbors.
@@ -163,5 +171,6 @@ class PassiveOrganism(Organism):
             if self._energy <= 0:
                 self._world.kill_organism(self._row, self._col)
             else:
-                self.energy_absorption(self._world)
+                self.energy_absorption()
+                self.energy_reduction()
 
