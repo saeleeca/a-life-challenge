@@ -31,7 +31,7 @@ class Genome:
 
     def reproduce(self) -> 'Genome':
         return self.__class__(self._color, self._creature_type,
-                              self._max_energy, self._can_move)
+                              self._max_energy, self._can_move, self._reproduction_rate)
 
     def get_data(self) -> dict:
         """Returns a dictionary with the data to be rendered in the UI"""
@@ -50,3 +50,11 @@ class Genome:
             "Max Energy": self._max_energy,
             "Can Move": self._can_move,
         }
+
+    def get_similarity(self, other: 'Genome'):
+        this_dict = self.__dict__
+        that_dict = other.__dict__
+        for key in this_dict:
+            if that_dict[key] != this_dict[key]:
+                return 0
+        return 100
