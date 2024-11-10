@@ -4,6 +4,7 @@ import pickle
 
 import events
 from models import CreatureType, Genome, PassiveOrganism, HerbivoreOrganism, CarnivoreOrganism
+from models.species import Species
 from view.constants import ButtonEvent
 from view.view import View
 from world import World
@@ -26,18 +27,26 @@ def create_genome(creature_type, world) -> Genome:
         return Genome(RED, creature_type, world.get_world_max_carnivore_energy(), True, world.get_carnivore_reproduction_rate())
     return Genome(BLUE, creature_type, world.get_world_max_herbivore_energy(), True, world.get_herbivore_reproduction_rate())
 
-
 def setup_life(world):
+    # Create 3 base species
+    passive_species = Species(create_genome(CreatureType.PASSIVE, world),
+                              0, world)
+    herbivore_species = Species(create_genome(CreatureType.HERBIVORE, world),
+                                0, world)
+    carnivore_species = Species(create_genome(CreatureType.CARNIVORE, world),
+                                0, world)
+    world.set_base_species([passive_species, herbivore_species, carnivore_species])
+
     for row in range(ROWS):
         for col in range(COLS):
             val = random.randint(0, 20)
             # 0-5 passive, 5-7 herbivore, 8 carnivore
             if val < 6:
-                world.add_organism(PassiveOrganism(create_genome(CreatureType.PASSIVE, world), row, col, world, 1), row, col)
+                world.add_organism(PassiveOrganism(create_genome(CreatureType.PASSIVE, world), row, col, world, 1, passive_species), row, col)
             elif 6< val < 8:
-                world.add_organism(HerbivoreOrganism(create_genome(CreatureType.HERBIVORE, world), row, col, world, 1), row, col)
+                world.add_organism(HerbivoreOrganism(create_genome(CreatureType.HERBIVORE, world), row, col, world, 1, herbivore_species), row, col)
             elif val == 8:
-                 world.add_organism(CarnivoreOrganism(create_genome(CreatureType.CARNIVORE, world), row, col, world, 1), row, col)
+                 world.add_organism(CarnivoreOrganism(create_genome(CreatureType.CARNIVORE, world), row, col, world, 1, carnivore_species), row, col)
 
 def process_cells(world):
     visited = set()
@@ -46,7 +55,7 @@ def process_cells(world):
         for col in range(COLS):
             organism = world.get_cell(row, col)
             if (organism and (organism not in visited) and
-                (day == 0 or day != organism.get_birthday())):
+                    (day == 0 or day != organism.get_birthday())):
                 visited.add(organism)
                 organism.choose_action()
 

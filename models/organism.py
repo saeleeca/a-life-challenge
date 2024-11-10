@@ -1,6 +1,7 @@
 from services.mutation_service import MutationService
 class Organism:
-    def __init__(self, genome, row: int, col: int, world, generation: int):
+    def __init__(self, genome, row: int, col: int, world, generation: int,
+                 species):
         self._genome = genome
         self._energy: int = self._genome.get_max_energy()
         self._row: int = row
@@ -8,6 +9,7 @@ class Organism:
         self._world = world
         self._birthday: int = self._world.get_day()
         self._generation: int = generation
+        self._species = species
 
         self._mutation_service = MutationService()      # Singleton Instance
         # Custom / Organism-Specific Properties
@@ -44,6 +46,12 @@ class Organism:
     def get_food_energy(self) -> int:
         return self._food_energy
 
+    def get_species(self) -> 'Species':
+        return self._species
+
+    def set_species(self, species: 'Species'):
+        self._species = species
+
     def eat(self, food: 'Organism') -> None:
         """Consumes the food"""
         # This might work for herbivore/carnivore but not passive
@@ -55,7 +63,7 @@ class Organism:
         """Reproduces and returns the offspring if there are exactly 3 neighbors."""
         mutated_genome = self._mutation_service.mutate(self._genome)
         child_organism = self.__class__(mutated_genome, row, col, self._world,
-                                        self._generation + 1)
+                                        self._generation + 1, self._species)
         self._world.add_organism(child_organism, row, col)
         return child_organism
 
@@ -71,6 +79,7 @@ class Organism:
         """Returns a dictionary with the data to be rendered in the UI"""
         return {
             "Age": self._world.get_day() - self._birthday,
+            "Species": self._species.get_name(),
             "Energy": self._energy,
             "Generation": self._generation,
             "Genome": self._genome.get_data()
