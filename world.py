@@ -21,16 +21,10 @@ class World:
         self._world: list[list[object]] = \
             [[None for _ in range(self.COLS)] for _ in range(self.ROWS)]
         self._species: list[Species] = []
-        self._environment: Environment = set_world_type()
-        self._environment_type = Environment.get_environment_type(self._environment)
-        self._passive_energy_mod = Environment.get_passive_max_energy_mod(self._environment)
-        self._herbivore_energy_mod = Environment.get_herbivore_max_energy_mod(self._environment)
-        self._carnivore_energy_mod = Environment.get_carnivore_max_energy_mod(self._environment)
-        self._energy_rate = Environment.get_energy_rate(self._environment) # how much can be absorbed per cycle
-        self._environment_color = Environment.get_environment_color(self._environment)
-        self._passive_reproduction_rate = Environment.get_passive_reproduction_rate_mod(self._environment)
-        self._herbivore_reproduction_rate = Environment.get_herbivore_reproduction_rate_mod(self._environment)
-        self._carnivore_reproduction_rate = Environment.get_carnivore_reproduction_rate_mod(self._environment)
+        self._environment = set_world_type()
+        self._passive_energy_mod = self._environment.get_passive_max_energy_mod()
+        self._herbivore_energy_mod = self._environment.get_herbivore_max_energy_mod()
+        self._carnivore_energy_mod = self._environment.get_carnivore_max_energy_mod()
         self._day: int = 0
 
     def kill_organism(self, row: int, col: int) -> None:
@@ -123,29 +117,9 @@ class World:
         """Gets maximum carnivore energy based on the environment."""
         return int(self.ROWS * self.COLS * self._carnivore_energy_mod)
 
-    def get_background_environment_color(self):
-        """Gets background color of the environment"""
-        return self._environment_color
-
-    def get_energy_rate(self):
-        """Gets energy rate based on the environment"""
-        return self._energy_rate
-
-    def get_environment_type(self):
-        """Gets the type of environment"""
-        return self._environment_type
-
-    def get_passive_reproduction_rate(self):
-        """Gets passive reproduction rate."""
-        return self._passive_reproduction_rate
-
-    def get_herbivore_reproduction_rate(self):
-        """Gets herbivore reproduction rate."""
-        return self._herbivore_reproduction_rate
-
-    def get_carnivore_reproduction_rate(self):
-        """Gets carnivore reproduction rate."""
-        return self._carnivore_reproduction_rate
+    def get_environment(self):
+        """Gets the environment"""
+        return self._environment
 
     def inc_day(self):
         self._day += 1
@@ -176,5 +150,5 @@ class World:
             "No. of mutations": 7,
             "Total Offspring": 1497,
             "Generations (max)": 36,
-            "World Type": self.get_environment_type()
+            "World Type": self.get_environment().get_environment_type()
         }

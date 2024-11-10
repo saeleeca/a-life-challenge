@@ -130,7 +130,7 @@ class PassiveOrganism(Organism):
 
         # Reproduction occurs in found empty cells that can reproduce depending on reproduction rate
         # Check reproduction rate
-        if random.random() < self._world.get_passive_reproduction_rate():
+        if random.random() < self._genome.get_reproduction_rate():
             while array_count < len(empty_cells):
                 self.reproduce(empty_cells[array_count][0],empty_cells[array_count][1])
                 array_count += 1
@@ -138,7 +138,7 @@ class PassiveOrganism(Organism):
 
     def energy_absorption(self):
         """Passive Organism generates energy based on the world/environmental energy rate up to its maximum capacity"""
-        energy_rate = self._world.get_energy_rate()
+        energy_rate = self._world.get_environment().get_energy_rate()
         max_energy = self._world.get_world_max_passive_energy()
         self._energy = min(self._energy + energy_rate, max_energy)
         return
@@ -146,7 +146,7 @@ class PassiveOrganism(Organism):
     def energy_reduction(self):
         """Passive Organism stored energy declines intermittently. Currently based on hardcoded rate"""
         if random.random() < 0.5:
-            self._energy -= 1.0
+            self._energy -= max(1, 1+self._world.get_environment().get_energy_rate())
         return
 
     def choose_action(self):
