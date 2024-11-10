@@ -3,8 +3,8 @@ from world import World
 import random
 
 class PassiveOrganism(Organism):
-    def __init__(self, genome, row, col, world):
-        super().__init__(genome, row, col, world)
+    def __init__(self, genome, row, col, world, generation):
+        super().__init__(genome, row, col, world, generation)
 
         # Set custom values for the Passive.
         self._reproduction_energy_expenditure = 6

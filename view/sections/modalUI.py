@@ -20,7 +20,7 @@ class ModalUI(UiComponent):
         self._screen = screen
         self._exit_fn = exit_fn
         self._world = world
-        self._genome_num: int = 0
+        self._species_idx: int = 0
 
         exit_button_padding: int= 20
         exit_button_x: int = (VIEW_GENOMES_X + VIEW_GENOMES_WIDTH -
@@ -34,31 +34,37 @@ class ModalUI(UiComponent):
         self._genome_data_height: int = 0
 
     def draw_organism_view(self, organism):
-        # hardcoded for now, will be an attribute of Organism
-        self._genome_num = 0
+        """
+        Draws the Organism View modal:
+        Same as Species View, but with a different title, and only the Exit btn
+        """
         self._draw_background()
         self._draw_title(False)
-        self._draw_genome_data(False, organism)
+        self._draw_modal_data(False, organism)
         self._exit_button.draw()
         self._buttons = [self._exit_button]
 
 
     def draw(self):
-        self._genome_num = 0
+        """
+        Draws the Species View modal:
+        Has a title, Prev, Next and Exit buttons
+        """
+        self._species_idx = 0
         self._draw_background()
         self._draw_title(True)
-        self._draw_genome_data()
+        self._draw_modal_data()
 
         def next_fn():
             # use hardcoded data for now
-            self._genome_num = (self._genome_num + 1) % 3
+            self._species_idx = (self._species_idx + 1) % 3
             # self._genome_num = self._genome_num + 1 % len(self._world.get_genome_data())
-            self._draw_genome_data()
+            self._draw_modal_data()
         def prev_fn():
             # use hardcoded data for now
-            self._genome_num = (self._genome_num - 1) % 3
+            self._species_idx = (self._species_idx - 1) % 3
             # self._genome_num = self._genome_num - 1 % len(self._world.get_genome_data())
-            self._draw_genome_data()
+            self._draw_modal_data()
 
         arrows = ButtonBarUI(self._screen, (WINDOW_WIDTH / 2) - (BUTTON_WIDTH + BUTTON_GAP / 2),
                     VIEW_GENOMES_Y + 100,
@@ -67,8 +73,6 @@ class ModalUI(UiComponent):
         self._buttons = arrows._buttons + [self._exit_button]
         for button in self._buttons:
             button.draw()
-
-
 
     def _draw_background(self):
         # Cover the entire background
@@ -83,88 +87,48 @@ class ModalUI(UiComponent):
                       VIEW_GENOMES_WIDTH, VIEW_GENOMES_HEIGHT)
         pygame.draw.rect(self._screen, WINDOW_BG, modal_rect)
 
-    def _draw_title(self, isGenomeView=True):
+    def _draw_title(self, is_species_view=True):
         x_center = WINDOW_WIDTH / 2
         y_center = VIEW_GENOMES_Y + BUTTON_HEIGHT
         font = pygame.font.SysFont(TITLE_FONT_NAME, VIEW_SPECIES_FONT_SIZE)
-        if isGenomeView:
+        if is_species_view:
             render_text(VIEW_SPECIES_TITLE, font, TITLE_TEXT,
                         x_center, y_center, self._screen)
         else:
             render_text(VIEW_ORGANISM_TITLE, font, TITLE_TEXT,
                         x_center, y_center, self._screen)
 
-    def _draw_genome_data(self, isGenomeView=True, organism=None):
-        # use hardcoded data for now
-        # genome_data = self._world.get_genome_data()
-        genome_data = [
-            {"Color": (255, 0, 0),
-             "Creature Type": "Carnivore",
-             "Max Energy": 500,
-             "Can Move": "True",
-             "Status": "Active",
-             "Population": 100,
-             "Max Population": 390,
-             "Day Created": 0,
-             "Days Active": 360
-             },
-            {"Color": (0, 0, 255),
-             "Creature Type": "Herbivore",
-             "Max Energy": 500,
-             "Can Move": "True",
-             "Status": "Active",
-             "Population": 400,
-             "Max Population": 600,
-             "Day Created": 0,
-             "Days Active": 360
-             },
-            {"Color": (0, 255, 0),
-             "Creature Type": "Passive",
-             "Max Energy": 500,
-             "Can Move": "False",
-             "Status": "Active",
-             "Population": 800,
-             "Max Population": 1000,
-             "Day Created": 0,
-             "Days Active": 360
-             }
-        ]
-
-        if isGenomeView:
-            y = VIEW_GENOMES_Y + 200
-
-        else:
-            y = VIEW_GENOMES_Y + BUTTON_HEIGHT + 50
-
+    def _draw_modal_data(self, is_species_view=True, organism=None):
+        y = VIEW_GENOMES_Y + 200
         original_y = y
 
         # remove old data
         pygame.draw.rect(self._screen, WINDOW_BG,
-                         (VIEW_GENOMES_X, y, VIEW_GENOMES_WIDTH, self._genome_data_height))
+                     (VIEW_GENOMES_X, y, VIEW_GENOMES_WIDTH,
+                      self._genome_data_height))
 
-        if not isGenomeView and organism:
-            organism_data = {
-                "Age": self._world.get_day() - organism.get_birthday(),
-                "Energy": organism.get_energy(),
-                "Generation": 23
-            }
-            # draw organism data
-            for key, value in organism_data.items():
-                y += render_text_pair(key, value, y, self._screen,
-                                      VIEW_GENOMES_X + 100)
+        data = organism.get_data() if not is_species_view \
+            else self._world.get_species_data()[self._species_idx]
 
-            y += 60
+        # Drawing Organism/Species data in top part of the modal
+        for key, value in data.items():
+            if key == "Genome":
+                continue
+            y += render_text_pair(key, value, y, self._screen,
+                                  VIEW_GENOMES_X + 100)
 
+        y += 30 # spacing before genome data
 
-        # draw new data
-        for key, value in genome_data[self._genome_num].items():
+        genome = data.get("Genome", {})
+        # Draw Genome data
+        for key, value in genome.items():
             if key == "Color":
                 continue
             y += render_text_pair(key, value, y, self._screen, VIEW_GENOMES_X + 100)
 
         self._genome_data_height = y - original_y
 
-        self._draw_genome_organism(genome_data[self._genome_num])
+        self._draw_genome_organism(genome)
 
     def _draw_genome_organism(self, data):
         color = data["Color"]

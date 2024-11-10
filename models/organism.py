@@ -1,11 +1,14 @@
 from services.mutation_service import MutationService
 class Organism:
-    def __init__(self, genome, row: int, col: int, world):
+    def __init__(self, genome, row: int, col: int, world, generation: int):
         self._genome = genome
         self._energy: int = self._genome.get_max_energy()
         self._row: int = row
         self._col: int = col
         self._world = world
+        self._birthday: int = self._world.get_day()
+        self._generation: int = generation
+
         self._mutation_service = MutationService()      # Singleton Instance
         # Custom / Organism-Specific Properties
         self._move_energy_expenditure = 1   # Energy spend moving
@@ -13,7 +16,8 @@ class Organism:
         self._base_energy_expenditure = 1   # Baseline energy expended per turn
         self._food_type = None              # Food class if a consumer   
         self._reproduction_ratio = 1.0      # how much energy surplus energy needed to reproduce
-        self._birthday: int = self._world.get_day()
+
+
 
     def move(self, row: int, col: int) -> None:
         """Updates the Organisms row and col"""
@@ -50,7 +54,8 @@ class Organism:
     def reproduce(self, row: int, col: int) -> 'Organism':
         """Reproduces and returns the offspring if there are exactly 3 neighbors."""
         mutated_genome = self._mutation_service.mutate(self._genome)
-        child_organism = self.__class__(mutated_genome, row, col, self._world)        
+        child_organism = self.__class__(mutated_genome, row, col, self._world,
+                                        self._generation + 1)
         self._world.add_organism(child_organism, row, col)
         return child_organism
 
@@ -61,3 +66,12 @@ class Organism:
     def get_birthday(self) -> int:
         """Returns the birthday"""
         return self._birthday
+
+    def get_data(self) -> dict:
+        """Returns a dictionary with the data to be rendered in the UI"""
+        return {
+            "Age": self._world.get_day() - self._birthday,
+            "Energy": self._energy,
+            "Generation": self._generation,
+            "Genome": self._genome.get_data()
+        }
