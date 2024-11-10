@@ -33,11 +33,11 @@ def setup_life(world):
             val = random.randint(0, 20)
             # 0-5 passive, 5-7 herbivore, 8 carnivore
             if val < 6:
-                world.add_organism(PassiveOrganism(create_genome(CreatureType.PASSIVE, world), row, col, world), row, col)
+                world.add_organism(PassiveOrganism(create_genome(CreatureType.PASSIVE, world), row, col, world, 1), row, col)
             elif 6< val < 8:
-                world.add_organism(HerbivoreOrganism(create_genome(CreatureType.HERBIVORE, world), row, col, world), row, col)
+                world.add_organism(HerbivoreOrganism(create_genome(CreatureType.HERBIVORE, world), row, col, world, 1), row, col)
             elif val == 8:
-                 world.add_organism(CarnivoreOrganism(create_genome(CreatureType.CARNIVORE, world), row, col, world), row, col)
+                 world.add_organism(CarnivoreOrganism(create_genome(CreatureType.CARNIVORE, world), row, col, world, 1), row, col)
 
 def process_cells(world):
     visited = set()

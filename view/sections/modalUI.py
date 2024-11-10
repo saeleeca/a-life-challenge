@@ -143,11 +143,7 @@ class ModalUI(UiComponent):
                          (VIEW_GENOMES_X, y, VIEW_GENOMES_WIDTH, self._genome_data_height))
 
         if not isGenomeView and organism:
-            organism_data = {
-                "Age": self._world.get_day() - organism.get_birthday(),
-                "Energy": organism.get_energy(),
-                "Generation": 23
-            }
+            organism_data = organism.get_data()
             # draw organism data
             for key, value in organism_data.items():
                 y += render_text_pair(key, value, y, self._screen,

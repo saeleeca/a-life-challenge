@@ -1,8 +1,8 @@
 from models import Organism, PassiveOrganism
 
 class HerbivoreOrganism(Organism):
-    def __init__(self, genome, row, col, world):
-        super().__init__(genome, row, col, world)
+    def __init__(self, genome, row, col, world, generation):
+        super().__init__(genome, row, col, world, generation)
         # Set custom values for the Herbivore. 
         self._move_energy_expenditure = 1
         self._food_energy = 20
