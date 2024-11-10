@@ -24,7 +24,7 @@ class MutationService:
             'color': 0.1,
             'max_energy': 0.1,
             'can_move': 0.001,
-            'creature_type': 0.005 
+            'creature_type': 0.00001
         }
 
     def mutate(self, genome: Genome) -> Genome:
