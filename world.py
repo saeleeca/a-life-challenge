@@ -1,5 +1,7 @@
 import random
 from environments import Environment, NormalEnvironment, HarshEnvironment, DesertEnvironment, RainforestEnvironment
+from models.species import Species
+
 
 def set_world_type():
     val = random.randint(0, 20)
@@ -18,6 +20,7 @@ class World:
     def __init__(self):
         self._world: list[list[object]] = \
             [[None for _ in range(self.COLS)] for _ in range(self.ROWS)]
+        self._species: list[Species] = []
         self._environment: Environment = set_world_type()
         self._environment_type = Environment.get_environment_type(self._environment)
         self._passive_energy_mod = Environment.get_passive_max_energy_mod(self._environment)
@@ -32,6 +35,9 @@ class World:
 
     def kill_organism(self, row: int, col: int) -> None:
         """Sets the row col to None"""
+        organism = self._world[row][col]
+        if organism:
+            organism.get_species().dec_population()
         self._world[row][col] = None
 
     def move(self, rowA: int, colA: int, rowB: int, colB: int) -> None:
@@ -44,6 +50,16 @@ class World:
     def add_organism(self, organism, row: int, col :int) -> None:
         """Adds the organism to self._world"""
         self._world[row][col] = organism
+
+        # Check if the organism is a new species
+        parent_species = organism.get_species()
+        genome = organism.get_genome()
+        if self._day != 0 and not parent_species.is_same_species(genome):
+            new_species = Species(genome, self._day, self)
+            self._species.append(new_species)
+            organism.set_species(new_species)
+        else:
+            parent_species.inc_population()
 
     def is_cell_empty(self, row: int, col: int) -> bool:
         """Returns if the world contains an object at row, col"""
@@ -141,41 +157,14 @@ class World:
         """Resets the world"""
         self.__init__()
 
-    def get_species_data(self) -> list:
+    def set_base_species(self, base_species: list[Species]):
+        for species in base_species:
+            self._species.append(species)
+
+    def get_species_data(self, index) -> dict:
         """Returns a list with the species data to be rendered in the UI"""
-        # Hardcoded for now. Will use self._species once implemented
-        return [
-            {"Genome": {"Color": (255, 0, 0),
-             "Creature Type": "Carnivore",
-             "Max Energy": 500,
-             "Can Move": "True"},
-             "Status": "Active",
-             "Population": 100,
-             "Max Population": 390,
-             "Day Created": 0,
-             "Days Active": 360
-             },
-            {"Genome": {"Color": (0, 0, 255),
-             "Creature Type": "Herbivore",
-             "Max Energy": 500,
-             "Can Move": "True"},
-             "Status": "Active",
-             "Population": 400,
-             "Max Population": 600,
-             "Day Created": 0,
-             "Days Active": 360
-             },
-            {"Genome": {"Color": (0, 255, 0),
-             "Creature Type": "Passive",
-             "Max Energy": 500,
-             "Can Move": "False"},
-             "Status": "Active",
-             "Population": 800,
-             "Max Population": 1000,
-             "Day Created": 0,
-             "Days Active": 360
-             }
-        ]
+        index = index % len(self._species)
+        return self._species[index].get_data()
 
     def get_data(self) -> dict:
         """Returns a dictionary with the data to be rendered in the UI"""
@@ -183,7 +172,7 @@ class World:
             "Days": self._day,
             "Population": 500,
             "Deaths": 1500,
-            "No. of Species": 14,
+            "No. of Species": len(self._species),
             "No. of mutations": 7,
             "Total Offspring": 1497,
             "Generations (max)": 36,
