@@ -45,10 +45,7 @@ class StatsUI(UiComponent):
 
     def render_statistics(self):
         """Displays the statistics list"""
-        # dummy values (will come from world when completed)
-        statistics = {"Days": 100, "Population": 500, "Deaths": 1500,
-            "No. of Species": 14, "Number of mutations": 7,
-            "Total Offspring": 1497, "Generations (max)": 36, "World Type": self._world.get_environment_type()}
+        statistics = self._world.get_data()
         y = STATS_Y + BUTTON_HEIGHT + STATS_PADDING_Y
         original_y = y
         # Remove old stats from ui

@@ -161,3 +161,16 @@ class World:
              "Days Active": 360
              }
         ]
+
+    def get_data(self) -> dict:
+        """Returns a dictionary with the data to be rendered in the UI"""
+        return {
+            "Days": self._day,
+            "Population": 500,
+            "Deaths": 1500,
+            "No. of Species": 14,
+            "No. of mutations": 7,
+            "Total Offspring": 1497,
+            "Generations (max)": 36,
+            "World Type": self.get_environment_type()
+        }
