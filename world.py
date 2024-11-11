@@ -26,12 +26,18 @@ class World:
         self._herbivore_energy_mod = self._environment.get_herbivore_max_energy_mod()
         self._carnivore_energy_mod = self._environment.get_carnivore_max_energy_mod()
         self._day: int = 0
+        self._population: int = 0
+        self._deaths: int = 0
+        self._offsprings: int = 0
+        self._max_generation: int = 0
 
     def kill_organism(self, row: int, col: int) -> None:
         """Sets the row col to None"""
         organism = self._world[row][col]
         if organism:
             organism.get_species().dec_population()
+            self._deaths += 1
+            self._population -= 1
         self._world[row][col] = None
 
     def move(self, rowA: int, colA: int, rowB: int, colB: int) -> None:
@@ -66,6 +72,9 @@ class World:
         else:
             # Not a new species, so just update population
             parent_species.inc_population()
+
+        # Update overall population of creatures in world
+        self._population += 1
 
     def is_cell_empty(self, row: int, col: int) -> bool:
         """Returns if the world contains an object at row, col"""
@@ -156,11 +165,19 @@ class World:
         """Returns a dictionary with the data to be rendered in the UI"""
         return {
             "Days": self._day,
-            "Population": 500,
-            "Deaths": 1500,
+            "Population": self._population,
+            "Deaths": self._deaths,
             "No. of Species": len(self._species),
             "No. of mutations": 7,
-            "Total Offspring": 1497,
-            "Generations (max)": 36,
+            "Total Offspring": self._offsprings,
+            "Generations (max)": self._max_generation,
             "World Type": self.get_environment().get_environment_type()
         }
+
+    def add_offspring(self):
+        """Increments the counter for total offspring produced"""
+        self._offsprings += 1
+
+    def update_max_generation(self, generation):
+        """Updates the current max generation of all species"""
+        self._max_generation = max(self._max_generation, generation)

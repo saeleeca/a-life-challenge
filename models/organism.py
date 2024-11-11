@@ -65,6 +65,8 @@ class Organism:
         child_organism = self.__class__(mutated_genome, row, col, self._world,
                                         self._generation + 1, self._species)
         self._world.add_organism(child_organism, row, col)
+        self._world.add_offspring()
+        self._world.update_max_generation(self._generation + 1)
         return child_organism
 
     def choose_action(self):
