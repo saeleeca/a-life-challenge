@@ -57,12 +57,12 @@ class ModalUI(UiComponent):
 
         def next_fn():
             # use hardcoded data for now
-            self._species_idx = (self._species_idx + 1) % 3
+            self._species_idx += 1
             # self._genome_num = self._genome_num + 1 % len(self._world.get_genome_data())
             self._draw_modal_data()
         def prev_fn():
             # use hardcoded data for now
-            self._species_idx = (self._species_idx - 1) % 3
+            self._species_idx -= 1
             # self._genome_num = self._genome_num - 1 % len(self._world.get_genome_data())
             self._draw_modal_data()
 
@@ -108,7 +108,7 @@ class ModalUI(UiComponent):
                       self._genome_data_height))
 
         data = organism.get_data() if not is_species_view \
-            else self._world.get_species_data()[self._species_idx]
+            else self._world.get_species_data(self._species_idx)
 
         # Drawing Organism/Species data in top part of the modal
         for key, value in data.items():

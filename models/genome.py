@@ -31,7 +31,7 @@ class Genome:
 
     def reproduce(self) -> 'Genome':
         return self.__class__(self._color, self._creature_type,
-                              self._max_energy, self._can_move)
+                              self._max_energy, self._can_move, self._reproduction_rate)
 
     def get_data(self) -> dict:
         """Returns a dictionary with the data to be rendered in the UI"""
@@ -49,4 +49,19 @@ class Genome:
             "Creature Type": creature_type_str,
             "Max Energy": self._max_energy,
             "Can Move": self._can_move,
+            "Reproduction Rate": self._reproduction_rate,
         }
+
+    def get_difference(self, other: 'Genome'):
+        # Creature type can never be the same
+        if self._creature_type != other._creature_type:
+            return 100
+        # compare color
+        r1, g1, b1 = self._color
+        r2, g2, b2 = other._color
+        color_dif = ((abs(r2 - r1) + abs(g2 - g1) + abs(b2 - b1)) / 3) / 255
+        move_dif = 0 if self._can_move == other._can_move else .33
+        max_energy1, max_energy2 = self._max_energy, other._max_energy
+        max_energy_dif = (abs(max_energy1 - max_energy2) / max(max_energy1, max_energy2))
+
+        return (color_dif + move_dif + max_energy_dif) / 3

@@ -4,5 +4,6 @@ from .organism import Organism
 from .passive_organism import PassiveOrganism
 from .herbivore_organism import HerbivoreOrganism
 from .carnivore_organism import CarnivoreOrganism
+from .species import Species
 
-__all__ = ['CreatureType', 'Genome', 'Organism', 'PassiveOrganism', 'HerbivoreOrganism', 'CarnivoreOrganism']
+__all__ = ['CreatureType', 'Genome', 'Organism', 'PassiveOrganism', 'HerbivoreOrganism', 'CarnivoreOrganism', 'Species']
