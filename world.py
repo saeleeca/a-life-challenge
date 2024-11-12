@@ -26,12 +26,15 @@ class World:
         self._herbivore_energy_mod = self._environment.get_herbivore_max_energy_mod()
         self._carnivore_energy_mod = self._environment.get_carnivore_max_energy_mod()
         self._day: int = 0
+        self._active_species = 0
 
     def kill_organism(self, row: int, col: int) -> None:
         """Sets the row col to None"""
         organism = self._world[row][col]
         if organism:
             organism.get_species().dec_population()
+            if organism.get_species().is_extinct():
+                self._active_species -= 1
         self._world[row][col] = None
 
     def move(self, rowA: int, colA: int, rowB: int, colB: int) -> None:
@@ -57,12 +60,17 @@ class World:
                 # Found another species that it belongs to so add it there
                 if species.is_same_species(genome):
                     organism.set_species(species)
+                    # Organism is added to an extinct species that now becomes
+                    # active
+                    if species.is_extinct():
+                        self._active_species += 1
                     species.inc_population()
                     return
             # Doesn't belong to any existing species, so create a new one
             new_species = Species(genome, self._day, self)
             self._species.append(new_species)
             organism.set_species(new_species)
+            self._active_species += 1   # new species always increases active
         else:
             # Not a new species, so just update population
             parent_species.inc_population()
@@ -146,6 +154,7 @@ class World:
     def set_base_species(self, base_species: list[Species]):
         for species in base_species:
             self._species.append(species)
+        self._active_species = len(base_species)
 
     def get_species_data(self, index) -> dict:
         """Returns a list with the species data to be rendered in the UI"""
@@ -158,8 +167,8 @@ class World:
             "Days": self._day,
             "Population": 500,
             "Deaths": 1500,
-            "No. of Species": len(self._species),
-            "No. of mutations": 7,
+            "No. of Species Total": len(self._species),
+            "No. of Species Active": self._active_species,
             "Total Offspring": 1497,
             "Generations (max)": 36,
             "World Type": self.get_environment().get_environment_type()
