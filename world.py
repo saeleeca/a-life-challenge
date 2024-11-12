@@ -174,7 +174,7 @@ class World:
             "Days": self._day,
             "Population": self._population,
             "Deaths": self._deaths,
-            "No. of Species": len(self._species),
+            "No. of Species Total": len(self._species),
             "No. of Species Active": self._active_species,
             "Total Offspring": self._offsprings,
             "Generations (max)": self._max_generation,
