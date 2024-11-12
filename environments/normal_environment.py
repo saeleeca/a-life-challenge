@@ -1,6 +1,6 @@
 from environments import Environment
 
 class NormalEnvironment(Environment):
-    def __init__(self):
+    def __init__(self, world):
         super().__init__('Normal',0.008, 0.02, 0.04,
-                         1.0, 1.0,1.0,1.0, "grey")
+                         1.0, 1.0,1.0,1.0, "grey", world)

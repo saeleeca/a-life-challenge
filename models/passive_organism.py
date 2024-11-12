@@ -138,7 +138,7 @@ class PassiveOrganism(Organism):
     def energy_absorption(self):
         """Passive Organism generates energy based on the world/environmental energy rate up to its maximum capacity"""
         energy_rate = self._world.get_environment().get_energy_rate()
-        max_energy = self._world.get_world_max_passive_energy()
+        max_energy = self._world.get_environment().get_passive_max_energy()
         self._energy = min(self._energy + energy_rate, max_energy)
         return
 
