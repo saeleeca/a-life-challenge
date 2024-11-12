@@ -50,6 +50,7 @@ class World:
     def add_organism(self, organism, row: int, col :int) -> None:
         """Adds the organism to self._world"""
         self._world[row][col] = organism
+        self._population += 1
 
         # Check if the organism is a new species
         parent_species = organism.get_species()
@@ -64,7 +65,7 @@ class World:
                 if species.is_same_species(genome):
                     organism.set_species(species)
                     species.inc_population()
-                    self._population += 1
+                    return
 
             # Doesn't belong to any existing species, so create a new one
             new_species = Species(genome, self._day, self)
@@ -73,7 +74,6 @@ class World:
         else:
             # Not a new species, so just update population
             parent_species.inc_population()
-            self._population += 1
 
     def is_cell_empty(self, row: int, col: int) -> bool:
         """Returns if the world contains an object at row, col"""
