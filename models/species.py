@@ -48,6 +48,9 @@ class Species:
     def get_name(self):
         return self._name
 
+    def is_extinct(self):
+        return self._is_active == False
+
     def get_data(self) -> dict:
         """Returns a dictionary with the data to be rendered in the UI"""
         if self._is_active:
