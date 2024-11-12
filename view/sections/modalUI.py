@@ -7,7 +7,7 @@ from view.constants import WINDOW_BG, WINDOW_HEIGHT, WINDOW_WIDTH, \
     EXIT_ICON, TITLE_FONT_NAME, BUTTON_HEIGHT, VIEW_SPECIES_TITLE, \
     VIEW_SPECIES_FONT_SIZE, TITLE_TEXT, PREV_ICON, PREV_ICON_HOVER, NEXT_ICON, \
     NEXT_ICON_HOVER, BUTTON_GAP, STATS_COLOR, FONT_NAME, STATS_FONT_SIZE, \
-    VIEW_ORGANISM_TITLE
+    VIEW_ORGANISM_TITLE, CHECK_ICON, CHECK_ICON_HOVER
 from view.sections.buttonBarUI import ButtonBarUI
 from view.sections.uiComponent import UiComponent
 from view.text import render_text, render_text_pair
@@ -21,6 +21,7 @@ class ModalUI(UiComponent):
         self._exit_fn = exit_fn
         self._world = world
         self._species_idx: int = 0
+        self._predecessor_idx: int = 0
 
         exit_button_padding: int= 20
         exit_button_x: int = (VIEW_GENOMES_X + VIEW_GENOMES_WIDTH -
@@ -32,6 +33,7 @@ class ModalUI(UiComponent):
                                            self._screen, exit_fn)
 
         self._genome_data_height: int = 0
+        self._filter_active = False
 
     def draw_organism_view(self, organism):
         """
@@ -54,25 +56,66 @@ class ModalUI(UiComponent):
         self._draw_background()
         self._draw_title(True)
         self._draw_modal_data()
+        self._filter_active = False
 
         def next_fn():
-            # use hardcoded data for now
             self._species_idx += 1
-            # self._genome_num = self._genome_num + 1 % len(self._world.get_genome_data())
             self._draw_modal_data()
         def prev_fn():
-            # use hardcoded data for now
             self._species_idx -= 1
-            # self._genome_num = self._genome_num - 1 % len(self._world.get_genome_data())
             self._draw_modal_data()
 
+        def filter_active_fn():
+            self._filter_active = not self._filter_active
+            self._species_idx = 0
+            self._draw_modal_data()
+            self._render_active_filter_text()
+
+        def view_predecessor_fn():
+            self._filter_active = False
+            self._species_idx = self._predecessor_idx
+            self._draw_modal_data()
+            self._render_active_filter_text()
+
         arrows = ButtonBarUI(self._screen, (WINDOW_WIDTH / 2) - (BUTTON_WIDTH + BUTTON_GAP / 2),
-                    VIEW_GENOMES_Y + 100,
+                    VIEW_GENOMES_Y + 85,
                     (PREV_ICON, PREV_ICON_HOVER, prev_fn),
                     (NEXT_ICON, NEXT_ICON_HOVER, next_fn))
-        self._buttons = arrows._buttons + [self._exit_button]
+
+        # Filter active option
+        filter_active_button = Button(
+            (WINDOW_WIDTH / 2) - (BUTTON_WIDTH + BUTTON_GAP / 2) - BUTTON_WIDTH - 20,
+                        VIEW_GENOMES_Y + 150, CHECK_ICON, CHECK_ICON_HOVER,
+                        self._screen, filter_active_fn, is_small=True)
+        self._render_active_filter_text()
+
+        # View predecessor
+        predecessor_button = Button(
+            (WINDOW_WIDTH / 2) + 280,
+            VIEW_GENOMES_Y + 150, CHECK_ICON, CHECK_ICON_HOVER,
+            self._screen, view_predecessor_fn, is_small=True)
+        font = pygame.font.SysFont(FONT_NAME, STATS_FONT_SIZE)
+        text = "View predecessor:"
+        render_text(text, font, STATS_COLOR,
+                    (WINDOW_WIDTH / 2) + 170,
+                    VIEW_GENOMES_Y + 155, self._screen)
+
+
+        self._buttons = arrows._buttons + [self._exit_button, filter_active_button, predecessor_button]
         for button in self._buttons:
             button.draw()
+
+    def _render_active_filter_text(self):
+        pygame.draw.rect(self._screen, WINDOW_BG,
+                         ((WINDOW_WIDTH / 2) - (
+                                BUTTON_WIDTH + BUTTON_GAP / 2) - BUTTON_WIDTH - 180,
+                    VIEW_GENOMES_Y + 145, 148, 40))
+        font = pygame.font.SysFont(FONT_NAME, STATS_FONT_SIZE)
+        text = "View active:" if not self._filter_active else "View all:"
+        render_text(text, font, STATS_COLOR,
+                    (WINDOW_WIDTH / 2) - (
+                                BUTTON_WIDTH + BUTTON_GAP / 2) - BUTTON_WIDTH - 100,
+                    VIEW_GENOMES_Y + 155, self._screen)
 
     def _draw_background(self):
         # Cover the entire background
@@ -108,7 +151,9 @@ class ModalUI(UiComponent):
                       self._genome_data_height))
 
         data = organism.get_data() if not is_species_view \
-            else self._world.get_species_data(self._species_idx)
+            else self._world.get_species_data(self._species_idx, self._filter_active)
+        if is_species_view:
+            self._predecessor_idx = self._world.get_predecessor_id(self._species_idx)
 
         # Drawing Organism/Species data in top part of the modal
         for key, value in data.items():

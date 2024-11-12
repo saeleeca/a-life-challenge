@@ -21,7 +21,9 @@ class World:
         self._world: list[list[object]] = \
             [[None for _ in range(self.COLS)] for _ in range(self.ROWS)]
         self._species: list[Species] = []
-        self._active_species = None
+        # used to store filtered species list when requested. resets
+        # to None if active_species changes
+        self._active_species_list = None
         self._environment = set_world_type()
         self._passive_energy_mod = self._environment.get_passive_max_energy_mod()
         self._herbivore_energy_mod = self._environment.get_herbivore_max_energy_mod()
@@ -40,7 +42,7 @@ class World:
             self._deaths += 1
             self._population -= 1
         self._world[row][col] = None
-        self._active_species = None
+        self._active_species_list = None
 
     def move(self, rowA: int, colA: int, rowB: int, colB: int) -> None:
         """Moves the organism from a to b"""
@@ -53,7 +55,7 @@ class World:
         """Adds the organism to self._world"""
         self._world[row][col] = organism
         self._population += 1
-        self._active_species = None
+        self._active_species_list = None
 
         # Check if the organism is a new species
         parent_species = organism.get_species()
@@ -169,10 +171,10 @@ class World:
     def get_species_data(self, index: int, filter_active: bool) -> dict:
         """Returns the species dict to be rendered in the UI"""
         if filter_active:
-            if not self._active_species:
-                self._active_species = [s for s in self._species if not s.is_extinct()]
-            index = index % len(self._active_species)
-            return self._active_species[index].get_data()
+            if not self._active_species_list:
+                self._active_species_list = [s for s in self._species if not s.is_extinct()]
+            index = index % len(self._active_species_list)
+            return self._active_species_list[index].get_data()
         index = index % len(self._species)
         return self._species[index].get_data()
 
