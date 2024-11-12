@@ -18,6 +18,7 @@ class Environment:
         self._rows, self._cols = rows_cols()
         self._world = world
         self._energy_rate = 10
+        self._current_weather = 'Normal'
 
     def get_day_enviro(self):
         """Access the current day from the World instance."""
@@ -62,3 +63,7 @@ class Environment:
     def get_carnivore_reproduction_rate_mod(self):
         """Return the carnivore reproduction rate modifier of the environment."""
         return self._carnivore_reproduction_rate_mod
+
+    def get_weather(self):
+        """Return the current weather."""
+        return self._current_weather

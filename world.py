@@ -163,7 +163,8 @@ class World:
             "No. of Species Active": self._active_species,
             "Total Offspring": self._offsprings,
             "Generations (max)": self._max_generation,
-            "World Type": self.get_environment().get_environment_type()
+            "World Type": self.get_environment().get_environment_type(),
+            "Weather": self.get_environment().get_weather()
         }
 
     def add_offspring(self):

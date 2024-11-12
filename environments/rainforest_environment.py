@@ -13,7 +13,7 @@ class RainforestEnvironment(Environment):
     def rainforest_weather(self):
         """Randomly select a weather type based on predefined probabilities. Returns a weather event as a string"""
         weather_event = random.choices(
-            ['normal', 'rainy', 'stormy'],  # Possible weather events
+            ['Normal', 'Rainy', 'Stormy'],  # Possible weather events
             weights=[0.5, 0.3, 0.2],  # Corresponding probabilities for normal, rainy, and stormy
             k=1  # One event per change
         )[0]
@@ -40,9 +40,9 @@ class RainforestEnvironment(Environment):
         self.change_weather_if_needed()
 
         # Adjust the modifier based on weather conditions and round to 4 decimal places
-        if self.current_weather == 'rainy':
+        if self.current_weather == 'Rainy':
             adjusted_modifier = round(float(self._passive_max_energy_mod * 1.1),4)
-        elif self.current_weather == 'stormy':
+        elif self.current_weather == 'Stormy':
             adjusted_modifier = round(float(self._passive_max_energy_mod * 0.9),4)
         else:
             adjusted_modifier = self._passive_max_energy_mod
@@ -60,7 +60,7 @@ class RainforestEnvironment(Environment):
         self.change_weather_if_needed()
 
         # Adjust the modifier based on weather conditions and round to 4 decimal places
-        if self.current_weather == 'stormy':
+        if self.current_weather == 'Stormy':
             adjusted_modifier = round(float(self._herbivore_max_energy_mod * 0.7),4)
         else:
             adjusted_modifier = self._herbivore_max_energy_mod
@@ -78,7 +78,7 @@ class RainforestEnvironment(Environment):
         self.change_weather_if_needed()
 
         # Adjust the modifier based on weather conditions and round to 4 decimal places
-        if self.current_weather == 'normal':
+        if self.current_weather == 'Normal':
             adjusted_modifier = self._herbivore_max_energy_mod
         else:
             adjusted_modifier = round(float(self._herbivore_max_energy_mod * 0.7),4)
