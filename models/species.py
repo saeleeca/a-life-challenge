@@ -25,6 +25,8 @@ class Species:
             return self._naming_service.generate_carnivore_name()
         elif creature_type == CreatureType.PASSIVE:
             return self._naming_service.generate_passive_name()
+        elif creature_type == CreatureType.FUNGI:
+            return self._naming_service.generate_fungi_name()
         else:
             return self._naming_service.generate_herbivore_name()
 

@@ -25,6 +25,7 @@ class World:
         self._passive_energy_mod = self._environment.get_passive_max_energy_mod()
         self._herbivore_energy_mod = self._environment.get_herbivore_max_energy_mod()
         self._carnivore_energy_mod = self._environment.get_carnivore_max_energy_mod()
+        self._fungi_energy_mod = self._environment.get_fungi_max_energy_mod()
         self._day: int = 0
         self._population: int = 0
         self._deaths: int = 0
@@ -137,6 +138,10 @@ class World:
     def get_world_max_carnivore_energy(self):
         """Gets maximum carnivore energy based on the environment."""
         return int(self.ROWS * self.COLS * self._carnivore_energy_mod)
+
+    def get_world_max_fungi_energy(self):
+        """Gets maximum fungi energy based on the environment."""
+        return int(self.ROWS * self.COLS * self._fungi_energy_mod)
 
     def get_environment(self):
         """Gets the environment"""
