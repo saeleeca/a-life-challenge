@@ -49,3 +49,43 @@ class RainforestEnvironment(Environment):
 
         # Return the max energy as an int based on grid size
         return int(self._rows * self._cols * adjusted_modifier)
+
+    def get_herbivore_max_energy(self):
+        """Return the modifier, as a percentage, for herbivore max energy. In normal and rainy weather the
+        modifier stays the same but in stormy weather herbivores find it more difficult to venture out to find
+        plants and the max energy they can have decreases.
+        """
+
+        # First check for weather change
+        self.change_weather_if_needed()
+
+        # Adjust the modifier based on weather conditions and round to 4 decimal places
+        if self.current_weather == 'stormy':
+            adjusted_modifier = round(float(self._herbivore_max_energy_mod * 0.7),4)
+        else:
+            adjusted_modifier = self._herbivore_max_energy_mod
+
+        # Return the max energy as an int based on grid size
+        return int(self._rows * self._cols * adjusted_modifier)
+
+    def get_carnivore_max_energy(self):
+        """Return the modifier, as a percentage, for carnivore max energy. In normal weather the modifier stays the
+        same but in stormy and rainy weather carnivores find it more difficult to venture out to find
+        herbivores and the max energy they can have decreases.
+        """
+
+        # First check for weather change
+        self.change_weather_if_needed()
+
+        # Adjust the modifier based on weather conditions and round to 4 decimal places
+        if self.current_weather == 'normal':
+            adjusted_modifier = self._herbivore_max_energy_mod
+        else:
+            adjusted_modifier = round(float(self._herbivore_max_energy_mod * 0.7),4)
+
+        # Return the max energy as an int based on grid size
+        return int(self._rows * self._cols * adjusted_modifier)
+
+    def get_weather(self):
+        """Return the current weather."""
+        return self.current_weather

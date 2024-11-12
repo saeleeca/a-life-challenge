@@ -17,6 +17,7 @@ class Environment:
         self._color = color
         self._rows, self._cols = rows_cols()
         self._world = world
+        self._energy_rate = 10
 
     def get_day_enviro(self):
         """Access the current day from the World instance."""
@@ -48,7 +49,7 @@ class Environment:
 
     def get_energy_rate(self):
         """Return the energy rate of the environment based on the modification."""
-        return int(10 * self._energy_rate_mod)
+        return int(self._energy_rate * self._energy_rate_mod)
 
     def get_passive_reproduction_rate_mod(self):
         """Return the passive reproduction rate modifier of the environment."""
