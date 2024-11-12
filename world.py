@@ -26,12 +26,18 @@ class World:
         self._herbivore_energy_mod = self._environment.get_herbivore_max_energy_mod()
         self._carnivore_energy_mod = self._environment.get_carnivore_max_energy_mod()
         self._day: int = 0
+        self._population: int = 0
+        self._deaths: int = 0
+        self._offsprings: int = 0
+        self._max_generation: int = 0
 
     def kill_organism(self, row: int, col: int) -> None:
         """Sets the row col to None"""
         organism = self._world[row][col]
         if organism:
             organism.get_species().dec_population()
+            self._deaths += 1
+            self._population -= 1
         self._world[row][col] = None
 
     def move(self, rowA: int, colA: int, rowB: int, colB: int) -> None:
@@ -44,6 +50,7 @@ class World:
     def add_organism(self, organism, row: int, col :int) -> None:
         """Adds the organism to self._world"""
         self._world[row][col] = organism
+        self._population += 1
 
         # Check if the organism is a new species
         parent_species = organism.get_species()
@@ -54,11 +61,12 @@ class World:
             for species in self._species:
                 if species == parent_species:
                     continue
-                # Found another species that it belongs to so add it there
+                # Found another species that it belongs to so add it there and increase population statistics
                 if species.is_same_species(genome):
                     organism.set_species(species)
                     species.inc_population()
                     return
+
             # Doesn't belong to any existing species, so create a new one
             new_species = Species(genome, self._day, self)
             self._species.append(new_species)
@@ -156,11 +164,19 @@ class World:
         """Returns a dictionary with the data to be rendered in the UI"""
         return {
             "Days": self._day,
-            "Population": 500,
-            "Deaths": 1500,
+            "Population": self._population,
+            "Deaths": self._deaths,
             "No. of Species": len(self._species),
             "No. of mutations": 7,
-            "Total Offspring": 1497,
-            "Generations (max)": 36,
+            "Total Offspring": self._offsprings,
+            "Generations (max)": self._max_generation,
             "World Type": self.get_environment().get_environment_type()
         }
+
+    def add_offspring(self):
+        """Increments the counter for total offspring produced"""
+        self._offsprings += 1
+
+    def update_max_generation(self, generation):
+        """Updates the current max generation of all species"""
+        self._max_generation = max(self._max_generation, generation)
