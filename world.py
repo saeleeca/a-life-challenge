@@ -60,11 +60,12 @@ class World:
             for species in self._species:
                 if species == parent_species:
                     continue
-                # Found another species that it belongs to so add it there
+                # Found another species that it belongs to so add it there and increase population statistics
                 if species.is_same_species(genome):
                     organism.set_species(species)
                     species.inc_population()
-                    return
+                    self._population += 1
+
             # Doesn't belong to any existing species, so create a new one
             new_species = Species(genome, self._day, self)
             self._species.append(new_species)
@@ -72,9 +73,7 @@ class World:
         else:
             # Not a new species, so just update population
             parent_species.inc_population()
-
-        # Update overall population of creatures in world
-        self._population += 1
+            self._population += 1
 
     def is_cell_empty(self, row: int, col: int) -> bool:
         """Returns if the world contains an object at row, col"""
