@@ -31,7 +31,8 @@ class RainforestEnvironment(Environment):
         return self.current_weather
 
     def get_passive_max_energy(self):
-        """Return the modifier, as a percentage, for passive max energy. In normal weather the modifier stays the same.
+        """Return the maximum energy for passive organisms based on grid size and weather.
+        In normal weather the modifier stays the same.
         In rainy weather the passive organism thrives more so its corresponding energy is increased and in stormy
         weather the passive can not gain as much energy and thus its max energy is decreased.
         """
@@ -51,9 +52,9 @@ class RainforestEnvironment(Environment):
         return int(self._rows * self._cols * adjusted_modifier)
 
     def get_herbivore_max_energy(self):
-        """Return the modifier, as a percentage, for herbivore max energy. In normal and rainy weather the
-        modifier stays the same but in stormy weather herbivores find it more difficult to venture out to find
-        plants and the max energy they can have decreases.
+        """Return the maximum energy for herbivore organisms based on grid size and weather.
+        In normal and rainy weather the modifier stays the same but in stormy weather herbivores find it more
+        difficult to venture out to find plants and the max energy they can have decreases.
         """
 
         # First check for weather change
@@ -69,9 +70,9 @@ class RainforestEnvironment(Environment):
         return int(self._rows * self._cols * adjusted_modifier)
 
     def get_carnivore_max_energy(self):
-        """Return the modifier, as a percentage, for carnivore max energy. In normal weather the modifier stays the
-        same but in stormy and rainy weather carnivores find it more difficult to venture out to find
-        herbivores and the max energy they can have decreases.
+        """Return the maximum energy for carnivore organisms based on grid size and weather.
+        In normal weather the modifier stays the same but in stormy and rainy weather carnivores find it
+        more difficult to venture out to find herbivores and the max energy they can have decreases.
         """
 
         # First check for weather change
