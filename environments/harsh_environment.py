@@ -6,7 +6,7 @@ class HarshEnvironment(Environment):
         super().__init__('Harsh',0.004, 0.01, 0.02,
                          0.1, 0.01, 0.2,0.3,"white", world)
         self.last_weather_change_day = 0  # Keeps track of the last day the weather was changed
-        self.weather_change_interval = random.randint(5,10)  # Choose random day to change the weather
+        self.weather_change_interval = random.randint(2,20)  # Choose random day to change the weather
         self.current_weather = self.harsh_weather()  # Initialize with a random weather type
 
     def harsh_weather(self):
@@ -26,7 +26,7 @@ class HarshEnvironment(Environment):
         if current_day >= self.last_weather_change_day + self.weather_change_interval:
             self.current_weather = self.harsh_weather()  # Set a new weather type
             self.last_weather_change_day = current_day  # Update the last weather change day
-            self.weather_change_interval = random.randint(10, 50)  # Pick a new random interval for the next change
+            self.weather_change_interval = random.randint(2, 20)  # Pick a new random interval for the next change
         return self.current_weather
 
     def get_passive_max_energy(self):

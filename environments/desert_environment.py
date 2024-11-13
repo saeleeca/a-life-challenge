@@ -26,7 +26,7 @@ class DesertEnvironment(Environment):
         if current_day >= self.last_weather_change_day + self.weather_change_interval:
             self.current_weather = self.desert_weather()  # Set a new weather type
             self.last_weather_change_day = current_day  # Update the last weather change day
-            self.weather_change_interval = random.randint(10, 50)  # Pick a new random interval for the next change
+            self.weather_change_interval = random.randint(5, 10)  # Pick a new random interval for the next change
         return self.current_weather
 
     def get_adjusted_max_energy(self, organism_mod):
