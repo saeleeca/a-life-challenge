@@ -59,7 +59,7 @@ class Organism:
         self._species = species
 
     def eat(self, food: 'Organism') -> None:
-        """Increases energy when consuming passive organisms."""
+        """Increases energy when consuming organisms."""
         self._energy += food.get_food_energy()  # Gain the energy of the food
         self._world.kill_organism(food._row, food._col)  # Remove the food from the world
 
