@@ -2,17 +2,17 @@ import random
 from environments import NormalEnvironment, HarshEnvironment, DesertEnvironment, RainforestEnvironment
 from models import Species
 
-
-def set_world_type():
+def set_world_type(world):
+    """Sets the type of environment for the simulation"""
     val = random.randint(0, 20)
     if val < 8:
-        return NormalEnvironment()
+        return NormalEnvironment(world)
     elif val < 12:
-        return HarshEnvironment()
+        return HarshEnvironment(world)
     elif val < 16:
-        return DesertEnvironment()
+        return DesertEnvironment(world)
     else:
-        return RainforestEnvironment()
+        return RainforestEnvironment(world)
 
 
 class World:
@@ -24,10 +24,7 @@ class World:
         # used to store filtered species list when requested. resets
         # to None if active_species changes
         self._active_species_list = None
-        self._environment = set_world_type()
-        self._passive_energy_mod = self._environment.get_passive_max_energy_mod()
-        self._herbivore_energy_mod = self._environment.get_herbivore_max_energy_mod()
-        self._carnivore_energy_mod = self._environment.get_carnivore_max_energy_mod()
+        self._environment = set_world_type(self)
         self._day: int = 0
         self._active_species = 0
         self._population: int = 0
@@ -138,18 +135,6 @@ class World:
 
             return False, 0, 0
 
-    def get_world_max_passive_energy(self):
-        """Gets maximum passive energy based on the environment."""
-        return int(self.ROWS * self.COLS * self._passive_energy_mod)
-
-    def get_world_max_herbivore_energy(self):
-        """Gets maximum herbivore energy based on the environment."""
-        return int(self.ROWS * self.COLS * self._herbivore_energy_mod)
-
-    def get_world_max_carnivore_energy(self):
-        """Gets maximum carnivore energy based on the environment."""
-        return int(self.ROWS * self.COLS * self._carnivore_energy_mod)
-
     def get_environment(self):
         """Gets the environment"""
         return self._environment
@@ -203,7 +188,8 @@ class World:
             "No. of Species Active": self._active_species,
             "Total Offspring": self._offsprings,
             "Generations (max)": self._max_generation,
-            "World Type": self.get_environment().get_environment_type()
+            "World Type": self.get_environment().get_environment_type(),
+            "Weather": self.get_environment().get_weather()
         }
 
     def add_offspring(self):
