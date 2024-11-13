@@ -6,9 +6,9 @@ class HerbivoreOrganism(Organism):
         # Set custom values for the Herbivore. 
         self._move_energy_expenditure = 1
         self._food_energy = 20
-        self._base_energy_expenditure = 1
-        self._food_type = PassiveOrganism  
-        self._reproduction_ratio = 1.5
+        self._base_energy_expenditure = 0.9
+        self._food_type = PassiveOrganism
+        self._reproduction_ratio = 1.4
         
 
     def choose_action(self):
