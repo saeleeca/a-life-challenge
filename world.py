@@ -183,15 +183,15 @@ class World:
             if not self._active_species_list:
                 self._active_species_list = [s for s in self._species
                                              if not s.is_extinct()]
-            index = index % len(self._active_species_list)
-            return self._active_species_list[index].get_data()
+            # Make sure there are active species, otherwise return {}
+            # (don't need to check this for non-filtered list because there
+            # should always be base species in the list)
+            if len(self._active_species_list):
+                index = index % len(self._active_species_list)
+                return self._active_species_list[index].get_data()
+            return {}
         index = index % len(self._species)
         return self._species[index].get_data()
-
-    def get_predecessor_id(self, index: int):
-        """Looks up the species at index and returns its predecessor id"""
-        index = index % len(self._species)
-        return self._species[index].get_predecessor_id()
 
     def get_data(self) -> dict:
         """Returns a dictionary with the data to be rendered in the UI"""

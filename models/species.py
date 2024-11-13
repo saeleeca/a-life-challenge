@@ -88,5 +88,6 @@ class Species:
             "Days Active": days_active,
             "Population": self._population,
             "Max Population": self._max_population,
-            "Genome": self._base_genome.get_data()
+            "Genome": self._base_genome.get_data(),
+            "Predecessor_ID": self.get_predecessor_id(),    # needed for lookup function, not for displaying
         }

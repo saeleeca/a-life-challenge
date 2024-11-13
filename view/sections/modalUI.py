@@ -153,11 +153,19 @@ class ModalUI(UiComponent):
         data = organism.get_data() if not is_species_view \
             else self._world.get_species_data(self._species_idx, self._filter_active)
         if is_species_view:
-            self._predecessor_idx = self._world.get_predecessor_id(self._species_idx)
+            # check if species list is empty (this can happen for active list)
+            if not data:
+                text = "No Active Species Available"
+                font = pygame.font.SysFont(FONT_NAME, STATS_FONT_SIZE)
+                render_text(text, font, STATS_COLOR, VIEW_GENOMES_X + (VIEW_GENOMES_WIDTH / 2), y + 20, self._screen)
+                # reset predecessor. If user clicks it, it resets the view to view all
+                self._predecessor_idx = 0
+                return
+            self._predecessor_idx = data.get("Predecessor_ID", 0)
 
         # Drawing Organism/Species data in top part of the modal
         for key, value in data.items():
-            if key == "Genome":
+            if key == "Genome" or key == "Predecessor_ID":
                 continue
             y += render_text_pair(key, value, y, self._screen,
                                   VIEW_GENOMES_X + 100)
@@ -176,7 +184,7 @@ class ModalUI(UiComponent):
         self._draw_genome_organism(genome)
 
     def _draw_genome_organism(self, data):
-        color = data["Color"]
+        color = data.get("Color", (0,0,0))
         organism_width = 100
         center_x = VIEW_GENOMES_X + (VIEW_GENOMES_WIDTH * .75)
 
