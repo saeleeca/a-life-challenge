@@ -12,26 +12,6 @@ class FungiOrganism(Organism):
         self._food_energy = 5
         self._food_type = PassiveOrganism
         self._reproduction_ratio = 2
-        # self._genome.set_creature_type() = 4
-
-    def move(self, row: int, col: int) -> None:
-        """Fungi organisms do not move. Overwrites parent organism."""
-        pass
-
-    def eat(self, food: 'Organism') -> None:
-        """Increases energy when consuming passive organisms."""
-        self._energy += food.get_food_energy()  # Gain the energy of the food
-        self._world.kill_organism(food._row, food._col)  # Remove the food from the world
-
-    def check_if_can_reproduce(self) -> bool:
-        """Fungi Organism checks for empty neighbors and uses the ratio and energy to determine reproduction"""
-        empty_found, empty_row, empty_col = self._world.get_empty_neighbor(self._row, self._col, True)
-        if (self._energy >= (self._reproduction_ratio * self._genome.get_max_energy()) and empty_found):
-            self.reproduce(empty_row, empty_col)
-
-    def energy_absorption(self):
-        """Fungi Organisms can only gain energy by consumption"""
-        pass
 
     def energy_reduction(self):
         """Fungi Organism stored energy declines intermittently. Currently based on hardcoded rate"""
