@@ -21,6 +21,9 @@ class World:
         self._world: list[list[object]] = \
             [[None for _ in range(self.COLS)] for _ in range(self.ROWS)]
         self._species: list[Species] = []
+        # used to store filtered species list when requested. resets
+        # to None if active_species changes
+        self._active_species_list = None
         self._environment = set_world_type(self)
         self._day: int = 0
         self._active_species = 0
@@ -38,6 +41,7 @@ class World:
             self._population -= 1
             if organism.get_species().is_extinct():
                 self._active_species -= 1
+                self._active_species_list = None
         self._world[row][col] = None
 
     def move(self, rowA: int, colA: int, rowB: int, colB: int) -> None:
@@ -68,13 +72,15 @@ class World:
                     # active
                     if species.is_extinct():
                         self._active_species += 1
+                        self._active_species_list = None
                     species.inc_population()
                     return
             # Doesn't belong to any existing species, so create a new one
-            new_species = Species(genome, self._day, self)
+            new_species = Species(genome, self._day, self, parent_species.get_id())
             self._species.append(new_species)
             organism.set_species(new_species)
             self._active_species += 1   # new species always increases active
+            self._active_species_list = None
         else:
             # Not a new species, so just update population
             parent_species.inc_population()
@@ -134,22 +140,41 @@ class World:
         return self._environment
 
     def inc_day(self):
+        """Increments the day"""
         self._day += 1
 
     def get_day(self) -> int:
+        """Returns the day"""
         return self._day
 
     def reset(self):
         """Resets the world"""
         self.__init__()
+        Species.reset()
+
+    def load(self):
+        """Additional step needed to set Species _index after new World load"""
+        Species.reset(len(self._species))
 
     def set_base_species(self, base_species: list[Species]):
+        """Additional step needed before game starts, called from setup_life"""
         for species in base_species:
             self._species.append(species)
         self._active_species = len(base_species)
 
-    def get_species_data(self, index) -> dict:
-        """Returns a list with the species data to be rendered in the UI"""
+    def get_species_data(self, index: int, filter_active: bool) -> dict:
+        """Returns the species dict to be rendered in the UI"""
+        if filter_active:
+            if not self._active_species_list:
+                self._active_species_list = [s for s in self._species
+                                             if not s.is_extinct()]
+            # Make sure there are active species, otherwise return {}
+            # (don't need to check this for non-filtered list because there
+            # should always be base species in the list)
+            if len(self._active_species_list):
+                index = index % len(self._active_species_list)
+                return self._active_species_list[index].get_data()
+            return {}
         index = index % len(self._species)
         return self._species[index].get_data()
 

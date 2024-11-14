@@ -123,6 +123,7 @@ def load_game():
 
             # Overwrites current world and view object before updating view
             world = savedWorld
+            world.load()    # Updates the Species index to match savedWorld
             view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game, save_game, load_game)
             view.update()
     except:

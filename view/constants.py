@@ -90,6 +90,9 @@ PREV_ICON_HOVER = "./view/icons/arrow_back_off_white.png"
 NEXT_ICON = "./view/icons/arrow_forward_blue.png"
 NEXT_ICON_HOVER = "./view/icons/arrow_forward_off_white.png"
 
+CHECK_ICON = "./view/icons/check_circle_blue.png"
+CHECK_ICON_HOVER = "./view/icons/check_circle_off_white.png"
+
 
 METEOR_ICON = "./view/icons/star_blue.png"
 METEOR_ICON_HOVER = "./view/icons/star.png"

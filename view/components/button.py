@@ -5,8 +5,13 @@ from view.constants import *
 
 class Button:
     def __init__(self, x: float, y: float, icon_filename: str,
-                 hover_icon_filename: str, screen, callback_fn=None):
-        self._image = pygame.Surface((BUTTON_WIDTH, BUTTON_HEIGHT))
+                 hover_icon_filename: str, screen, callback_fn=None,
+                 is_small: bool=False):
+        self._is_small = is_small
+        if is_small:
+            self._image = pygame.Surface((BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2))
+        else:
+            self._image = pygame.Surface((BUTTON_WIDTH, BUTTON_HEIGHT))
         self._image.fill(BUTTON_BG)
         self._rect = self._image.get_rect(topleft=(x, y))
         self._icon = self._load_icon(icon_filename)
@@ -16,12 +21,17 @@ class Button:
         self._is_hover: bool = False
         self._callback = callback_fn
 
-    @staticmethod
-    def _load_icon(filename):
+    def _load_icon(self, filename):
+        """Loads the button icon and returns it"""
         try:
             icon = pygame.image.load(filename)
-            icon = pygame.transform.scale(icon,
+            if not self._is_small:
+                icon = pygame.transform.scale(icon,
                 (BUTTON_WIDTH // 1.3, BUTTON_HEIGHT // 1.3))
+            else:
+                icon = pygame.transform.scale(icon,
+                                              (BUTTON_WIDTH // 2.3,
+                                               BUTTON_HEIGHT // 2.3))
             return icon
         except pygame.error as e:
             print(f"Error loading icon: {filename}. Error: {e}")
