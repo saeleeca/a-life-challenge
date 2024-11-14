@@ -18,6 +18,8 @@ class Species:
         self._max_population: int = self._population
         self._day_created: int = day
         self._day_extinct: int | None = None
+        # A species can go extinct and becomes active again.
+        self._days_extinct: int = 0
         self._world = world
         self._id: int = Species._index   # Stores its index, used as parent_id when creating children species
         Species._index += 1
@@ -55,6 +57,7 @@ class Species:
     def inc_population(self):
         """Increases this species population, updating is_active and max pop"""
         if not self._is_active:
+            self._days_extinct += self._world.get_day() - self._day_extinct
             self._is_active = True
         self._population += 1
         self._max_population = max(self._max_population, self._population)
@@ -77,9 +80,9 @@ class Species:
     def get_data(self) -> dict:
         """Returns a dictionary with the data to be rendered in the UI"""
         if self._is_active:
-            days_active = self._world.get_day() - self._day_created
+            days_active = self._world.get_day() - self._day_created - self._days_extinct
         else:
-            days_active = self._day_extinct - self._day_created
+            days_active = self._day_extinct - self._day_created - self._days_extinct
 
         return {
             "Name": self._name,
