@@ -2,17 +2,17 @@ import random
 from environments import NormalEnvironment, HarshEnvironment, DesertEnvironment, RainforestEnvironment
 from models import Species
 
-
-def set_world_type():
+def set_world_type(world):
+    """Sets the type of environment for the simulation"""
     val = random.randint(0, 20)
     if val < 8:
-        return NormalEnvironment()
+        return NormalEnvironment(world)
     elif val < 12:
-        return HarshEnvironment()
+        return HarshEnvironment(world)
     elif val < 16:
-        return DesertEnvironment()
+        return DesertEnvironment(world)
     else:
-        return RainforestEnvironment()
+        return RainforestEnvironment(world)
 
 
 class World:
@@ -21,12 +21,9 @@ class World:
         self._world: list[list[object]] = \
             [[None for _ in range(self.COLS)] for _ in range(self.ROWS)]
         self._species: list[Species] = []
-        self._environment = set_world_type()
-        self._passive_energy_mod = self._environment.get_passive_max_energy_mod()
-        self._herbivore_energy_mod = self._environment.get_herbivore_max_energy_mod()
-        self._carnivore_energy_mod = self._environment.get_carnivore_max_energy_mod()
-        self._fungi_energy_mod = self._environment.get_fungi_max_energy_mod()
+        self._environment = set_world_type(self)
         self._day: int = 0
+        self._active_species = 0
         self._population: int = 0
         self._deaths: int = 0
         self._offsprings: int = 0
@@ -39,6 +36,8 @@ class World:
             organism.get_species().dec_population()
             self._deaths += 1
             self._population -= 1
+            if organism.get_species().is_extinct():
+                self._active_species -= 1
         self._world[row][col] = None
 
     def move(self, rowA: int, colA: int, rowB: int, colB: int) -> None:
@@ -51,6 +50,7 @@ class World:
     def add_organism(self, organism, row: int, col :int) -> None:
         """Adds the organism to self._world"""
         self._world[row][col] = organism
+        self._population += 1
 
         # Check if the organism is a new species
         parent_species = organism.get_species()
@@ -64,18 +64,20 @@ class World:
                 # Found another species that it belongs to so add it there
                 if species.is_same_species(genome):
                     organism.set_species(species)
+                    # Organism is added to an extinct species that now becomes
+                    # active
+                    if species.is_extinct():
+                        self._active_species += 1
                     species.inc_population()
                     return
             # Doesn't belong to any existing species, so create a new one
             new_species = Species(genome, self._day, self)
             self._species.append(new_species)
             organism.set_species(new_species)
+            self._active_species += 1   # new species always increases active
         else:
             # Not a new species, so just update population
             parent_species.inc_population()
-
-        # Update overall population of creatures in world
-        self._population += 1
 
     def is_cell_empty(self, row: int, col: int) -> bool:
         """Returns if the world contains an object at row, col"""
@@ -127,22 +129,6 @@ class World:
 
             return False, 0, 0
 
-    def get_world_max_passive_energy(self):
-        """Gets maximum passive energy based on the environment."""
-        return int(self.ROWS * self.COLS * self._passive_energy_mod)
-
-    def get_world_max_herbivore_energy(self):
-        """Gets maximum herbivore energy based on the environment."""
-        return int(self.ROWS * self.COLS * self._herbivore_energy_mod)
-
-    def get_world_max_carnivore_energy(self):
-        """Gets maximum carnivore energy based on the environment."""
-        return int(self.ROWS * self.COLS * self._carnivore_energy_mod)
-
-    def get_world_max_fungi_energy(self):
-        """Gets maximum fungi energy based on the environment."""
-        return int(self.ROWS * self.COLS * self._fungi_energy_mod)
-
     def get_environment(self):
         """Gets the environment"""
         return self._environment
@@ -160,6 +146,7 @@ class World:
     def set_base_species(self, base_species: list[Species]):
         for species in base_species:
             self._species.append(species)
+        self._active_species = len(base_species)
 
     def get_species_data(self, index) -> dict:
         """Returns a list with the species data to be rendered in the UI"""
@@ -172,11 +159,12 @@ class World:
             "Days": self._day,
             "Population": self._population,
             "Deaths": self._deaths,
-            "No. of Species": len(self._species),
-            "No. of mutations": 7,
+            "No. of Species Total": len(self._species),
+            "No. of Species Active": self._active_species,
             "Total Offspring": self._offsprings,
             "Generations (max)": self._max_generation,
-            "World Type": self.get_environment().get_environment_type()
+            "World Type": self.get_environment().get_environment_type(),
+            "Weather": self.get_environment().get_weather()
         }
 
     def add_offspring(self):

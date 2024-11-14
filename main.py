@@ -23,12 +23,12 @@ dt = 0
 
 def create_genome(creature_type, world) -> Genome:
     if creature_type == CreatureType.PASSIVE:
-        return Genome(GREEN, creature_type, world.get_world_max_passive_energy(), False, world.get_environment().get_passive_reproduction_rate_mod())
+        return Genome(GREEN, creature_type, world.get_environment().get_passive_max_energy(), False, world.get_environment().get_passive_reproduction_rate_mod())
     if creature_type == CreatureType.CARNIVORE:
-        return Genome(RED, creature_type, world.get_world_max_carnivore_energy(), True, world.get_environment().get_carnivore_reproduction_rate_mod())
+        return Genome(RED, creature_type, world.get_environment().get_carnivore_max_energy(), True, world.get_environment().get_carnivore_reproduction_rate_mod())
     if creature_type == CreatureType.FUNGI:
-        return Genome(BROWN, creature_type, world.get_world_max_fungi_energy(), False, world.get_environment().get_fungi_reproduction_rate_mod())
-    return Genome(BLUE, creature_type, world.get_world_max_herbivore_energy(), True, world.get_environment().get_herbivore_reproduction_rate_mod())
+        return Genome(BROWN, creature_type, world.get_environment().get_fungi_max_energy(), False, world.get_environment().get_fungi_reproduction_rate_mod())
+    return Genome(BLUE, creature_type, world.get_environment().get_herbivore_max_energy(), True, world.get_environment().get_herbivore_reproduction_rate_mod())
 
 def setup_life(world):
     # Create 4 base species
