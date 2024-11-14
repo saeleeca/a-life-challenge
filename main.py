@@ -21,7 +21,9 @@ state = PAUSE
 running = True
 dt = 0
 
-iterations_per_frame = 0
+# Settings
+iterations_per_frame = 1
+iterations = 0
 
 def create_genome(creature_type, world) -> Genome:
     if creature_type == CreatureType.PASSIVE:
@@ -88,6 +90,8 @@ def reset_game():
     global world
     global view
     global state
+    global iterations
+    iterations = 0
     # Always start at Pause state
     state = PAUSE
     view.update_playback_state(ButtonEvent.PAUSE)
@@ -99,10 +103,8 @@ def reset_game():
 def step_game():
     """ Pauses current simulation to step forward one frame of gameloop"""
     global state
-    state = PAUSE
+    state = STEP
     view.update_playback_state(ButtonEvent.PAUSE)
-    process_cells(world)
-    view.update()
 
 def save_game():
     """ Saves current data to specified file """
@@ -133,9 +135,15 @@ def load_game():
 def change_iteration_value(new_value):
     """Updates iterations per frame (used with slider)"""
     global iterations_per_frame
+    global iterations
+    # Make sure new value isn't less than iterations
+    # otherwise update never triggers
+    if new_value < iterations:
+        iterations = new_value - 1
     iterations_per_frame = new_value
 
-# Add slider fn here, the retrieve and pass to the Slider in settingsUI
+
+# Add slider fn here, then retrieve and pass to the Slider in settingsUI
 slider_fns = {"iterations": change_iteration_value}
 
 
@@ -147,6 +155,7 @@ clock = pygame.time.Clock()
 setup_life(world)
 view.update()
 pygame.display.flip()
+
 
 # main game loop
 while running:
@@ -191,10 +200,14 @@ while running:
         elif event.type == pygame.MOUSEBUTTONUP:
             view.handle_mouse_up()
 
-
-    if state == PLAY:
+    if state == PLAY or state == STEP:
+        iterations += 1
         process_cells(world)
-        view.update()
+        if iterations == iterations_per_frame:
+            view.update()
+            iterations = 0
+            if state == STEP:
+                state = PAUSE
 
     pygame.display.flip()
     # limits FPS to 1
