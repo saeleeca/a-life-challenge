@@ -4,16 +4,18 @@ def rows_cols():
 
 class Environment:
     def __init__(self, environment_type: str, passive_max_energy_mod: float, herbivore_max_energy_mod: float,
-                 carnivore_max_energy_mod: float, energy_rate_mod: float, passive_reproduction_rate_mod:float,
-                 herbivore_reproduction_rate_mod, carnivore_reproduction_rate_mod, color, world):
+                 carnivore_max_energy_mod: float, fungi_max_energy_mod: float, energy_rate_mod: float, passive_reproduction_rate_mod:float,
+                 herbivore_reproduction_rate_mod, carnivore_reproduction_rate_mod, fungi_reproduction_rate_mod, color, world):
         self._environment_type = environment_type
         self._passive_max_energy_mod = passive_max_energy_mod
         self._herbivore_max_energy_mod = herbivore_max_energy_mod
         self._carnivore_max_energy_mod = carnivore_max_energy_mod
+        self._fungi_max_energy_mod = fungi_max_energy_mod
         self._energy_rate_mod = energy_rate_mod
         self._passive_reproduction_rate_mod = passive_reproduction_rate_mod
         self._herbivore_reproduction_rate_mod = herbivore_reproduction_rate_mod
         self._carnivore_reproduction_rate_mod = carnivore_reproduction_rate_mod
+        self._fungi_reproduction_rate_mod = fungi_reproduction_rate_mod
         self._color = color
         self._rows, self._cols = rows_cols()
         self._world = world
@@ -40,6 +42,10 @@ class Environment:
         """Return the modifier, as a percentage, for carnivore max energy."""
         return int(self._rows * self._cols * self._carnivore_max_energy_mod)
 
+    def get_fungi_max_energy(self):
+        """Return the modifier, as a percentage, for fungi max energy."""
+        return int(self._rows * self._cols * self._fungi_max_energy_mod)
+
     def get_energy_rate_mod(self):
         """Return the modifier, as a percentage, for energy rate."""
         return self._energy_rate_mod
@@ -63,6 +69,10 @@ class Environment:
     def get_carnivore_reproduction_rate_mod(self):
         """Return the carnivore reproduction rate modifier of the environment."""
         return self._carnivore_reproduction_rate_mod
+
+    def get_fungi_reproduction_rate_mod(self):
+        """Return the fungi reproduction rate modifier of the environment."""
+        return self._fungi_reproduction_rate_mod
 
     def get_weather(self):
         """Return the current weather."""

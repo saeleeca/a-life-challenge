@@ -4,7 +4,7 @@ import pickle
 
 import events
 from models import (CreatureType, Genome, PassiveOrganism, HerbivoreOrganism,
-                    CarnivoreOrganism, Species)
+                    CarnivoreOrganism, FungiOrganism, Species)
 from view.constants import ButtonEvent
 from view.view import View
 from world import World
@@ -14,6 +14,7 @@ ROWS, COLS = World.ROWS, World.COLS
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
+BROWN = (150, 75, 0)
 
 PLAY, PAUSE, STEP = 0, 1, 2
 state = PAUSE
@@ -25,28 +26,34 @@ def create_genome(creature_type, world) -> Genome:
         return Genome(GREEN, creature_type, world.get_environment().get_passive_max_energy(), False, world.get_environment().get_passive_reproduction_rate_mod())
     if creature_type == CreatureType.CARNIVORE:
         return Genome(RED, creature_type, world.get_environment().get_carnivore_max_energy(), True, world.get_environment().get_carnivore_reproduction_rate_mod())
+    if creature_type == CreatureType.FUNGI:
+        return Genome(BROWN, creature_type, world.get_environment().get_fungi_max_energy(), False, world.get_environment().get_fungi_reproduction_rate_mod())
     return Genome(BLUE, creature_type, world.get_environment().get_herbivore_max_energy(), True, world.get_environment().get_herbivore_reproduction_rate_mod())
 
 def setup_life(world):
-    # Create 3 base species
+    # Create 4 base species
     passive_species = Species(create_genome(CreatureType.PASSIVE, world),
                               0, world)
     herbivore_species = Species(create_genome(CreatureType.HERBIVORE, world),
                                 0, world)
     carnivore_species = Species(create_genome(CreatureType.CARNIVORE, world),
                                 0, world)
-    world.set_base_species([passive_species, herbivore_species, carnivore_species])
+    fungi_species = Species(create_genome(CreatureType.FUNGI, world),
+                                0, world)
+    world.set_base_species([passive_species, herbivore_species, carnivore_species, fungi_species])
 
     for row in range(ROWS):
         for col in range(COLS):
-            val = random.randint(0, 20)
-            # 0-5 passive, 5-7 herbivore, 8 carnivore
-            if val < 6:
+            val = random.randint(0, 100)
+            # 0-5 passive, 5-7 herbivore, 8 carnivore, 9-11 fungi
+            if val < 30:
                 world.add_organism(PassiveOrganism(create_genome(CreatureType.PASSIVE, world), row, col, world, 1, passive_species), row, col)
-            elif 6< val < 8:
+            elif 30 <= val <= 38:
                 world.add_organism(HerbivoreOrganism(create_genome(CreatureType.HERBIVORE, world), row, col, world, 1, herbivore_species), row, col)
-            elif val == 8:
+            elif 39 <= val <= 42:
                  world.add_organism(CarnivoreOrganism(create_genome(CreatureType.CARNIVORE, world), row, col, world, 1, carnivore_species), row, col)
+            elif val == 50:
+                world.add_organism(FungiOrganism(create_genome(CreatureType.FUNGI, world), row, col, world, 1, fungi_species), row, col)
 
 def process_cells(world):
     visited = set()

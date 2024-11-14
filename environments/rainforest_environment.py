@@ -4,8 +4,8 @@ import random
 
 class RainforestEnvironment(Environment):
     def __init__(self, world):
-        super().__init__('Rainforest', 0.008, 0.02, 0.02,
-                         1.2, 1.0, 1.0,1.0,(159, 196, 166), world)
+        super().__init__('Rainforest', 0.008, 0.02, 0.02, 0.008,
+                         1.2, 1.0, 1.0,1.0, 1.0,(159, 196, 166), world)
         self.last_weather_change_day = 0  # Keeps track of the last day the weather was changed
         self.weather_change_interval = random.randint(10,50)  # Choose random day to change the weather
         self.current_weather = self.rainforest_weather()  # Initialize with a random weather type
@@ -83,6 +83,27 @@ class RainforestEnvironment(Environment):
             adjusted_modifier = self._herbivore_max_energy_mod
         else:
             adjusted_modifier = round(float(self._herbivore_max_energy_mod * 0.7),4)
+
+        # Return the max energy as an int based on grid size
+        return int(self._rows * self._cols * adjusted_modifier)
+
+    def get_fungi_max_energy(self):
+        """Return the reproduction for fungi organisms based on grid size and weather.
+        In normal weather the modifier stays the same.
+        In rainy weather the fungi organism thrives more so its corresponding energy rate is increased and in stormy
+        weather the fungi have a decreased energy rate.
+        """
+
+        # First check for weather change
+        self.change_weather_if_needed()
+
+        # Adjust the modifier based on weather conditions and round to 4 decimal places
+        if self.current_weather == 'Rainy':
+            adjusted_modifier = round(float(self._fungi_max_energy_mod* 1.1),4)
+        elif self.current_weather == 'Stormy':
+            adjusted_modifier = round(float(self._fungi_max_energy_mod * 0.9),4)
+        else:
+            adjusted_modifier = self._fungi_max_energy_mod
 
         # Return the max energy as an int based on grid size
         return int(self._rows * self._cols * adjusted_modifier)

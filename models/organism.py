@@ -30,6 +30,12 @@ class Organism:
         self._row = row
         self._col = col
 
+    def random_move(self):
+        """Move to a random adjacent empty cell."""
+        empty_found, empty_row, empty_col = self._world.get_empty_neighbor(self._row, self._col, True)
+        if empty_found:
+            self.move(empty_row, empty_col)
+
     def get_genome(self):
         return self._genome
 
@@ -53,11 +59,14 @@ class Organism:
         self._species = species
 
     def eat(self, food: 'Organism') -> None:
-        """Consumes the food"""
-        # This might work for herbivore/carnivore but not passive
-        row, col = food.get_location()
-        self._energy += food.get_energy()
-        self._world.kill_organism(row, col)
+        """Increases energy when consuming organisms."""
+        self._energy += food.get_food_energy()  # Gain the energy of the food
+        self._world.kill_organism(food._row, food._col)  # Remove the food from the world
+
+    def check_if_can_reproduce(self) -> bool:
+        empty_found, empty_row, empty_col = self._world.get_empty_neighbor(self._row, self._col, True)
+        if (self._energy >= (self._reproduction_ratio * self._genome.get_max_energy()) and empty_found):
+            self.reproduce(empty_row, empty_col)
 
     def reproduce(self, row: int, col: int) -> 'Organism':
         """Reproduces and returns the offspring if there are exactly 3 neighbors."""

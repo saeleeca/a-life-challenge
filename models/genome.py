@@ -4,6 +4,7 @@ class CreatureType(Enum):
     PASSIVE = 1
     HERBIVORE = 2
     CARNIVORE = 3
+    FUNGI = 4
 
 class Genome:
     def __init__(self, color: (int, int, int), creature_type: CreatureType,
@@ -41,6 +42,8 @@ class Genome:
             creature_type_str = "Carnivore"
         elif creature_type == CreatureType.HERBIVORE:
             creature_type_str = "Herbivore"
+        elif creature_type == CreatureType.FUNGI:
+            creature_type_str = "Fungi"
         else:
             creature_type_str = "Passive"
 

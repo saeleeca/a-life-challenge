@@ -3,8 +3,8 @@ import random
 
 class DesertEnvironment(Environment):
     def __init__(self, world):
-        super().__init__('Desert',0.03, 0.04, 0.06,
-                         0.05, 0.1, 0.5,0.8, (235, 223, 120), world)
+        super().__init__('Desert',0.03, 0.04, 0.06, 0.03,
+                         0.05, 0.1, 0.5,0.8, 0.1, (235, 223, 120), world)
         self.last_weather_change_day = 0  # Keeps track of the last day the weather was changed
         self.weather_change_interval = random.randint(5,10)  # Choose random day to change the weather
         self.current_weather = self.desert_weather()  # Initialize with a random weather type
@@ -60,6 +60,11 @@ class DesertEnvironment(Environment):
     def get_carnivore_max_energy(self):
         """Return the maximum energy for carnivore organisms based on grid size and weather."""
         adjusted_modifier = self.get_adjusted_max_energy(self._carnivore_max_energy_mod)
+        return int(self._rows * self._cols * adjusted_modifier)
+
+    def get_fungi_max_energy(self):
+        """Return the maximum energy for fungi organisms based on grid size and weather."""
+        adjusted_modifier = self.get_adjusted_max_energy(self._fungi_max_energy_mod)
         return int(self._rows * self._cols * adjusted_modifier)
 
     def get_weather(self):

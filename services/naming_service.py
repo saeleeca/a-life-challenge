@@ -39,3 +39,7 @@ class OrganismNameGenerator:
     def generate_carnivore_name(self):
         """Generate a name for a carnivore organism."""
         return self._generate_random_name("carnivore")
+
+    def generate_fungi_name(self):
+        """Generate a name for a fungi organism."""
+        return self._generate_random_name("fungi")
