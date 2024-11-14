@@ -10,10 +10,11 @@ class Slider:
     """
     Horizontal slider that displays a title on the left and the value on the
     right.
+    callback_fn will get called with the new value when the slider is moved
     """
     def __init__(self, x: float, y: float, screen,
                  min_val: int, max_val: int, default_val: int,
-                 title: str):
+                 title: str, callback_fn=None):
         # draw the title to get width, use the width place slider track
         font = pygame.font.SysFont(FONT_NAME, STATS_FONT_SIZE)
         self._title_width = render_text(title, font, WINDOW_BG, x, y - 10, screen,
@@ -34,7 +35,10 @@ class Slider:
         self._min_val: int = min_val
         self._max_val: int = max_val
         self._val: int = default_val
-
+        self._callback_fn = callback_fn
+        # sets the default val incase there's a discrepancy
+        if callback_fn:
+            callback_fn(default_val)
         self.draw()
 
     def draw(self):
@@ -112,6 +116,8 @@ class Slider:
                 self._slider_position = pos_x
             self._val = self.get_val()  # convert the new position to the val
             self.draw() # redraw slider circle in new position and new val
+            if self._callback_fn:
+                self._callback_fn(self._val)
             return True
         return False
 

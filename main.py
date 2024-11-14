@@ -21,6 +21,8 @@ state = PAUSE
 running = True
 dt = 0
 
+iterations_per_frame = 0
+
 def create_genome(creature_type, world) -> Genome:
     if creature_type == CreatureType.PASSIVE:
         return Genome(GREEN, creature_type, world.get_environment().get_passive_max_energy(), False, world.get_environment().get_passive_reproduction_rate_mod())
@@ -123,15 +125,23 @@ def load_game():
 
             # Overwrites current world and view object before updating view
             world = savedWorld
-            view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game, save_game, load_game)
+            view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game, save_game, load_game, slider_fns)
             view.update()
     except:
         print("File not found! Try saving first.")
 
+def change_iteration_value(new_value):
+    """Updates iterations per frame (used with slider)"""
+    global iterations_per_frame
+    iterations_per_frame = new_value
+
+# Add slider fn here, the retrieve and pass to the Slider in settingsUI
+slider_fns = {"iterations": change_iteration_value}
+
 
 world = World()
 view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game,
-            save_game, load_game)
+            save_game, load_game, slider_fns)
 clock = pygame.time.Clock()
 
 setup_life(world)
@@ -171,7 +181,7 @@ while running:
             # Press m to generate a meteor to kill organisms in a 10x10 area
             elif event.key == pygame.K_m:
                 events.meteor(world, view)
-                view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game, save_game, load_game)
+                view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game, save_game, load_game, slider_fns)
                 view.update()
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
