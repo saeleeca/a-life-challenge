@@ -9,8 +9,9 @@ class SettingsUI:
         self._screen = screen
         y = WINDOW_HEIGHT - 140
         self._speed_slider = Slider(STATS_X, y, screen,
-                                    1, 30, 5,
-                                    "Game Speed")
+                                    1, 100, 50,
+                                    "Game Speed",
+                                    slider_fns.get("speed"))
         self._mutation_slider = Slider(STATS_X, y + 40, screen,
                                        1, 100, 1,
                                        "Mutation Rate")
