@@ -24,6 +24,10 @@ dt = 0
 # Settings
 iterations_per_frame = 1
 iterations = 0
+fps = 120   # Used in Delta time.
+time_since_last_update = 0 # For simulation speed
+speed_threshold = 50 # For simulation speed
+speed_slider = 50 # For simulation speed
 
 def create_genome(creature_type, world) -> Genome:
     if creature_type == CreatureType.PASSIVE:
@@ -143,9 +147,24 @@ def change_iteration_value(new_value):
         iterations = new_value - 1
     iterations_per_frame = new_value
 
+def change_speed(new_value):
+    """Increases and decreases the speed of the simulation independently of delta time"""
+    global speed_threshold
+    global speed_slider
+    # Take the difference between previous slider position and new position
+    # Each step will be 0.9 instead of 1 to prevent reaching 0 at max speed
+    adjusted_speed_threshold = round(abs(speed_slider - new_value) * 0.9, 4)
+    # Add the adjusted threshold to the speed threshold to make it slow down
+    if new_value < speed_slider:
+        speed_threshold = round(speed_threshold + adjusted_speed_threshold, 4)
+        speed_slider = new_value
+    # Subtract the adjusted threshold to the speed threshold to make it speed up
+    elif new_value > speed_slider:
+        speed_threshold = round(speed_threshold - adjusted_speed_threshold, 4)
+        speed_slider = new_value
 
 # Add slider fn here, then retrieve and pass to the Slider in settingsUI
-slider_fns = {"iterations": change_iteration_value}
+slider_fns = {"iterations": change_iteration_value, "speed": change_speed}
 
 
 world = World()
@@ -155,7 +174,7 @@ clock = pygame.time.Clock()
 
 setup_life(world)
 view.update()
-pygame.display.flip()
+#pygame.display.flip()
 
 
 # main game loop
@@ -202,8 +221,13 @@ while running:
             view.handle_mouse_up()
 
     if state == PLAY or state == STEP:
-        iterations += 1
-        process_cells(world)
+        # Allows simulation to change speed without effecting Delta time
+        if time_since_last_update > speed_threshold:
+            iterations += 1
+            process_cells(world)
+            time_since_last_update = 0
+        else:
+            time_since_last_update += dt
         if iterations == iterations_per_frame:
             view.update()
             iterations = 0
@@ -211,8 +235,7 @@ while running:
                 state = PAUSE
 
     pygame.display.flip()
-    # limits FPS to 1
     # dt is delta time in seconds since last frame, used for framerate-independent physics.
-    dt = clock.tick(20)
+    dt = clock.tick(fps)
 
 pygame.quit()
