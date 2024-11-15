@@ -8,12 +8,19 @@ class CreatureType(Enum):
 
 class Genome:
     def __init__(self, color: (int, int, int), creature_type: CreatureType,
-        max_energy: int, can_move: bool, reproduction_rate: float):
+        max_energy: int, can_move: bool, reproduction_rate: float, reproduction_energy_expenditure: int, move_energy_expenditure: int, base_energy_expenditure: float,
+                 food_energy: int, food_type: type, reproduction_ratio: int):
         self._color: (int, int, int) = color
         self._creature_type: CreatureType = creature_type
         self._max_energy: int = max_energy
         self._can_move: bool = can_move
         self._reproduction_rate: float = reproduction_rate
+        self._reproduction_energy_expenditure: int = reproduction_energy_expenditure
+        self._move_energy_expenditure: int = move_energy_expenditure
+        self._base_energy_expenditure: int = base_energy_expenditure
+        self._food_energy: int = food_energy
+        self._food_type: type = food_type
+        self._reproduction_ratio: int = reproduction_ratio
 
     def get_color(self) -> (int, int, int):
         return self._color
@@ -29,6 +36,24 @@ class Genome:
 
     def get_reproduction_rate(self) -> float:
         return self._reproduction_rate
+    
+    def get_reproduction_energy_expenditure(self) -> int:
+        return self._reproduction_energy_expenditure
+    
+    def get_move_energy_expenditure(self) -> int:
+        return self._move_energy_expenditure
+
+    def get_base_energy_expenditure(self) -> int:
+        return self._base_energy_expenditure
+
+    def get_food_energy(self) -> int:
+        return self._food_energy
+
+    def get_food_type(self) -> type:
+        return self._food_type
+
+    def get_reproduction_ratio(self) -> int:
+        return self._reproduction_ratio
 
     def reproduce(self) -> 'Genome':
         return self.__class__(self._color, self._creature_type,
