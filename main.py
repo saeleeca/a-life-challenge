@@ -24,7 +24,6 @@ dt = 0
 # Settings
 iterations_per_frame = 1
 iterations = 0
-fps = 120   # Used in Delta time.
 iteration_start_time = 0
 speed_threshold = 50 # For simulation speed
 speed_slider = 50 # For simulation speed
@@ -164,7 +163,6 @@ def change_speed(new_value):
     elif new_value > speed_slider:
         speed_threshold = round(speed_threshold - adjusted_speed_threshold, 4)
         speed_slider = new_value
-    print(speed_threshold)
 # Add slider fn here, then retrieve and pass to the Slider in settingsUI
 slider_fns = {"iterations": change_iteration_value, "speed": change_speed}
 
