@@ -5,9 +5,11 @@ import pickle
 import events
 from models import (CreatureType, Genome, PassiveOrganism, HerbivoreOrganism,
                     CarnivoreOrganism, FungiOrganism, Species)
+from services.mutation_service import MutationService
 from view.constants import ButtonEvent
 from view.view import View
 from world import World
+from services import mutation_service
 
 ROWS, COLS = World.ROWS, World.COLS
 
@@ -28,6 +30,7 @@ fps = 120   # Used in Delta time.
 time_since_last_update = 0 # For simulation speed
 speed_threshold = 50 # For simulation speed
 speed_slider = 50 # For simulation speed
+mutation_slider = 1 # For mutation rate
 
 def create_genome(creature_type, world) -> Genome:
     if creature_type == CreatureType.PASSIVE:
@@ -132,7 +135,7 @@ def load_game():
             # Overwrites current world and view object before updating view
             world = savedWorld
             world.load()    # Updates the Species index to match savedWorld
-            view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game, save_game, load_game, slider_fns)
+            view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game, save_game, load_game, slider_fns, meteor)
             view.update()
     except:
         print("File not found! Try saving first.")
@@ -163,13 +166,32 @@ def change_speed(new_value):
         speed_threshold = round(speed_threshold - adjusted_speed_threshold, 4)
         speed_slider = new_value
 
+def change_mutation_rate(multiplier):
+    """Increases and decreases the rate of mutations"""
+    global mutation_slider
+    if mutation_slider < multiplier:
+        mutation_service.MutationService.mutation_rate_modifier(MutationService, multiplier)
+        mutation_slider = multiplier
+    elif mutation_slider > multiplier:
+        mutation_service.MutationService.mutation_rate_modifier(multiplier)
+        mutation_slider = multiplier
+
+    print("new val :", multiplier)
+
+def meteor():
+    """Helper function that wipes a 20x20 grid of the map with a meteor"""
+    global view
+    events.meteor(world, view)
+    view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game, save_game, load_game, slider_fns, meteor)
+    view.update()
+
 # Add slider fn here, then retrieve and pass to the Slider in settingsUI
-slider_fns = {"iterations": change_iteration_value, "speed": change_speed}
+slider_fns = {"iterations": change_iteration_value, "speed": change_speed, "mutation": change_mutation_rate}
 
 
 world = World()
 view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game,
-            save_game, load_game, slider_fns)
+            save_game, load_game, slider_fns, meteor)
 clock = pygame.time.Clock()
 
 setup_life(world)
@@ -209,9 +231,7 @@ while running:
 
             # Press m to generate a meteor to kill organisms in a 10x10 area
             elif event.key == pygame.K_m:
-                events.meteor(world, view)
-                view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game, save_game, load_game, slider_fns)
-                view.update()
+                meteor()
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             view.handle_click()

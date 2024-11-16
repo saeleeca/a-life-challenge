@@ -27,6 +27,13 @@ class MutationService:
             'creature_type': 0.00001
         }
 
+        self.mutation_starting_rates = {
+            'color': 0.1,
+            'max_energy': 0.1,
+            'can_move': 0.001,
+            'creature_type': 0.00001
+        }
+
     def mutate(self, genome: Genome) -> Genome:
         """
         Perform mutations on a given genome. 
@@ -69,3 +76,10 @@ class MutationService:
         possible_types = [creature for creature in CreatureType if creature != genome.get_creature_type()]
         new_type = random.choice(possible_types)
         genome._creature_type = new_type
+
+    def mutation_rate_modifier(self, multiplier):
+        """ Changes current mutation rates based on slider modifier"""
+        self.mutation_rates['color'] = self.mutation_starting_rates['color'] * multiplier
+        self.mutation_rates['max_energy'] = self.mutation_starting_rates['max_energy'] * multiplier
+        self.mutation_rates['can_move'] = self.mutation_starting_rates['can_move'] * multiplier
+        self.mutation_rates['creature_type'] = self.mutation_starting_rates['creature_type'] * multiplier
