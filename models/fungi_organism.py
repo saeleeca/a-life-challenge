@@ -7,11 +7,11 @@ class FungiOrganism(Organism):
         super().__init__(genome, row, col, world, generation, species)
 
         # Set custom values for the Fungi.
-        self._reproduction_energy_expenditure = 5
-        self._base_energy_expenditure = 1.0
-        self._food_energy = 5
-        self._food_type = PassiveOrganism
-        self._reproduction_ratio = 2
+        # self._reproduction_energy_expenditure = 5
+        # self._base_energy_expenditure = 1.0
+        # self._food_energy = 5
+        # self._food_type = PassiveOrganism
+        # self._reproduction_ratio = 2
 
     def energy_reduction(self):
         """Fungi Organism stored energy declines intermittently. Currently based on hardcoded rate"""

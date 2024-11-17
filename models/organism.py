@@ -13,11 +13,12 @@ class Organism:
 
         self._mutation_service = MutationService()      # Singleton Instance
         # Custom / Organism-Specific Properties
-        self._move_energy_expenditure = 1   # Energy spend moving
-        self._food_energy = 1               # Energy given when eaten
-        self._base_energy_expenditure = 1   # Baseline energy expended per turn
-        self._food_type = None              # Food class if a consumer   
-        self._reproduction_ratio = 1.0      # how much energy surplus energy needed to reproduce
+        self._move_energy_expenditure = self._genome.get_move_energy_expenditure()   # Energy spend moving
+        self._reproduction_energy_expenditure = self._genome.get_reproduction_energy_expenditure()
+        self._food_energy = self._genome.get_food_energy()               # Energy given when eaten
+        self._base_energy_expenditure = self._genome.get_base_energy_expenditure()   # Baseline energy expended per turn
+        self._food_type = self._genome.get_food_type()              # Food class if a consumer   
+        self._reproduction_ratio = self._genome.get_reproduction_ratio()      # how much energy surplus energy needed to reproduce
 
 
 

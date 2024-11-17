@@ -32,7 +32,22 @@ class MutationService:
             'color': self._mutate_color,
             'max_energy': self._mutate_max_energy,
             'can_move': self._mutate_can_move,
-            'creature_type': self._mutate_creature_type
+            'creature_type': self._mutate_creature_type,
+            'move_energy_expenditure': self._mutate_move_energy_expenditure,
+            'food_energy': self._mutate_food_energy,
+            'base_energy_expenditure': self._mutate_base_energy_expenditure,
+            'reproduction_ratio': self._mutate_reproduction_ratio
+        }
+
+        self.mutation_rates = {
+            'color': 0.1,
+            'max_energy': 0.1,
+            'can_move': 0.001,
+            'creature_type': 0.00001,
+            'move_energy_expenditure': 0.05,
+            'food_energy': 0.05,
+            'base_energy_expenditure': 0.05,
+            'reproduction_ratio': 0.05
         }
 
         self.mutation_rates : dict = MutationService._mutation_rates
@@ -47,7 +62,13 @@ class MutationService:
             creature_type=genome.get_creature_type(),
             max_energy=genome.get_max_energy(),
             can_move=genome.get_can_move(),
-            reproduction_rate=genome.get_reproduction_rate()
+            reproduction_rate=genome.get_reproduction_rate(),
+            reproduction_energy_expenditure=genome.get_reproduction_energy_expenditure(),
+            move_energy_expenditure=genome.get_move_energy_expenditure(),
+            base_energy_expenditure=genome.get_base_energy_expenditure(),
+            food_energy=genome.get_food_energy(),
+            food_type=genome.get_food_type(),
+            reproduction_ratio=genome.get_reproduction_ratio()
         )
 
         for attribute, mutation_strategy in self.mutation_strategies.items():
@@ -85,3 +106,27 @@ class MutationService:
         """ Changes current mutation rates based on slider modifier"""
         for mutation_type in cls._mutation_rates:
             cls._mutation_rates[mutation_type] = cls._mutation_starting_rates[mutation_type] * multiplier
+
+    def _mutate_move_energy_expenditure(self, genome: Genome):
+        """Mutates move_energy_expenditure by adding a small random value."""
+        move_energy_expenditure = genome.get_move_energy_expenditure()
+        mutation = random.randint(-1, 1)
+        genome._move_energy_expenditure = max(1, move_energy_expenditure + mutation)
+
+    def _mutate_food_energy(self, genome: Genome):
+        """Mutates food_energy by adding a small random value."""
+        food_energy = genome.get_food_energy()
+        mutation = random.randint(-2, 2)
+        genome._food_energy = max(1, food_energy + mutation)
+
+    def _mutate_base_energy_expenditure(self, genome: Genome):
+        """Mutates base_energy_expenditure by adding a small random value."""
+        base_energy_expenditure = genome.get_base_energy_expenditure()
+        mutation = random.randint(-1, 1)
+        genome._base_energy_expenditure = max(1.0, base_energy_expenditure + mutation)
+
+    def _mutate_reproduction_ratio(self, genome: Genome):
+        """Mutates reproduction_ratio by adding a small random value."""
+        reproduction_ratio = genome.get_reproduction_ratio()
+        mutation = random.uniform(-0.1, 0.1)
+        genome._reproduction_ratio = max(1.1, reproduction_ratio + mutation)

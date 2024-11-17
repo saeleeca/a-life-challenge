@@ -7,8 +7,8 @@ class PassiveOrganism(Organism):
         super().__init__(genome, row, col, world, generation, species)
 
         # Set custom values for the Passive.
-        self._reproduction_energy_expenditure = 6
-        self._food_energy = 5
+        # self._reproduction_energy_expenditure = 6
+        # self._food_energy = 5
 
     def move(self, row: int, col: int) -> None:
         """Passive organisms do not move. Overwrites parent organism."""

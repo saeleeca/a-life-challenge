@@ -16,7 +16,7 @@ class SettingsUI:
                                        0, 100, 1,
                                        "Mutation Rate", slider_fns.get("mutation"))
         self._skip_slider = Slider(STATS_X, y + 80, screen, 1,
-                                   100, 1,
+                                   30, 1,
                                    "Iterations per frame",
                                    slider_fns.get("iterations"))
 
