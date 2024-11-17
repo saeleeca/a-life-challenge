@@ -170,13 +170,11 @@ def change_mutation_rate(multiplier):
     """Increases and decreases the rate of mutations"""
     global mutation_slider
     if mutation_slider < multiplier:
-        mutation_service.MutationService.mutation_rate_modifier(MutationService, multiplier)
+        mutation_service.MutationService.mutation_rate_modifier(multiplier)
         mutation_slider = multiplier
     elif mutation_slider > multiplier:
         mutation_service.MutationService.mutation_rate_modifier(multiplier)
         mutation_slider = multiplier
-
-    print("new val :", multiplier)
 
 def meteor():
     """Helper function that wipes a 20x20 grid of the map with a meteor"""

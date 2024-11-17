@@ -4,6 +4,21 @@ from models import Genome, CreatureType
 class MutationService:  
     # Set Up Singleton Implementation
     _instance = None
+    # Tracks current mutation rates
+    _mutation_rates = {
+        'color': 0.1,
+        'max_energy': 0.1,
+        'can_move': 0.001,
+        'creature_type': 0.00001
+    }
+    # Default mutation rates
+    _mutation_starting_rates = {
+        'color': 0.1,
+        'max_energy': 0.1,
+        'can_move': 0.001,
+        'creature_type': 0.00001
+        }
+
     def __new__(cls, *args, **kwargs):
         """
         Override the __new__ method to implement the singleton pattern.
@@ -20,19 +35,7 @@ class MutationService:
             'creature_type': self._mutate_creature_type
         }
 
-        self.mutation_rates = {
-            'color': 0.1,
-            'max_energy': 0.1,
-            'can_move': 0.001,
-            'creature_type': 0.00001
-        }
-
-        self.mutation_starting_rates = {
-            'color': 0.1,
-            'max_energy': 0.1,
-            'can_move': 0.001,
-            'creature_type': 0.00001
-        }
+        self.mutation_rates : dict = MutationService._mutation_rates
 
     def mutate(self, genome: Genome) -> Genome:
         """
@@ -77,9 +80,8 @@ class MutationService:
         new_type = random.choice(possible_types)
         genome._creature_type = new_type
 
-    def mutation_rate_modifier(self, multiplier):
+    @classmethod
+    def mutation_rate_modifier(cls, multiplier):
         """ Changes current mutation rates based on slider modifier"""
-        self.mutation_rates['color'] = self.mutation_starting_rates['color'] * multiplier
-        self.mutation_rates['max_energy'] = self.mutation_starting_rates['max_energy'] * multiplier
-        self.mutation_rates['can_move'] = self.mutation_starting_rates['can_move'] * multiplier
-        self.mutation_rates['creature_type'] = self.mutation_starting_rates['creature_type'] * multiplier
+        for mutation_type in cls._mutation_rates:
+            cls._mutation_rates[mutation_type] = cls._mutation_starting_rates[mutation_type] * multiplier
