@@ -24,8 +24,7 @@ dt = 0
 # Settings
 iterations_per_frame = 1
 iterations = 0
-fps = 120   # Used in Delta time.
-time_since_last_update = 0 # For simulation speed
+iteration_start_time = 0
 speed_threshold = 50 # For simulation speed
 speed_slider = 50 # For simulation speed
 
@@ -84,8 +83,10 @@ def process_cells(world):
 def start_game():
     """ Starts the current simulation if state is PAUSE"""
     global state
+    global iteration_start_time
     state = PLAY
     view.update_playback_state(ButtonEvent.PLAY)
+    iteration_start_time = pygame.time.get_ticks()
 
 def pause_game():
     """ Pauses the current simulation if state is PLAY"""
@@ -166,7 +167,6 @@ def change_speed(new_value):
     elif new_value > speed_slider:
         speed_threshold = round(speed_threshold - adjusted_speed_threshold, 4)
         speed_slider = new_value
-
 # Add slider fn here, then retrieve and pass to the Slider in settingsUI
 slider_fns = {"iterations": change_iteration_value, "speed": change_speed}
 
@@ -225,21 +225,22 @@ while running:
             view.handle_mouse_up()
 
     if state == PLAY or state == STEP:
-        # Allows simulation to change speed without effecting Delta time
-        if time_since_last_update > speed_threshold:
+        # Prioritize iterations as fast as possible (don't worry about time here)
+        if iterations < iterations_per_frame:
             iterations += 1
             process_cells(world)
-            time_since_last_update = 0
-        else:
-            time_since_last_update += dt
-        if iterations == iterations_per_frame:
+        # Enough iterations and Stepping. Don't wait, just render
+        elif state == STEP:
             view.update()
             iterations = 0
-            if state == STEP:
-                state = PAUSE
+            state = PAUSE
+        # Enough iterations have passed and not stepping
+        # compare time elapsed to time needed to render (speed_threshold)
+        elif (pygame.time.get_ticks() - iteration_start_time) >= speed_threshold:
+            view.update()
+            iterations = 0
+            iteration_start_time = pygame.time.get_ticks()
 
     pygame.display.flip()
-    # dt is delta time in seconds since last frame, used for framerate-independent physics.
-    dt = clock.tick(fps)
 
 pygame.quit()
