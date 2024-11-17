@@ -9,14 +9,22 @@ class MutationService:
         'color': 0.1,
         'max_energy': 0.1,
         'can_move': 0.001,
-        'creature_type': 0.00001
+        'creature_type': 0.00001,
+        'move_energy_expenditure': 0.05,
+        'food_energy': 0.05,
+        'base_energy_expenditure': 0.05,
+        'reproduction_ratio': 0.05
     }
     # Default mutation rates
     _mutation_starting_rates = {
         'color': 0.1,
         'max_energy': 0.1,
         'can_move': 0.001,
-        'creature_type': 0.00001
+        'creature_type': 0.00001,
+        'move_energy_expenditure': 0.05,
+        'food_energy': 0.05,
+        'base_energy_expenditure': 0.05,
+        'reproduction_ratio': 0.05
         }
 
     def __new__(cls, *args, **kwargs):
@@ -37,17 +45,6 @@ class MutationService:
             'food_energy': self._mutate_food_energy,
             'base_energy_expenditure': self._mutate_base_energy_expenditure,
             'reproduction_ratio': self._mutate_reproduction_ratio
-        }
-
-        self.mutation_rates = {
-            'color': 0.1,
-            'max_energy': 0.1,
-            'can_move': 0.001,
-            'creature_type': 0.00001,
-            'move_energy_expenditure': 0.05,
-            'food_energy': 0.05,
-            'base_energy_expenditure': 0.05,
-            'reproduction_ratio': 0.05
         }
 
         self.mutation_rates : dict = MutationService._mutation_rates
@@ -101,12 +98,6 @@ class MutationService:
         new_type = random.choice(possible_types)
         genome._creature_type = new_type
 
-    @classmethod
-    def mutation_rate_modifier(cls, multiplier):
-        """ Changes current mutation rates based on slider modifier"""
-        for mutation_type in cls._mutation_rates:
-            cls._mutation_rates[mutation_type] = cls._mutation_starting_rates[mutation_type] * multiplier
-
     def _mutate_move_energy_expenditure(self, genome: Genome):
         """Mutates move_energy_expenditure by adding a small random value."""
         move_energy_expenditure = genome.get_move_energy_expenditure()
@@ -130,3 +121,9 @@ class MutationService:
         reproduction_ratio = genome.get_reproduction_ratio()
         mutation = random.uniform(-0.1, 0.1)
         genome._reproduction_ratio = max(1.1, reproduction_ratio + mutation)
+
+    @classmethod
+    def mutation_rate_modifier(cls, multiplier):
+        """ Changes current mutation rates based on slider modifier"""
+        for mutation_type in cls._mutation_rates:
+            cls._mutation_rates[mutation_type] = cls._mutation_starting_rates[mutation_type] * multiplier
