@@ -5,7 +5,6 @@ import pickle
 import events
 from models import (CreatureType, Genome, PassiveOrganism, HerbivoreOrganism,
                     CarnivoreOrganism, FungiOrganism, Species)
-from services.mutation_service import MutationService
 from view.constants import ButtonEvent
 from view.view import View
 from world import World
@@ -174,19 +173,13 @@ def change_speed(new_value):
 def change_mutation_rate(multiplier):
     """Increases and decreases the rate of mutations"""
     global mutation_slider
-    if mutation_slider < multiplier:
-        mutation_service.MutationService.mutation_rate_modifier(multiplier)
-        mutation_slider = multiplier
-    elif mutation_slider > multiplier:
-        mutation_service.MutationService.mutation_rate_modifier(multiplier)
-        mutation_slider = multiplier
+    mutation_service.MutationService.mutation_rate_modifier(multiplier)
 
 def meteor():
     """Helper function that wipes a 20x20 grid of the map with a meteor"""
     global view
     events.meteor(world, view)
-    view = View(ROWS, COLS, world, start_game, pause_game, reset_game, step_game, save_game, load_game, slider_fns, meteor)
-    view.update()
+    view._draw_game_view()
 
 # Add slider fn here, then retrieve and pass to the Slider in settingsUI
 slider_fns = {"iterations": change_iteration_value, "speed": change_speed, "mutation": change_mutation_rate}

@@ -16,16 +16,7 @@ class MutationService:
         'reproduction_ratio': 0.05
     }
     # Default mutation rates
-    _mutation_starting_rates = {
-        'color': 0.1,
-        'max_energy': 0.1,
-        'can_move': 0.001,
-        'creature_type': 0.00001,
-        'move_energy_expenditure': 0.05,
-        'food_energy': 0.05,
-        'base_energy_expenditure': 0.05,
-        'reproduction_ratio': 0.05
-        }
+    _mutation_starting_rates = _mutation_rates.copy()
 
     def __new__(cls, *args, **kwargs):
         """
