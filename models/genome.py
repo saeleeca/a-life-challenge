@@ -9,7 +9,7 @@ class CreatureType(Enum):
 class Genome:
     def __init__(self, color: (int, int, int), creature_type: CreatureType,
         max_energy: int, can_move: bool, reproduction_rate: float, reproduction_energy_expenditure: int, move_energy_expenditure: int, base_energy_expenditure: float,
-                 food_energy: int, food_type: type, reproduction_ratio: int):
+                 food_energy: int, food_type: type, reproduction_ratio: int, can_seek_food: bool = False):
         self._color: (int, int, int) = color
         self._creature_type: CreatureType = creature_type
         self._max_energy: int = max_energy
@@ -21,6 +21,7 @@ class Genome:
         self._food_energy: int = food_energy
         self._food_type: type = food_type
         self._reproduction_ratio: int = reproduction_ratio
+        self._can_seek_food: bool = can_seek_food           # defaults to False
 
     def get_color(self) -> (int, int, int):
         return self._color
@@ -54,6 +55,9 @@ class Genome:
 
     def get_reproduction_ratio(self) -> int:
         return self._reproduction_ratio
+    
+    def get_can_seek_food(self) -> bool:
+        return self._can_seek_food
 
     def reproduce(self) -> 'Genome':
         return self.__class__(self._color, self._creature_type,

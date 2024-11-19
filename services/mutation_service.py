@@ -13,7 +13,8 @@ class MutationService:
         'move_energy_expenditure': 0.05,
         'food_energy': 0.05,
         'base_energy_expenditure': 0.05,
-        'reproduction_ratio': 0.05
+        'reproduction_ratio': 0.05,
+        'can_seek_food': 0.1
     }
     # Default mutation rates
     _mutation_starting_rates = _mutation_rates.copy()
@@ -35,7 +36,8 @@ class MutationService:
             'move_energy_expenditure': self._mutate_move_energy_expenditure,
             'food_energy': self._mutate_food_energy,
             'base_energy_expenditure': self._mutate_base_energy_expenditure,
-            'reproduction_ratio': self._mutate_reproduction_ratio
+            'reproduction_ratio': self._mutate_reproduction_ratio,
+            'can_seek_food': self._mutate_can_seek_food
         }
 
         self.mutation_rates : dict = MutationService._mutation_rates
@@ -56,7 +58,8 @@ class MutationService:
             base_energy_expenditure=genome.get_base_energy_expenditure(),
             food_energy=genome.get_food_energy(),
             food_type=genome.get_food_type(),
-            reproduction_ratio=genome.get_reproduction_ratio()
+            reproduction_ratio=genome.get_reproduction_ratio(),
+            can_seek_food=genome.get_can_seek_food()
         )
 
         for attribute, mutation_strategy in self.mutation_strategies.items():
@@ -112,6 +115,10 @@ class MutationService:
         reproduction_ratio = genome.get_reproduction_ratio()
         mutation = random.uniform(-0.1, 0.1)
         genome._reproduction_ratio = max(1.1, reproduction_ratio + mutation)
+
+    def _mutate_can_seek_food(self, genome: Genome):
+        """Mutates the can_seek_food attribute by flipping bool."""
+        genome._can_seek_food = not genome._can_seek_food
 
     @classmethod
     def mutation_rate_modifier(cls, multiplier):

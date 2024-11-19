@@ -1,4 +1,5 @@
 from services.mutation_service import MutationService
+import random
 class Organism:
     def __init__(self, genome, row: int, col: int, world, generation: int,
                  species):
@@ -82,6 +83,33 @@ class Organism:
     def choose_action(self):
         """Depends on type of Organism"""
         pass
+
+    def seek_food(self):
+        """
+        Move to an empty cell that will make food adjacent if possible.
+        Returns True if a move was made, False otherwise.
+        """
+        potential_moves = []
+        max_rows, max_cols = len(self._world.get_world()), len(self._world.get_world()[0])
+
+        for dr, dc in [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]:
+            next_row, next_col = self._row + dr, self._col + dc
+
+            if 0 <= next_row < max_rows and 0 <= next_col < max_cols:
+                if self._world.is_cell_empty(next_row, next_col):
+                    # Simulate moving to this cell and check for food
+                    food_found, r, c = self._world.get_adjacent_food(next_row, next_col, self._food_type)
+                    if food_found:
+                        potential_moves.append((next_row, next_col))
+
+        # If any potential moves bring food within reach, choose one
+        if potential_moves:
+            target_row, target_col = random.choice(potential_moves)
+            self.move(target_row, target_col)
+            return True
+
+        return False  # No beneficial moves found
+
 
     def get_birthday(self) -> int:
         """Returns the birthday"""
