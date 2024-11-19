@@ -13,8 +13,8 @@ class SettingsUI:
                                     "Game Speed",
                                     slider_fns.get("speed"))
         self._mutation_slider = Slider(STATS_X, y + 40, screen,
-                                       1, 100, 1,
-                                       "Mutation Rate")
+                                       0, 100, 1,
+                                       "Mutation Rate", slider_fns.get("mutation"))
         self._skip_slider = Slider(STATS_X, y + 80, screen, 1,
                                    30, 1,
                                    "Iterations per frame",
