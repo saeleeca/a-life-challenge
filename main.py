@@ -177,9 +177,10 @@ def change_mutation_rate(multiplier):
 
 def meteor():
     """Helper function that wipes a 20x20 grid of the map with a meteor"""
-    global view
     events.meteor(world, view)
-    view._draw_game_view()
+    # redraws the entire screen, necessary after shake screen, and ensures that
+    # the modal is properly closed if it was open
+    view.change_view_to_game()
 
 # Add slider fn here, then retrieve and pass to the Slider in settingsUI
 slider_fns = {"iterations": change_iteration_value, "speed": change_speed, "mutation": change_mutation_rate}

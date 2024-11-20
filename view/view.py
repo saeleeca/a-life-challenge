@@ -46,7 +46,7 @@ class View:
         self._settings_ui = SettingsUI(self._screen, slider_fns)
 
         self._view_modal_ui = ModalUI(self._screen,
-                                      self._change_view_to_game, world)
+                                      self.change_view_to_game, world)
 
         self._game_components = [self._playback_ui, self._file_ui,
                                  self._stats_ui,
@@ -133,11 +133,7 @@ class View:
             col = int((x - WORLD_X) / self._grid_size)
             organism = self._world.get_cell(row, col)
             if organism:
-                self._viewing_modal = True
-                self._pause_fn()
-                self._components = self._view_modal_components
-
-                self._view_modal_ui.draw_organism_view(organism)
+                self._change_view_to_modal(organism_view=True, organism=organism)
                 return True
             return False
 
@@ -164,18 +160,24 @@ class View:
         Updates the playback ui, when changed from outside the UI, like when
         the user switches to pause using the keyboard
         """
+        # First ensure that the modal closes properly if it is open
+        # keyboard commands P,M,L,R should interrupt the modal and close it
+        if self._viewing_modal:
+            self.change_view_to_game()
         self._playback_ui.update_playback_state(playbackState)
 
-    def _change_view_to_modal(self):
+    def _change_view_to_modal(self, organism_view=False, organism=None):
         """Toggles the view state between GAME And MODAL"""
+        self._pause_fn() # make sure game is paused BEFORE _viewing_modal True
         self._viewing_modal = True
-        self._pause_fn()
         self._components = self._view_modal_components
-        self._view_modal_ui.draw()
+        if not organism_view:
+            self._view_modal_ui.draw()
+        else:
+            self._view_modal_ui.draw_organism_view(organism)
 
-    def _change_view_to_game(self):
-        # set to True when user clicked an organism
-        # can remove this if world grid gets refactored to a separate class
+    def change_view_to_game(self):
+        """Changes from modal view to game view, redrawing the game view"""
         self._viewing_modal = False
         self._components = self._game_components # happens in init game view
         self._draw_game_view()
