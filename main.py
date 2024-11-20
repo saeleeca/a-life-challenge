@@ -59,11 +59,11 @@ def setup_life(world):
         for col in range(COLS):
             val = random.randint(0, 100)
             # 0-5 passive, 5-7 herbivore, 8 carnivore, 9-11 fungi
-            if val < 30:
+            if val < 40:
                 world.add_organism(PassiveOrganism(create_genome(CreatureType.PASSIVE, world), row, col, world, 1, passive_species), row, col)
-            elif 30 <= val <= 38:
+            elif 40 <= val <= 42:
                 world.add_organism(HerbivoreOrganism(create_genome(CreatureType.HERBIVORE, world), row, col, world, 1, herbivore_species), row, col)
-            elif 39 <= val <= 42:
+            elif 43 <= val <= 44:
                  world.add_organism(CarnivoreOrganism(create_genome(CreatureType.CARNIVORE, world), row, col, world, 1, carnivore_species), row, col)
             elif val == 50:
                 world.add_organism(FungiOrganism(create_genome(CreatureType.FUNGI, world), row, col, world, 1, fungi_species), row, col)

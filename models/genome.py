@@ -9,7 +9,8 @@ class CreatureType(Enum):
 class Genome:
     def __init__(self, color: (int, int, int), creature_type: CreatureType,
         max_energy: int, can_move: bool, reproduction_rate: float, reproduction_energy_expenditure: int, move_energy_expenditure: int, base_energy_expenditure: float,
-                 food_energy: int, food_type: type, reproduction_ratio: int, can_seek_food: bool = False):
+                 food_energy: int, food_type: type, reproduction_ratio: int, can_seek_food: bool = False,
+                 can_hibernate: bool = False, can_panic: bool = False, movement_iterations:int = 1):
         self._color: (int, int, int) = color
         self._creature_type: CreatureType = creature_type
         self._max_energy: int = max_energy
@@ -21,7 +22,10 @@ class Genome:
         self._food_energy: int = food_energy
         self._food_type: type = food_type
         self._reproduction_ratio: int = reproduction_ratio
-        self._can_seek_food: bool = can_seek_food           # defaults to False
+        self._can_seek_food: bool = can_seek_food           
+        self._can_hibernate: bool = can_hibernate
+        self._can_panic: bool = can_panic
+        self._movement_iterations:int = movement_iterations # defaults to 1
 
     def get_color(self) -> (int, int, int):
         return self._color
@@ -58,6 +62,18 @@ class Genome:
     
     def get_can_seek_food(self) -> bool:
         return self._can_seek_food
+    
+    def get_can_hibernate(self) -> bool:
+        return self._can_hibernate
+
+    def get_can_panic(self) -> bool:
+        return self._can_panic
+    
+    def get_movement_iterations(self) -> int:
+        return self._movement_iterations
+
+    def set_movement_iterations(self, value: int):
+        self._movement_iterations = max(1, value)  # Ensure it's at least 1
 
     def reproduce(self) -> 'Genome':
         return self.__class__(self._color, self._creature_type,
