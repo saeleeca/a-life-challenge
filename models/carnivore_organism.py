@@ -18,7 +18,7 @@ class CarnivoreOrganism(Organism):
             super().choose_action()  # Regular behavior if enough food is available
 
     def choose_action(self):
-        """Herbivore checks adjacent cells for passive organisms, eats if found, 
+        """Canrnivore checks adjacent cells for food organisms, eats if found, 
         moves if no food, and dies if out of energy."""
 
         # Step 1: Invoke checks / handlers for low energy states.

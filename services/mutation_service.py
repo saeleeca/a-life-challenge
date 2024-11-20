@@ -14,8 +14,8 @@ class MutationService:
         'food_energy': 0.05,
         'base_energy_expenditure': 0.05,
         'reproduction_ratio': 0.05,
-        'can_seek_food': 0.05,
-        'can_hibernate': 0.1,
+        'can_seek_food': 0.03,
+        'can_hibernate': 0.07,
         'can_panic': 0.03
     }
     # Default mutation rates
