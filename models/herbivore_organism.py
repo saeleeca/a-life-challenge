@@ -18,13 +18,18 @@ class HerbivoreOrganism(Organism):
         # Step 1: Check adjacent cells for food
         food_found, food_row, food_col = self._world.get_adjacent_food(self._row, self._col, self._food_type)
 
-        if food_found:
-            # Step 2: Eat the food if found            
+        # Step 2: Eat the food if found
+        if food_found:                        
             self.eat(self._world.get_cell(food_row, food_col)) 
         
-        # Step 3: Move randomly if no food found and can move
-        if self._genome.get_can_move():
-            self.random_move()            
+        # Step 3: If no food found, Move. Either seek food or move randomly.
+        elif self._genome.get_can_seek_food():
+            if not self.seek_food():  # Try to move strategically toward food
+                if self._genome.get_can_move():
+                    self.random_move()  # Fallback to random movement if no food found
+        else:
+            if self._genome.get_can_move():
+                self.random_move()  # Move randomly if food-seeking is disabled        
         
         # Step 4: Calculate baseline energy loss. Die if out of energy.
         self._energy -= self._base_energy_expenditure
