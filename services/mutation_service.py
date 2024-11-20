@@ -14,7 +14,9 @@ class MutationService:
         'food_energy': 0.05,
         'base_energy_expenditure': 0.05,
         'reproduction_ratio': 0.05,
-        'can_seek_food': 0.1
+        'can_seek_food': 0.03,
+        'can_hibernate': 0.07,
+        'can_panic': 0.03
     }
     # Default mutation rates
     _mutation_starting_rates = _mutation_rates.copy()
@@ -37,7 +39,9 @@ class MutationService:
             'food_energy': self._mutate_food_energy,
             'base_energy_expenditure': self._mutate_base_energy_expenditure,
             'reproduction_ratio': self._mutate_reproduction_ratio,
-            'can_seek_food': self._mutate_can_seek_food
+            'can_seek_food': self._mutate_can_seek_food,
+            'can_hibernate': self._mutate_hibernate,
+            'can_panic': self._mutate_panic
         }
 
         self.mutation_rates : dict = MutationService._mutation_rates
@@ -119,6 +123,18 @@ class MutationService:
     def _mutate_can_seek_food(self, genome: Genome):
         """Mutates the can_seek_food attribute by flipping bool."""
         genome._can_seek_food = not genome._can_seek_food
+
+    def _mutate_hibernate(self, genome: Genome):
+        """Mutates the hibernate trait by flipping bool if panic is not already enabled"""
+        if genome.get_can_panic():
+            return  # Mutually exclusive
+        genome._can_hibernate = not genome.get_can_hibernate()
+
+    def _mutate_panic(self, genome: Genome):
+        """Mutates the panic trait by flipping bool if hibernate is not already enabled."""
+        if genome.get_can_hibernate():
+            return  # Mutually exclusive
+        genome._can_panic = not genome.get_can_panic()
 
     @classmethod
     def mutation_rate_modifier(cls, multiplier):

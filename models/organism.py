@@ -78,6 +78,7 @@ class Organism:
         self._world.add_organism(child_organism, row, col)
         self._world.add_offspring()
         self._world.update_max_generation(self._generation + 1)
+        self._energy = self._energy // 2        # added to make it so reproduction isn't so explosive
         return child_organism
 
     def choose_action(self):
@@ -110,6 +111,58 @@ class Organism:
 
         return False  # No beneficial moves found
 
+    def hibernate_helper(self) -> bool:
+        """Handles hibernation behavior, freezing all actions and energy spend. Randomly wakes up."""
+        if not self._genome.get_can_hibernate() or self._energy > self._genome.get_max_energy() * 0.1:
+            return False  # Not hibernating
+        
+        if not hasattr(self, "_is_hibernating"):
+            self._is_hibernating = True  # Start hibernation
+            self._hibernate_turns = 0
+
+        if random.random() < 0.33:  # 33% chance to wake up
+            self._is_hibernating = False
+            self._hibernate_turns = 0
+            return False  # Wake up and take action
+
+        self._hibernate_turns += 1
+        return True  # Skip choose_action entirely
+
+    def panic_mode_helper(self):
+        """Handles panic mode, doubling movement temporarily."""
+        
+        low_energy_threshold = self._genome.get_max_energy() * 0.1
+
+        # Initialize the panic state if it doesn't exist
+        if not hasattr(self, "_is_in_panic_mode"):
+            self._is_in_panic_mode = False
+            self._original_movement_iterations = self._genome.get_movement_iterations() or 1  # Default to 1
+        
+        # If mutation is off, return false. if panic mode was enabled, disable.
+        if not self._genome.get_can_panic():
+            if self._is_in_panic_mode:
+                if self._original_movement_iterations is not None:
+                    self._genome.set_movement_iterations(self._original_movement_iterations)
+                else:
+                    raise ValueError("original_movement_iterations was not set during panic mode.")
+                self._is_in_panic_mode = False
+            return False  # Panic mode is not enabled
+
+        # Enter panic mode if energy is below the threshold
+        if self._energy <= low_energy_threshold and not self._is_in_panic_mode:
+            self._is_in_panic_mode = True
+            if self._original_movement_iterations is None:
+                # Store original value only on first activation
+                self._original_movement_iterations = self._genome.get_movement_iterations() or 1
+            self._genome.set_movement_iterations(self._original_movement_iterations * 2)
+
+        # Exit panic mode if energy is above the threshold
+        elif self._energy > low_energy_threshold and self._is_in_panic_mode:
+            self._is_in_panic_mode = False
+            if self._original_movement_iterations is not None:
+                self._genome.set_movement_iterations(self._original_movement_iterations)
+            else:
+                raise ValueError("original_movement_iterations was not set during panic mode.")
 
     def get_birthday(self) -> int:
         """Returns the birthday"""
