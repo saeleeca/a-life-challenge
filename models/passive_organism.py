@@ -144,7 +144,7 @@ class PassiveOrganism(Organism):
 
     def energy_reduction(self):
         """Passive Organism stored energy declines intermittently. Currently based on hardcoded rate"""
-        if random.random() < 0.5:
+        if random.random() < 0.1:
             self._energy -= max(1, 1+self._world.get_environment().get_energy_rate())
         return
 

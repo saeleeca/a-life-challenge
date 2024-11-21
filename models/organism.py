@@ -47,6 +47,10 @@ class Organism:
     def get_energy(self) -> int:
         return self._energy
 
+    def set_energy(self, energy: int):
+        """Sets energy. Currently used by eat organism method in world to set energy of eaten organism"""
+        self._energy = energy
+
     def get_location(self) -> (int, int):
         """Returns a tuple with the location (row, col)"""
         return self._row, self._col
@@ -63,7 +67,9 @@ class Organism:
     def eat(self, food: 'Organism') -> None:
         """Increases energy when consuming organisms."""
         self._energy += food.get_food_energy()  # Gain the energy of the food
-        self._world.kill_organism(food._row, food._col)  # Remove the food from the world
+        #self._world.kill_organism(food._row, food._col)  # Remove the food from the world
+        food_energy = food.get_food_energy()
+        self._world.eat_organism(food._row, food._col, food_energy)
 
     def check_if_can_reproduce(self) -> bool:
         empty_found, empty_row, empty_col = self._world.get_empty_neighbor(self._row, self._col, True)
