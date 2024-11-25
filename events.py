@@ -1,5 +1,6 @@
 from world import *
 import pygame
+from models import (CreatureType, Genome, MeteoriteObject, Species)
 # from main import clock
 
 # Screen shake variables
@@ -30,10 +31,20 @@ def meteor(world, view):
     start_row = random.randint(0, 30)
     start_col = random.randint(0, 30)
 
+    DARK_SILVER = (90, 90, 90)
+
     # Iterate over the 20x20 area and kill organisms
     for row in range(start_row, start_row + 20):
         for col in range(start_col, start_col + 20):
+
+            # kills organism if organism exists
             world.kill_organism(row, col)
+
+            # Adds a meteorite object on the position of the grid
+            world.add_organism(
+                MeteoriteObject(Genome(DARK_SILVER, CreatureType.OBJECT, 0, False, 0,
+                      0, 0, 0, 0, MeteoriteObject, 0),
+                row, col, world, 0, MeteoriteObject), row, col)
 
     shake_screen(view)
     view.update()

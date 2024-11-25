@@ -132,7 +132,7 @@ class View:
             row = int((y - WORLD_Y) / self._grid_size)
             col = int((x - WORLD_X) / self._grid_size)
             organism = self._world.get_cell(row, col)
-            if organism:
+            if organism and str(organism.get_genome().get_creature_type()) != "CreatureType.OBJECT":
                 self._viewing_modal = True
                 self._pause_fn()
                 self._components = self._view_modal_components

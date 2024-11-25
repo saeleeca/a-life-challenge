@@ -1,6 +1,7 @@
 from enum import Enum
 
 class CreatureType(Enum):
+    OBJECT = 0
     PASSIVE = 1
     HERBIVORE = 2
     CARNIVORE = 3
@@ -83,7 +84,9 @@ class Genome:
         """Returns a dictionary with the data to be rendered in the UI"""
         # Convert creature type constant to string
         creature_type = self._creature_type
-        if creature_type == CreatureType.CARNIVORE:
+        if creature_type == CreatureType.OBJECT:
+            creature_type_str = "Object"
+        elif creature_type == CreatureType.CARNIVORE:
             creature_type_str = "Carnivore"
         elif creature_type == CreatureType.HERBIVORE:
             creature_type_str = "Herbivore"
