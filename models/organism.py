@@ -1,4 +1,5 @@
 from services.mutation_service import MutationService
+import random
 class Organism:
     def __init__(self, genome, row: int, col: int, world, generation: int,
                  species):
@@ -46,6 +47,10 @@ class Organism:
     def get_energy(self) -> int:
         return self._energy
 
+    def set_energy(self, energy: int):
+        """Sets energy. Currently used by eat organism method in world to set energy of eaten organism"""
+        self._energy = energy
+
     def get_location(self) -> (int, int):
         """Returns a tuple with the location (row, col)"""
         return self._row, self._col
@@ -62,7 +67,9 @@ class Organism:
     def eat(self, food: 'Organism') -> None:
         """Increases energy when consuming organisms."""
         self._energy += food.get_food_energy()  # Gain the energy of the food
-        self._world.kill_organism(food._row, food._col)  # Remove the food from the world
+        #self._world.kill_organism(food._row, food._col)  # Remove the food from the world
+        food_energy = food.get_food_energy()
+        self._world.eat_organism(food._row, food._col, food_energy)
 
     def check_if_can_reproduce(self) -> bool:
         empty_found, empty_row, empty_col = self._world.get_empty_neighbor(self._row, self._col, True)
@@ -77,11 +84,91 @@ class Organism:
         self._world.add_organism(child_organism, row, col)
         self._world.add_offspring()
         self._world.update_max_generation(self._generation + 1)
+        self._energy = self._energy // 2        # added to make it so reproduction isn't so explosive
         return child_organism
 
     def choose_action(self):
         """Depends on type of Organism"""
         pass
+
+    def seek_food(self):
+        """
+        Move to an empty cell that will make food adjacent if possible.
+        Returns True if a move was made, False otherwise.
+        """
+        potential_moves = []
+        max_rows, max_cols = len(self._world.get_world()), len(self._world.get_world()[0])
+
+        for dr, dc in [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]:
+            next_row, next_col = self._row + dr, self._col + dc
+
+            if 0 <= next_row < max_rows and 0 <= next_col < max_cols:
+                if self._world.is_cell_empty(next_row, next_col):
+                    # Simulate moving to this cell and check for food
+                    food_found, r, c = self._world.get_adjacent_food(next_row, next_col, self._food_type)
+                    if food_found:
+                        potential_moves.append((next_row, next_col))
+
+        # If any potential moves bring food within reach, choose one
+        if potential_moves:
+            target_row, target_col = random.choice(potential_moves)
+            self.move(target_row, target_col)
+            return True
+
+        return False  # No beneficial moves found
+
+    def hibernate_helper(self) -> bool:
+        """Handles hibernation behavior, freezing all actions and energy spend. Randomly wakes up."""
+        if not self._genome.get_can_hibernate() or self._energy > self._genome.get_max_energy() * 0.1:
+            return False  # Not hibernating
+        
+        if not hasattr(self, "_is_hibernating"):
+            self._is_hibernating = True  # Start hibernation
+            self._hibernate_turns = 0
+
+        if random.random() < 0.33:  # 33% chance to wake up
+            self._is_hibernating = False
+            self._hibernate_turns = 0
+            return False  # Wake up and take action
+
+        self._hibernate_turns += 1
+        return True  # Skip choose_action entirely
+
+    def panic_mode_helper(self):
+        """Handles panic mode, doubling movement temporarily."""
+        
+        low_energy_threshold = self._genome.get_max_energy() * 0.1
+
+        # Initialize the panic state if it doesn't exist
+        if not hasattr(self, "_is_in_panic_mode"):
+            self._is_in_panic_mode = False
+            self._original_movement_iterations = self._genome.get_movement_iterations() or 1  # Default to 1
+        
+        # If mutation is off, return false. if panic mode was enabled, disable.
+        if not self._genome.get_can_panic():
+            if self._is_in_panic_mode:
+                if self._original_movement_iterations is not None:
+                    self._genome.set_movement_iterations(self._original_movement_iterations)
+                else:
+                    raise ValueError("original_movement_iterations was not set during panic mode.")
+                self._is_in_panic_mode = False
+            return False  # Panic mode is not enabled
+
+        # Enter panic mode if energy is below the threshold
+        if self._energy <= low_energy_threshold and not self._is_in_panic_mode:
+            self._is_in_panic_mode = True
+            if self._original_movement_iterations is None:
+                # Store original value only on first activation
+                self._original_movement_iterations = self._genome.get_movement_iterations() or 1
+            self._genome.set_movement_iterations(self._original_movement_iterations * 2)
+
+        # Exit panic mode if energy is above the threshold
+        elif self._energy > low_energy_threshold and self._is_in_panic_mode:
+            self._is_in_panic_mode = False
+            if self._original_movement_iterations is not None:
+                self._genome.set_movement_iterations(self._original_movement_iterations)
+            else:
+                raise ValueError("original_movement_iterations was not set during panic mode.")
 
     def get_birthday(self) -> int:
         """Returns the birthday"""

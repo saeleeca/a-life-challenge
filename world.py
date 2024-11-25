@@ -1,6 +1,6 @@
 import random
 from environments import NormalEnvironment, HarshEnvironment, DesertEnvironment, RainforestEnvironment
-from models import Species
+from models import Species, CreatureType
 
 def set_world_type(world):
     """Sets the type of environment for the simulation"""
@@ -35,7 +35,7 @@ class World:
     def kill_organism(self, row: int, col: int) -> None:
         """Sets the row col to None"""
         organism = self._world[row][col]
-        if organism:
+        if organism and organism.get_genome().get_creature_type() != CreatureType.OBJECT:
             organism.get_species().dec_population()
             self._deaths += 1
             self._population -= 1
@@ -43,6 +43,20 @@ class World:
                 self._active_species -= 1
                 self._active_species_list = None
         self._world[row][col] = None
+
+    def eat_organism(self, row: int, col: int, food_energy) -> None:
+        """Reduces organism energy by the amount of food energy gained by predator and kills it if energy is 0 or
+        less. Also rounds energy values."""
+        organism = self._world[row][col]
+        if organism:
+            energy = round(organism.get_energy(),4)
+            energy -= food_energy
+            energy = round(energy,4)
+            if energy <= 0:
+                self.kill_organism(row, col)
+            else:
+                organism.set_energy(energy)
+
 
     def move(self, rowA: int, colA: int, rowB: int, colB: int) -> None:
         """Moves the organism from a to b"""
@@ -53,7 +67,9 @@ class World:
 
     def add_organism(self, organism, row: int, col :int) -> None:
         """Adds the organism to self._world"""
+
         self._world[row][col] = organism
+        if organism.get_genome().get_creature_type() == CreatureType.OBJECT: return
         self._population += 1
 
         # Check if the organism is a new species
