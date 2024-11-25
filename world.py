@@ -16,7 +16,9 @@ def set_world_type(world):
 
 
 class World:
-    ROWS, COLS = 50, 50
+    # If ROWS/COLS changes, make sure that _grid_size * _render_scale is an int
+    # Render scale can be adjusted in View.
+    ROWS, COLS = 80, 80
     def __init__(self):
         self._world: list[list[object]] = \
             [[None for _ in range(self.COLS)] for _ in range(self.ROWS)]
