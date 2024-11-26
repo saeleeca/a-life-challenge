@@ -25,17 +25,18 @@ def shake_screen(view):
 
 def meteor(world, view):
     """
-    Takes world and view objects, obliterating a random 20x20 space in the world and then updates view.
+    Takes world and view objects, obliterating a random space in the world and then updates view.
     """
-    # Randomly select a starting row and column within the 50x50 grid
-    start_row = random.randint(0, 30)
-    start_col = random.randint(0, 30)
-
     DARK_SILVER = (90, 90, 90)
+    METEOR_SIZE = 20
 
-    # Iterate over the 20x20 area and kill organisms
-    for row in range(start_row, start_row + 20):
-        for col in range(start_col, start_col + 20):
+    # Randomly select a starting row and column within the grid
+    start_row = random.randint(0, world.ROWS - METEOR_SIZE)
+    start_col = random.randint(0, world.COLS - METEOR_SIZE)
+
+    # Iterate over the area defined by meteor_size (sizeXsize) and kill organisms
+    for row in range(start_row, start_row + METEOR_SIZE):
+        for col in range(start_col, start_col + METEOR_SIZE):
 
             # kills organism if organism exists
             world.kill_organism(row, col)

@@ -16,6 +16,13 @@ class View:
         self._cols: int = cols
         self._world = world
         self._grid_size: float = WORLD_WIDTH / rows
+        # _grid_size * _render_scale needs to be an int.
+        # _render_scale can be adjusted for this, if ROWS/COLS changes
+        self._render_scale = 2
+        self._render_surface = pygame.Surface(
+            (self._cols * self._grid_size * self._render_scale,
+             self._rows * self._grid_size * self._render_scale)
+        )
         self._pause_fn = pause_fn
         self._start_fn = start_fn
         self._reset_fn = reset_fn
@@ -77,18 +84,28 @@ class View:
 
     def _render_grid(self):
         """Draws the world grid"""
-        # Draw the world background
-        pygame.draw.rect(self._screen, 
-                         self._world.get_environment().get_environment_color(),
-                         (WORLD_X, WORLD_Y,
-                          WORLD_HEIGHT, WORLD_WIDTH))
+        # Draw everything to _render_surface instead of screen
+        # If the grid locations are floats, Pygame leaves uneven gaps/lines
+        # between the rects. _render_surface is a larger area, enabling all
+        # calculations to be made with integers. The _render_surface gets
+        # scaled down/placed at the same location, but doesn't show gaps/lines.
 
+        # Draw the world background to the scaled up render_surface
+        self._render_surface.fill(
+            self._world.get_environment().get_environment_color())
 
         for row in range(self._rows):
             for col in range(self._cols):
                 organism = self._world.get_cell(row, col)
                 if organism:
                     self._draw_organism(organism, row, col)
+
+        scaled_surface = pygame.transform.scale(
+            self._render_surface,
+            (WORLD_WIDTH, WORLD_HEIGHT)
+        )
+        self._screen.blit(scaled_surface, (WORLD_X, WORLD_Y))
+
 
     def update(self):
         """
@@ -104,14 +121,17 @@ class View:
 
         # Draw as a square
         rect = self._convert_cell_to_rect(row, col)
-        pygame.draw.rect(self._screen, color, rect)
+        pygame.draw.rect(self._render_surface, color, rect)
 
 
     def _convert_cell_to_rect(self, row: int, col: int):
         """Helper method to convert row/col to a rect using screen coords"""
-        return (col * self._grid_size + WORLD_X,
-                row * self._grid_size + WORLD_Y,
-                self._grid_size, self._grid_size)
+        # Positions are relative to _render_surface, since they are not
+        # being directly drawn to self._screen
+        scaled_grid_size = self._grid_size * self._render_scale
+        return (col * scaled_grid_size,
+                row * scaled_grid_size,
+                scaled_grid_size, scaled_grid_size)
 
     def _render_title(self):
         """Draws the game title to the screen"""

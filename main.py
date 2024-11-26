@@ -176,7 +176,7 @@ def change_mutation_rate(multiplier):
     mutation_service.MutationService.mutation_rate_modifier(multiplier)
 
 def meteor():
-    """Helper function that wipes a 20x20 grid of the map with a meteor"""
+    """Helper function that wipes an area of the map with a meteor"""
     events.meteor(world, view)
     # redraws the entire screen, necessary after shake screen, and ensures that
     # the modal is properly closed if it was open
